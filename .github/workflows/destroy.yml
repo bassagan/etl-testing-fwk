@@ -1,13 +1,14 @@
-name: Terraform CI/CD
+name: Terraform Destroy
 
 on:
-  push:
-    branches:
-      - feature/*
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
 
 jobs:
-  terraform:
-    name: Terraform Apply and Destroy
+  terraform_destroy:
+    if: github.event.issue.labels.*.name contains 'destroy-approval' && github.event.comment.body == 'approve'
+    name: Terraform Destroy
     runs-on: ubuntu-latest
 
     steps:
@@ -29,10 +30,6 @@ jobs:
     - name: Terraform Init
       working-directory: ./iac
       run: terraform init
-
-    - name: Terraform Apply
-      working-directory: ./iac
-      run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
 
     - name: Terraform Destroy
       working-directory: ./iac
