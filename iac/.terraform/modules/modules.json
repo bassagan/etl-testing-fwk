@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"codebuild","Source":"./modules/codebuild","Dir":"modules/codebuild"},{"Key":"codepipeline","Source":"./modules/codepipeline","Dir":"modules/codepipeline"},{"Key":"iam","Source":"./modules/iam","Dir":"modules/iam"}]}
