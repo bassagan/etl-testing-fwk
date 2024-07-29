@@ -1,13 +1,14 @@
 name: Terraform Destroy
 
 on:
-  workflow_dispatch:
   issue_comment:
     types: [created]
 
 jobs:
   terraform_destroy:
-    if: github.event.issue.labels.*.name contains 'destroy-approval' && github.event.comment.body == 'approve'
+    if: |
+      github.event.issue.labels.*.name.contains('destroy-approval') &&
+      github.event.comment.body == 'approve'
     name: Terraform Destroy
     runs-on: ubuntu-latest
 
