@@ -31,25 +31,18 @@ jobs:
       working-directory: ./iac
       run: terraform init
 
+    - name: Import S3 Bucket
+      working-directory: ./iac
+      run: terraform import aws_s3_bucket.codepipeline_bucket etl-codepipeline-bucket || echo "S3 Bucket already imported"
+
+    - name: Import CodeBuild IAM Role
+      working-directory: ./iac
+      run: terraform import module.iam.aws_iam_role.codebuild_role codebuild-role || echo "CodeBuild IAM Role already imported"
+
+    - name: Import CodePipeline IAM Role
+      working-directory: ./iac
+      run: terraform import module.iam.aws_iam_role.codepipeline_role codepipeline-role || echo "CodePipeline IAM Role already imported"
+
     - name: Terraform Apply
       working-directory: ./iac
       run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
-
-    - name: Request for Destroy Approval
-      uses: actions/github-script@v4
-      with:
-        script: |
-          const { Octokit } = require("@octokit/rest");
-          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-
-          const { data: issue } = await octokit.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: "Approval needed for Terraform Destroy",
-            body: "Approve this issue to trigger the destroy workflow.",
-            labels: ["destroy-approval"]
-          });
-
-          console.log(`Created issue #${issue.number}`);
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
