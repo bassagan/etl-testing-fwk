@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/*
 
 jobs:
   terraform_apply:
@@ -23,4 +22,33 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ s
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
+    - name: Terraform Init
+      working-directory: ./iac
+      run: terraform init
+
+    - name: Terraform Apply
+      working-directory: ./iac
+      run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Request for Destroy Approval
+      uses: actions/github-script@v4
+      with:
+        script: |
+          const { Octokit } = require("@octokit/rest");
+          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+          const { data: issue } = await octokit.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: "Approval needed for Terraform Destroy",
+            body: "Approve this issue to trigger the destroy workflow.",
+            labels: ["destroy-approval"]
+          });
+
+          console.log(`Created issue #${issue.number}`);
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
