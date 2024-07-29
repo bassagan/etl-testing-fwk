@@ -55,12 +55,3 @@ jobs:
       working-directory: ./iac
       run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Create Approval Issue
-      uses: peter-evans/create-issue-from-file@v3
-      with:
-        title: "Approval needed for Terraform Destroy"
-        content-filepath: .github/ISSUE_TEMPLATE/destroy-approval.md
-        labels: destroy-approval
-        assignees: ${{ github.actor }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
