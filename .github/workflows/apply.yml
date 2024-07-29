@@ -43,6 +43,10 @@ jobs:
       working-directory: ./iac
       run: terraform import module.iam.aws_iam_role.codepipeline_role codepipeline-role || echo "CodePipeline IAM Role already imported"
 
+    - name: Import CodeBuild Project
+      working-directory: ./iac
+      run: terraform import module.codebuild.aws_codebuild_project.etl_build arn:aws:codebuild:eu-west-1:***:project/etl-build || echo "CodeBuild Project already imported"
+
     - name: Terraform Apply
       working-directory: ./iac
       run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
