@@ -6,6 +6,10 @@ on:
       - master
       - feature/*
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   terraform_apply:
     name: Terraform Apply
@@ -58,3 +62,5 @@ jobs:
         content-filepath: .github/ISSUE_TEMPLATE/destroy-approval.md
         labels: destroy-approval
         assignees: ${{ github.actor }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
