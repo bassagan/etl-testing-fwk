@@ -1,0 +1,57 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  terraform_apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
+    - name: Terraform Init
+      working-directory: ./iac
+      run: terraform init
+
+    - name: Import S3 Bucket
+      working-directory: ./iac
+      run: terraform import aws_s3_bucket.codepipeline_bucket etl-codepipeline-bucket || echo "S3 Bucket already imported"
+
+    - name: Import CodeBuild IAM Role
+      working-directory: ./iac
+      run: terraform import module.iam.aws_iam_role.codebuild_role codebuild-role || echo "CodeBuild IAM Role already imported"
+
+    - name: Import CodePipeline IAM Role
+      working-directory: ./iac
+      run: terraform import module.iam.aws_iam_role.codepipeline_role codepipeline-role || echo "CodePipeline IAM Role already imported"
+
+    - name: Import CodeBuild Project
+      working-directory: ./iac
+      run: terraform import module.codebuild.aws_codebuild_project.etl_build arn:aws:codebuild:eu-west-1:***:project/etl-build || echo "CodeBuild Project already imported"
+
+    - name: Terraform Apply
+      working-directory: ./iac
+      run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+

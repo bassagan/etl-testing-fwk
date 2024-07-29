@@ -1,13 +1,11 @@
-name: Terraform CI/CD
+name: Terraform Destroy
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
-  terraform:
-    name: Terraform Apply and Destroy
+  terraform_destroy:
+    name: Terraform Destroy
     runs-on: ubuntu-latest
 
     steps:
@@ -29,10 +27,6 @@ jobs:
     - name: Terraform Init
       working-directory: ./iac
       run: terraform init
-
-    - name: Terraform Apply
-      working-directory: ./iac
-      run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
 
     - name: Terraform Destroy
       working-directory: ./iac
