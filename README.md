@@ -1,26 +1,24 @@
-# ETL Testing Framework
+# ETL Testing Environment Setup
 
-This repository contains the infrastructure as code (IaC) for setting up an ETL testing framework using AWS services and Terraform. 
-The infrastructure includes a CI/CD pipeline with CodePipeline and CodeBuild.
+Welcome to the ETL Testing Course! This guide will help you set up your development environment using GitHub Codespaces, ensuring that everyone has a consistent and ready-to-use setup.
 
-## Structure
+## What is GitHub Codespaces?
 
-- `iac/`: Contains all Terraform configuration files and modules.
-  - `main.tf`: Main Terraform configuration file.
-  - `variables.tf`: Variable definitions.
-  - `outputs.tf`: Output definitions.
-  - `terraform.tfvars`: Default variable values.
-  - `modules/`: Contains Terraform modules for IAM roles, CodeBuild, and CodePipeline.
+GitHub Codespaces provides a cloud-based development environment directly integrated with GitHub. It allows you to write, run, and debug your code without needing to install any tools locally.
 
 ## Prerequisites
 
-- Terraform CLI installed.
-- AWS account with necessary permissions.
-- GitHub OAuth token for accessing your repository.
+1. **GitHub Account**: Ensure you have a GitHub account. If you don't have one, you can sign up [here](https://github.com/join).
+2. **Browser**: A modern web browser (e.g., Chrome, Firefox, Edge).
 
-## Setup
+## Setting Up GitHub Codespaces
 
-1. **Clone the repository**:
-   ```sh
-   git clone https://github.com/YOUR_GITHUB_USERNAME/etl-testing-fwk.git
-   cd etl-testing-fwk/iac
+### Step 1: Access the Repository
+
+1. Open your web browser and go to the repository: [https://github.com/your-repo/etl-testing-fwk](https://github.com/your-repo/etl-testing-fwk).
+
+### Step 2: Open GitHub Codespaces
+
+1. Click the green `Code` button.
+2. Select `Open with
+
