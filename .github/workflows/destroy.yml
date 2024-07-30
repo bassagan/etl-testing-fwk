@@ -28,7 +28,11 @@ jobs:
 
     - name: Terraform Init
       working-directory: ./iac
-      run: terraform init
+      run: terraform init -input=false
+
+    - name: List Terraform State
+      working-directory: ./iac
+      run: terraform state list
 
     - name: Terraform Destroy
       working-directory: ./iac
