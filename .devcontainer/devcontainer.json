@@ -13,5 +13,6 @@
         "terminal.integrated.defaultProfile.linux": "bash",
         "python.pythonPath": "/opt/venv/bin/python"
     },
-    "remoteUser": "vscode"
+    "remoteUser": "vscode",
+    "postCreateCommand": "source /opt/venv/bin/activate"
 }
