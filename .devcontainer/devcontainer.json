@@ -1,11 +1,17 @@
 {
     "name": "ETL Testing Environment",
     "build": {
-        "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile",
+        "context": ".."
     },
     "extensions": [
         "ms-python.python",
         "ms-azuretools.vscode-docker",
         "hashicorp.terraform"
-    ]
+    ],
+    "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "python.pythonPath": "/opt/venv/bin/python"
+    },
+    "remoteUser": "vscode"
 }
