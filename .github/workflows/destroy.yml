@@ -11,8 +11,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      with:
-        ref: feature/initial-scaffold  # Specify the branch to checkout
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
