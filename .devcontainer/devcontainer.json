@@ -14,5 +14,5 @@
         "python.pythonPath": "/opt/venv/bin/python"
     },
     "remoteUser": "vscode",
-    "postCreateCommand": "source /opt/venv/bin/activate"
+    "postCreateCommand": "bash -c 'source /opt/venv/bin/activate'"
 }
