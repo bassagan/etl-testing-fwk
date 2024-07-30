@@ -1,0 +1,10 @@
+{
+    "name": "ETL Testing Environment",
+    "image": "mcr.microsoft.com/vscode/devcontainers/python:3.9",
+    "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker",
+        "hashicorp.terraform"
+    ],
+    "postCreateCommand": "pip install -r requirements.txt && sudo apt-get update && sudo apt-get install -y terraform"
+}
