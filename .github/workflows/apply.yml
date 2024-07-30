@@ -49,7 +49,7 @@ jobs:
 
     - name: Import CodeBuild Project
       working-directory: ./iac
-      run: terraform import module.codebuild.aws_codebuild_project.etl_build arn:aws:codebuild:eu-west-1:***:project/etl-build || echo "CodeBuild Project already imported"
+      run: terraform import module.codebuild.aws_codebuild_project.etl_build arn:aws:codebuild:your-aws-region:***:project/etl-build || echo "CodeBuild Project already imported"
 
     - name: Terraform Apply
       working-directory: ./iac
