@@ -5,12 +5,18 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - pip install -r requirements.txt
+      - apt-get install -y jq
 
   pre_build:
     commands:
       - echo "Setting up the environment..."
       - export PYTHONPATH=$PYTHONPATH:$(pwd) # Set PYTHONPATH to include current directory
       - echo "Environment setup complete."
+      - echo "Fetching commit ID and branch name..."
+      - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      - export GIT_COMMIT=$(git rev-parse HEAD)
+      - echo "Branch:
+          $GIT_BRANCH, Commit: $GIT_COMMIT"
 
   build:
     commands:

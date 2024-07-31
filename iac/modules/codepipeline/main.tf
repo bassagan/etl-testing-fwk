@@ -21,7 +21,7 @@ resource "aws_codepipeline" "etl_pipeline" {
       configuration = {
         Owner      = var.github_owner
         Repo       = var.github_repo
-        Branch     = "main"
+        Branch     = "master"
         OAuthToken = var.github_token
       }
     }
@@ -41,16 +41,6 @@ resource "aws_codepipeline" "etl_pipeline" {
 
      configuration = {
         ProjectName = var.codebuild_project
-        EnvironmentVariables = jsonencode([
-          {
-            name  = "GIT_BRANCH"
-            value = "#{SourceVariables.BranchName}"
-          },
-          {
-            name  = "GIT_COMMIT"
-            value = "#{SourceVariables.CommitId}"
-          }
-        ])
       }
     }
   }
