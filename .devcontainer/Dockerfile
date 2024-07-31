@@ -15,12 +15,9 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Set the working directory and copy requirements.txt
-WORKDIR /workspace
-COPY requirements.txt /workspace/requirements.txt
-
 # Install Python dependencies in the virtual environment
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements.txt /workspace/requirements.txt
+RUN pip install --upgrade pip && pip install -r /workspace/requirements.txt
 
 # Set the working directory
 WORKDIR /workspace

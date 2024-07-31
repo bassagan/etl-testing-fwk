@@ -12,6 +12,8 @@ module "codebuild" {
   github_repo     = var.github_repo
   github_owner    = var.github_owner
   github_token    = var.github_token
+  branch            = "" # Will be set by CodePipeline
+  commit            = "" # Will be set by CodePipeline
 }
 
 
@@ -23,6 +25,7 @@ module "codepipeline" {
   github_owner       = var.github_owner
   github_token       = var.github_token
   artifact_bucket    = aws_s3_bucket.codepipeline_bucket.bucket
+  codepipeline_name = var.codepipeline_name
 }
 
 resource "aws_s3_bucket" "codepipeline_bucket" {

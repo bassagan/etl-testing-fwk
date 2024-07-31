@@ -2,11 +2,16 @@ variable "codepipeline_role" {
   description = "IAM role for CodePipeline"
   type        = string
 }
-
+variable "codepipeline_name" {
+  description = "IAM role for CodePipeline"
+  type        = string
+  default     = "etl-pipeline"
+}
 variable "codebuild_project" {
   description = "CodeBuild project name"
   type        = string
 }
+
 
 variable "github_repo" {
   description = "GitHub repository name"
@@ -29,5 +34,5 @@ variable "artifact_bucket" {
 }
 
 variable "region" {
-  default = "us-west-2"
+  default = "eu-west-1"
 }

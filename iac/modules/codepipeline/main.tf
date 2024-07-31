@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "etl_pipeline" {
-  name     = "etl-pipeline"
+  name     = var.codepipeline_name
   role_arn = var.codepipeline_role
 
   artifact_store {
@@ -13,16 +13,15 @@ resource "aws_codepipeline" "etl_pipeline" {
     action {
       name             = "Source"
       category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner      = var.github_owner
-        Repo       = var.github_repo
-        Branch     = "main"
-        OAuthToken = var.github_token
+        ConnectionArn    = "arn:aws:codeconnections:eu-west-1:087559609246:connection/b0171203-62d8-4ebb-964d-907be5d5a213"
+        FullRepositoryId = "${var.github_owner}/${var.github_repo}"
+        BranchName       = "feature/initial-pytest-config"
       }
     }
   }
@@ -45,4 +44,3 @@ resource "aws_codepipeline" "etl_pipeline" {
     }
   }
 }
-

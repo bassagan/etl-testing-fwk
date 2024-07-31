@@ -1,5 +1,5 @@
 variable "region" {
-  default = "us-west-2"
+  default = "eu-west-1"
 }
 
 variable "github_token" {
@@ -40,4 +40,10 @@ variable "environment" {
   description = "The environment for the deployment"
   type        = string
   default     = "dev"
+}
+
+variable "codepipeline_name" {
+  description = "The environment for the deployment"
+  type        = string
+  default     = "etl-testing-fwk-pipeline"
 }
