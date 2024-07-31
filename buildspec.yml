@@ -10,21 +10,25 @@ phases:
   pre_build:
     commands:
       - echo "Setting up the environment..."
-      - export PYTHONPATH=$PYTHONPATH:$(pwd) # Set PYTHONPATH to include current directory
+      - export PYTHONPATH=$PYTHONPATH:$(pwd)  # Set PYTHONPATH to include the current directory
       - echo "Environment setup complete."
       - echo "Fetching commit ID and branch name..."
-      - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-      - export GIT_COMMIT=$(git rev-parse HEAD)
+      # The following git commands may fail in a CodePipeline environment, consider using env vars from CodePipeline
+      - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD || echo $CODEBUILD_SOURCE_VERSION)
+      - export GIT_COMMIT=$(git rev-parse HEAD || echo $CODEBUILD_RESOLVED_SOURCE_VERSION)
 
   build:
     commands:
       - echo "Running pytest tests..."
-      - pytest --junitxml=reports/results.xml --tb=short
+      - pytest --junitxml=reports/results.xml
 
   post_build:
     commands:
       - echo "Build phase complete."
 
-artifacts:
-  files:
-    - reports/results.xml
+reports:
+  pytest_report:
+    files:
+      - results.xml
+    base-directory: reports/
+    file-format: JUNITXML
