@@ -18,7 +18,7 @@ resource "aws_iam_role" "codebuild_role" {
   })
 }
 
-# Attach policies to the CodeBuild IAM role
+# Attach necessary policies to the CodeBuild IAM role
 resource "aws_iam_role_policy_attachment" "codebuild_s3_policy" {
   role       = aws_iam_role.codebuild_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
@@ -27,6 +27,11 @@ resource "aws_iam_role_policy_attachment" "codebuild_s3_policy" {
 resource "aws_iam_role_policy_attachment" "codebuild_cloudwatch_policy" {
   role       = aws_iam_role.codebuild_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "codebuild_basic_execution" {
+  role       = aws_iam_role.codebuild_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
 }
 
 # IAM Role for CodePipeline
@@ -45,8 +50,37 @@ resource "aws_iam_role" "codepipeline_role" {
   })
 }
 
-# Attach policies to the CodePipeline IAM role
+# Attach necessary policies to the CodePipeline IAM role
 resource "aws_iam_role_policy_attachment" "codepipeline_policy" {
   role       = aws_iam_role.codepipeline_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_policy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipelineFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_startbuild_policy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = aws_iam_policy.codepipeline_codebuild_startbuild.arn
+}
+
+# Custom policy to allow CodePipeline to start CodeBuild projects
+resource "aws_iam_policy" "codepipeline_codebuild_startbuild" {
+  name        = "CodePipelineStartBuild"
+  description = "Allows CodePipeline to start CodeBuild projects"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }
