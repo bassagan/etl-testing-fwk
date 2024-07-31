@@ -34,6 +34,34 @@ resource "aws_iam_role_policy_attachment" "codebuild_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
 }
 
+# Custom policy for CodeBuild to manage report groups and test cases
+resource "aws_iam_role_policy" "codebuild_report_permissions" {
+  name = "CodeBuildReportPermissions"
+  role = aws_iam_role.codebuild_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "codebuild:CreateReportGroup",
+          "codebuild:UpdateReportGroup",
+          "codebuild:BatchPutTestCases",
+          "codebuild:BatchPutCodeCoverages",
+          "codebuild:DeleteReportGroup",
+          "codebuild:DescribeTestCases",
+          "codebuild:ListReportGroups",
+          "codebuild:ListReports",
+          "codebuild:ListReportsForReportGroup",
+          "codebuild:UpdateReport"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # IAM Role for CodePipeline
 resource "aws_iam_role" "codepipeline_role" {
   name = "codepipeline-service-role"
