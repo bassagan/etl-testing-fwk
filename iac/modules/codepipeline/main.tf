@@ -84,5 +84,4 @@ resource "aws_codepipeline_webhook" "github_webhook" {
     json_path    = "$.ref"
     match_equals = "refs/heads/training/*"
   }
-  register_to_pipeline = true
 }
