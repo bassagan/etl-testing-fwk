@@ -15,8 +15,8 @@ phases:
       - echo "Fetching commit ID and branch name..."
       - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
       - export GIT_COMMIT=$(git rev-parse HEAD)
-      - echo "Branch:
-          $GIT_BRANCH, Commit: $GIT_COMMIT"
+      - echo "Branch fetched: $GIT_BRANCH"
+      - echo "Commit fetched: $GIT_COMMIT"
 
   build:
     commands:
