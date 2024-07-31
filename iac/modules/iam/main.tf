@@ -54,7 +54,8 @@ resource "aws_iam_role_policy" "codebuild_report_permissions" {
           "codebuild:ListReportGroups",
           "codebuild:ListReports",
           "codebuild:ListReportsForReportGroup",
-          "codebuild:UpdateReport"
+          "codebuild:UpdateReport",
+          "codebuild:CreateReport"
         ],
         Resource = "*"
       }
