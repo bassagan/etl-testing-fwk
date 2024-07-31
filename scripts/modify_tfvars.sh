@@ -6,6 +6,8 @@ if [ "$#" -ne 3 ]; then
     exit 1
 fi
 
+ls
+
 branch_name=$(echo "$1" | sed 's/[^a-zA-Z0-9._-]/-/g')
 repo_name=$(echo "$2" | awk -F/ '{print $2}' | sed 's/[^a-zA-Z0-9._-]/-/g')
 env=$3
