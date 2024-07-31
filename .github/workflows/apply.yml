@@ -33,6 +33,7 @@ jobs:
 
     - name: Modify terraform.tfvars using script
       run: |
+        ls
         chmod +x ./modify_tfvars.sh
         ./modify_tfvars.sh ${GITHUB_REF##*/} ${GITHUB_REPOSITORY##*/} dev
 
