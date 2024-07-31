@@ -58,8 +58,9 @@ resource "aws_iam_role_policy_attachment" "codepipeline_policy" {
 
 resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_policy" {
   role       = aws_iam_role.codepipeline_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipelineFullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
 }
+
 
 resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_startbuild_policy" {
   role       = aws_iam_role.codepipeline_role.name
