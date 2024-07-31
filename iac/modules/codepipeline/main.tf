@@ -39,10 +39,50 @@ resource "aws_codepipeline" "etl_pipeline" {
       output_artifacts = ["build_output"]
       version          = "1"
 
-      configuration = {
+     configuration = {
         ProjectName = var.codebuild_project
+        EnvironmentVariables = jsonencode([
+          {
+            name  = "GIT_BRANCH"
+            value = "#{SourceVariables.BranchName}"
+          },
+          {
+            name  = "GIT_COMMIT"
+            value = "#{SourceVariables.CommitId}"
+          }
+        ])
       }
     }
   }
 }
+# Webhook to trigger pipeline on GitHub commits
+resource "aws_codepipeline_webhook" "github_webhook" {
+  name            = "github-webhook"
+  target_action   = "Source"
+  target_pipeline = aws_codepipeline.etl_pipeline.name
+  authentication  = "GITHUB_HMAC"
 
+  authentication_configuration {
+    secret_token = var.github_token
+  }
+
+  filter {
+    json_path    = "$.ref"
+    match_equals = "refs/heads/master"
+  }
+
+  filter {
+    json_path    = "$.ref"
+    match_equals = "refs/heads/develop"
+  }
+
+  filter {
+    json_path    = "$.ref"
+    match_equals = "refs/heads/feature/*"
+  }
+  filter {
+    json_path    = "$.ref"
+    match_equals = "refs/heads/training/*"
+  }
+  register_to_pipeline = true
+}

@@ -19,5 +19,15 @@ variable "github_token" {
 }
 
 variable "region" {
-  default = "us-west-2"
+  default = "eu-west-1"
+}
+
+variable "branch" {
+  description = "Git branch that triggered the pipeline"
+  type        = string
+}
+
+variable "commit" {
+  description = "Git commit that triggered the pipeline"
+  type        = string
 }

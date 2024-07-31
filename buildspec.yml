@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
+
+  pre_build:
+    commands:
+      - echo "Setting up the environment..."
+      - export PYTHONPATH=$PYTHONPATH:$(pwd) # Set PYTHONPATH to include current directory
+      - echo "Environment setup complete."
+
+  build:
+    commands:
+      - echo "Running pytest tests..."
+      - pytest tests/pytest/ --junitxml=reports/results.xml --tb=short
+
+  post_build:
+    commands:
+      - echo "Build phase complete."
+
+artifacts:
+  files:
+    - reports/results.xml

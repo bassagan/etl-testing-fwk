@@ -15,6 +15,15 @@ resource "aws_codebuild_project" "etl_build" {
       name  = "AWS_DEFAULT_REGION"
       value = var.region
     }
+    environment_variable {
+      name  = "GIT_BRANCH"
+      value = "${var.branch}"
+    }
+
+    environment_variable {
+      name  = "GIT_COMMIT"
+      value = "${var.commit}"
+    }
   }
 
   source {
@@ -22,6 +31,14 @@ resource "aws_codebuild_project" "etl_build" {
     location        = "https://github.com/${var.github_owner}/${var.github_repo}.git"
     buildspec       = "buildspec.yml"
     git_clone_depth = 1
+  }
+
+  logs_config {
+    cloudwatch_logs {
+      group_name  = "/aws/codebuild/${var.github_repo}"
+      stream_name = "build-log"
+      status      = "ENABLED"
+    }
   }
 }
 
