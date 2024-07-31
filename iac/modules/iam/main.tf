@@ -61,27 +61,28 @@ resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
 }
 
-
-resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_startbuild_policy" {
-  role       = aws_iam_role.codepipeline_role.name
-  policy_arn = aws_iam_policy.codepipeline_codebuild_startbuild.arn
-}
-
-# Custom policy to allow CodePipeline to start CodeBuild projects
+# Custom policy to allow CodePipeline to start CodeBuild projects and use CodeStar connections
 resource "aws_iam_policy" "codepipeline_codebuild_startbuild" {
   name        = "CodePipelineStartBuild"
-  description = "Allows CodePipeline to start CodeBuild projects"
+  description = "Allows CodePipeline to start CodeBuild projects and use CodeStar connections"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
         Effect   = "Allow",
         Action   = [
+          "codestar-connections:UseConnection",
+          "codebuild:BatchGetBuilds",
           "codebuild:StartBuild",
-          "codebuild:BatchGetBuilds"
+          "codebuild:StopBuild",
         ],
         Resource = "*"
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_startbuild_policy" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = aws_iam_policy.codepipeline_codebuild_startbuild.arn
 }
