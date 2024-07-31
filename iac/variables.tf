@@ -41,3 +41,9 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "codepipeline_name" {
+  description = "The environment for the deployment"
+  type        = string
+  default     = "etl-testing-fwk-pipeline"
+}

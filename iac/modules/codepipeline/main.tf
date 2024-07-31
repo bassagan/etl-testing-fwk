@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "etl_pipeline" {
-  name     = "etl-pipeline"
+  name     = var.codepipeline_name
   role_arn = var.codepipeline_role
 
   artifact_store {

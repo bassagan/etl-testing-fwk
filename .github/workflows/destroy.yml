@@ -24,6 +24,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
 
+    - name: Modify terraform.tfvars using script
+      run: |
+        chmod +x ./modify_tfvars.sh
+        ./modify_tfvars.sh ${GITHUB_REF##*/} ${GITHUB_REPOSITORY##*/} dev
+
     - name: Terraform Init
       working-directory: ./iac
       run: terraform init -input=false

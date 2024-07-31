@@ -2,7 +2,11 @@ variable "codepipeline_role" {
   description = "IAM role for CodePipeline"
   type        = string
 }
-
+variable "codepipeline_name" {
+  description = "IAM role for CodePipeline"
+  type        = string
+  default     = "etl-pipeline"
+}
 variable "codebuild_project" {
   description = "CodeBuild project name"
   type        = string
