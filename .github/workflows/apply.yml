@@ -43,7 +43,7 @@ jobs:
       run: chmod +x ./scripts/modify_tfvars.sh
 
     - name: Run modify_tfvars.sh
-      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev
+      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac
 
     - name: Terraform Init
       working-directory: ./iac
