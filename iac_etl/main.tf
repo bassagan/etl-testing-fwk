@@ -1,0 +1,55 @@
+provider "aws" {
+  region = var.region
+}
+
+# Include S3 bucket module for ETL
+module "s3" {
+  source = "./modules/s3"
+
+  bucket_name = "${var.bucket_name}-${var.env}"
+  env         = var.env
+
+  tags = var.tags
+}
+
+# Include IAM role for Lambda
+module "iam" {
+  source = "./modules/iam"
+
+  env    = var.env
+  tags   = var.tags
+}
+
+# Include Lambda module for ETL processing
+module "lambda" {
+  source = "./modules/lambda"
+
+  function_name   = "${var.lambda_name}-${var.env}"
+  s3_bucket       = module.s3.bucket_name
+  lambda_package  = var.lambda_package
+  lambda_bucket   = module.s3.bucket_arn
+  lambda_role_arn = module.iam.lambda_role_arn
+  env             = var.env
+
+  tags = var.tags
+}
+
+# Include SNS module for notifications
+module "sns" {
+  source = "./modules/sns"
+  notification_email = var.notification_mail
+  env            = var.env
+
+}
+
+# Include EventBridge module for scheduling
+module "eventbridge" {
+  source               = "./modules/eventbridge"
+
+  lambda_function_arn  = module.lambda.lambda_function_arn
+  lambda_function_name = var.lambda_name
+  schedule_expression  = var.schedule_expression
+  env                  = var.env
+
+}
+
