@@ -1,4 +1,4 @@
-region       = "{region}"
+region       = "eu-west-1"
 env          = "{env}" # Could be "dev", "staging", "prod", etc.
 tags = {
   Environment = "{env}"
