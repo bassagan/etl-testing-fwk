@@ -6,7 +6,7 @@ tags = {
 }
 
 # S3 Bucket
-bucket_name = "etl-bucket-name-dev"
+bucket_name = "etl-tutorial-bucket-dev"
 
 # Lambda Function
 lambda_name    = "etl-lambda-function"
