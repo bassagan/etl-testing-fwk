@@ -6,7 +6,7 @@ provider "aws" {
 module "s3" {
   source = "./modules/s3"
 
-  bucket_name = "${var.bucket_name}-${var.env}"
+  bucket_name = var.bucket_name
   env         = var.env
 
   tags = var.tags
@@ -24,14 +24,18 @@ module "iam" {
 module "lambda" {
   source = "./modules/lambda"
 
-  function_name   = "${var.lambda_name}-${var.env}"
+  function_name   = var.lambda_name
   s3_bucket       = module.s3.bucket_name
   lambda_package  = var.lambda_package
-  lambda_bucket   = module.s3.bucket_arn
+  lambda_bucket   = var.bucket_name
   lambda_role_arn = module.iam.lambda_role_arn
   env             = var.env
 
   tags = var.tags
+    depends_on = [
+    module.s3
+  ]
+
 }
 
 # Include SNS module for notifications
@@ -50,6 +54,8 @@ module "eventbridge" {
   lambda_function_name = var.lambda_name
   schedule_expression  = var.schedule_expression
   env                  = var.env
-
+  depends_on = [
+    module.lambda
+  ]
 }
 

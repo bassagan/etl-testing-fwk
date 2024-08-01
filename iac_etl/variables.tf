@@ -47,5 +47,5 @@ variable "lambda_package" {
 
 # Include SNS module for notifications
 variable "notification_mail" {
-  default = ""
+  default = "paula.odena@gmail.com"
 }

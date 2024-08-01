@@ -6,7 +6,7 @@ tags = {
 }
 
 # S3 Bucket
-bucket_name = "etl-bucket-name"
+bucket_name = "etl-bucket-name-dev"
 
 # Lambda Function
 lambda_name    = "etl-lambda-function"
@@ -16,7 +16,7 @@ lambda_package = "lambda_package.zip" # This is the location of your Lambda pack
 lambda_role_name = "lambda-execution-role"
 
 # SNS Topic
-sns_topic_name = "etl-notifications"
+sns_topic_name = "paula.odena@gmail.com"
 
 # EventBridge Rule
 event_rule_name     = "etl-schedule-rule"

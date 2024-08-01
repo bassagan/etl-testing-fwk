@@ -14,28 +14,7 @@ resource "aws_lambda_function" "etl_function" {
   }
 
   tags = var.tags
-}
-
-resource "aws_iam_role" "lambda_execution_role" {
-  name = "lambda-execution-role-${var.env}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_s3_access" {
-  role       = aws_iam_role.lambda_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  depends_on = [var.lambda_bucket]
 }
 
 resource "aws_s3_object" "lambda_zip" {
@@ -43,4 +22,5 @@ resource "aws_s3_object" "lambda_zip" {
   key    = "${var.function_name}.zip"
   source = var.lambda_package
   etag   = filemd5(var.lambda_package)
+  depends_on = [var.lambda_bucket]
 }

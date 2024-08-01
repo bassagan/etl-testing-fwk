@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "etl_bucket" {
-  bucket = "${var.bucket_name}-${var.env}"
+  bucket = var.bucket_name
   tags = var.tags
 }
 
