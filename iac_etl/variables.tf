@@ -13,7 +13,10 @@ variable "bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
 }
-
+variable "raw_bucket_name" {
+  description = "The name of the S3 bucket for raw source ingestion"
+  type        = string
+}
 variable "lambda_name" {
   description = "The name of the Lambda function"
   type        = string
@@ -48,4 +51,15 @@ variable "lambda_package" {
 # Include SNS module for notifications
 variable "notification_mail" {
   default = "paula.odena@gmail.com"
+}
+
+variable "athena_db_name" {
+  description = "Name of the Athena database"
+  type        = string
+  default     = "etl_db"
+}
+
+variable "clean_bucket_name" {
+  description = "Name of the S3 bucket"
+  type        = string
 }

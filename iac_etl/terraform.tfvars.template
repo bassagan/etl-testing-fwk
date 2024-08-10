@@ -7,6 +7,8 @@ tags = {
 
 # S3 Bucket
 bucket_name = "etl-tutorial-bucket-dev"
+raw_bucket_name = "raw-etl-bucket-dev"
+clean_bucket_name = "clean-etl-bucket-dev"
 
 # Lambda Function
 lambda_name    = "etl-lambda-function"
@@ -21,3 +23,6 @@ sns_topic_name = "paula.odena@gmail.com"
 # EventBridge Rule
 event_rule_name     = "etl-schedule-rule"
 schedule_expression = "rate(60 minutes)" # Adjust the schedule expression as needed
+
+# Athena
+athena_db_name = "etl_clean_athena_dev"

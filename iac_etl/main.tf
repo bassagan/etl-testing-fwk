@@ -7,6 +7,8 @@ module "s3" {
   source = "./modules/s3"
 
   bucket_name = var.bucket_name
+  raw_bucket_name = var.raw_bucket_name
+  clean_bucket_name = var.clean_bucket_name
   env         = var.env
 
   tags = var.tags
@@ -59,3 +61,14 @@ module "eventbridge" {
   ]
 }
 
+module "athena" {
+  source = "./modules/athena"
+
+  athena_db_name = var.athena_db_name
+
+  bucket_name  = module.s3.clean_bucket_name
+
+  depends_on = [
+    module.s3
+  ]
+}

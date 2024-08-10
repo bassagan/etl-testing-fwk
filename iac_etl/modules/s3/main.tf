@@ -22,3 +22,12 @@ resource "aws_s3_bucket_lifecycle_configuration" "lifecycle" {
     }
   }
 }
+resource "aws_s3_bucket" "raw_bucket" {
+  bucket = var.raw_bucket_name
+  tags = var.tags
+}
+
+resource "aws_s3_bucket" "clean_bucket" {
+  bucket = var.clean_bucket_name
+  tags = var.tags
+}

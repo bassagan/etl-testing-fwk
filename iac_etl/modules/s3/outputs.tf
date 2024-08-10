@@ -5,3 +5,8 @@ output "bucket_arn" {
 output "bucket_name" {
   value = aws_s3_bucket.etl_bucket.bucket
 }
+
+output "clean_bucket_name" {
+  value = aws_s3_bucket.clean_bucket.bucket
+}
+
