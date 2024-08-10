@@ -20,6 +20,11 @@ module "iam" {
 
   env    = var.env
   tags   = var.tags
+  lambda_bucket = module.s3.bucket_name
+  depends_on = [
+    module.s3
+  ]
+
 }
 
 # Include Lambda module for ETL processing
