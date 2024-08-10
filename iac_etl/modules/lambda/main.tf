@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "etl_function" {
   function_name    = "${var.function_name}-${var.env}"
   handler          = "etl_function.lambda_handler"
-  runtime          = "python3.8"
+  runtime          = "python3.9"
   role             = var.lambda_role_arn
   s3_bucket        = var.lambda_bucket
   s3_key           = aws_s3_object.lambda_zip.key
@@ -28,7 +28,7 @@ resource "aws_s3_object" "lambda_zip" {
 resource "aws_lambda_function" "data_generator_function" {
   function_name    = "${var.data_generator_function_name}-${var.env}"
   handler          = "sample_data_generator.lambda_handler"
-  runtime          = "python3.8"
+  runtime          = "python3.9"
   role             = var.lambda_role_arn
   s3_bucket        = var.lambda_bucket
   s3_key           = "lambda_generator_package.zip"

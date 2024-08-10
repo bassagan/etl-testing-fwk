@@ -31,7 +31,7 @@ jobs:
 
     - name: Package Lambda Function
       run: |
-        zip -r lambda_generator_package.zip .
+        zip -r ../../lambda_generator_package.zip .
       working-directory: iac_etl/lambda_generator_package
 
     - name: Set up Terraform
@@ -59,12 +59,13 @@ jobs:
     - name: Run modify_tfvars.sh
       run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_etl
 
+    - name: Run ls
+      run: ls
+
     - name: Upload Lambda Package to S3
       run: |
         aws s3 cp lambda_generator_package.zip s3://etl-tutorial-bucket-dev/lambda_generator_package.zip
 
-    - name: Run ls
-      run: ls
 
     - name: Terraform Init
       working-directory: ./iac_etl
