@@ -41,6 +41,6 @@ jobs:
       working-directory: ./iac_etl
       run: terraform init -input=false
 
-    - name: Terraform Destroy
+    - name: Terraform Destroy ETL
       working-directory: ./iac_etl
       run: terraform destroy -auto-approve
