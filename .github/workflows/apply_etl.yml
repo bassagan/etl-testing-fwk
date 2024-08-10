@@ -31,18 +31,18 @@ jobs:
 
     - name: Package Lambda Generator Function
       run: |
-        zip -r lambda_generator_package.zip .
+        zip -r ../../lambda_generator_package.zip .
       working-directory: iac_etl/lambda_generator_package
 
     - name: Install dependencies for Lambda ETL
       run: |
         mkdir python
         pip install -r requirements.txt -t python/
-        zip -r lambda_layer.zip python
+        zip -r ../../lambda_layer.zip python
 
     - name: Package Lambda ETL Function
       run: |
-        zip -r lambda_etl.zip .
+        zip -r ../../lambda_etl.zip .
       working-directory: iac_etl/lambda_etl
 
     - name: Set up Terraform
