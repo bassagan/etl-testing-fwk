@@ -37,13 +37,18 @@ jobs:
     - name: Install dependencies for Lambda ETL
       run: |
         mkdir python
-        pip install -r requirements.txt -t python/
-        zip -r ../../lambda_layer.zip python
+        pip install -r iac_etl/lambda_etl/requirements.txt -t iac_etl/lambda_etl_dependencies
+        
 
     - name: Package Lambda ETL Function
       run: |
         zip -r ../../lambda_etl.zip .
       working-directory: iac_etl/lambda_etl
+
+    - name: Package Lambda ETL Function Dependencies
+      run: |
+        zip -r ../../lambda_layer.zip .
+      working-directory: iac_etl/lambda_etl_dependencies
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
