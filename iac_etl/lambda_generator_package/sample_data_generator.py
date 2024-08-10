@@ -49,8 +49,8 @@ def save_to_s3(bucket_name, key, data):
 def lambda_handler(event, context):
     """AWS Lambda handler"""
     # Parameters
-    num_records = random.randint(10, 100)  # Generate between 10 and 100 records
-    bucket_name = event['s3_bucket']
+    bucket_name = event.get('s3_bucket', 'default-bucket-name')
+    num_records = event.get('num_records', random.randint(10, 100))  # Generate between 10 and 100 records
 
     # Generate data for two sources
     source_a_data = generate_source_data(num_records)

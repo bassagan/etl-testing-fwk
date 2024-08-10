@@ -32,6 +32,7 @@ resource "aws_lambda_function" "data_generator_function" {
   role             = var.lambda_role_arn
   s3_bucket        = var.lambda_bucket
   s3_key           = "lambda_generator_package.zip"
+  memory_size = 256
   environment {
     variables = {
       S3_BUCKET = var.lambda_bucket
