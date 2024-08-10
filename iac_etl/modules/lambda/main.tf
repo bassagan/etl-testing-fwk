@@ -31,8 +31,8 @@ resource "aws_lambda_function" "data_generator_function" {
   runtime          = "python3.8"
   role             = var.lambda_role_arn
   s3_bucket        = var.lambda_bucket
-  s3_key           = aws_s3_object.lambda_zip.key
-  source_code_hash = filebase64sha256(var.lambda_package)
+  s3_key           = "lambda_generator_package.zip"
+  source_code_hash = filebase64sha256(var.lambda_package_data_generator)
 
   environment {
     variables = {
@@ -44,13 +44,7 @@ resource "aws_lambda_function" "data_generator_function" {
   depends_on = [var.lambda_bucket]
 }
 
-resource "aws_s3_object" "data_generator_lambda_zip" {
-  bucket = var.lambda_bucket
-  key    = "${var.data_generator_function_name}.zip"
-  source = var.lambda_package_data_generator
-  etag   = filemd5(var.lambda_package_data_generator)
-  depends_on = [var.lambda_bucket]
-}
+
 
 resource "aws_cloudwatch_event_rule" "invoke_data_generator" {
   name                = "invoke-data-generator"

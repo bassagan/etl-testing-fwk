@@ -22,22 +22,17 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.9'
 
     - name: Install dependencies
       run: |
+        python -m pip install --upgrade pip
         pip install -r iac_etl/lambda_generator_package/requirements.txt
 
     - name: Package Lambda Function
       run: |
-        zip -r ../../lambda_generator_package.zip .
+        zip -r lambda_generator_package.zip .
       working-directory: iac_etl/lambda_generator_package
-
-    - name: Upload Lambda Package Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: lambda-package
-        path: lambda_package.zip
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
@@ -63,6 +58,10 @@ jobs:
 
     - name: Run modify_tfvars.sh
       run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_etl
+
+    - name: Upload Lambda Package to S3
+      run: |
+        aws s3 cp lambda_generator_package.zip s3://etl-tutorial-bucket-dev/lambda_generator_package.zip
 
     - name: Run ls
       run: ls
