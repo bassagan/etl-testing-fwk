@@ -30,6 +30,7 @@ module "lambda" {
   s3_bucket       = module.s3.bucket_name
   lambda_package  = var.lambda_package
   lambda_bucket   = var.bucket_name
+  data_generator_function_name = var.data_generator_function_name
   lambda_role_arn = module.iam.lambda_role_arn
   env             = var.env
 
@@ -38,6 +39,7 @@ module "lambda" {
     module.s3
   ]
 
+  lambda_package_data_generator = var.lambda_package_data_generator
 }
 
 # Include SNS module for notifications

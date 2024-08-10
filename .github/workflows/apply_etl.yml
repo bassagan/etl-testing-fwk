@@ -19,6 +19,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        pip install -r iac_etl/lambda_generator_package/requirements.txt
+
+    - name: Package Lambda Function
+      run: |
+        cd iac_etl/scripts
+        zip -r ../../lambda_generator_package.zip .
+      working-directory: iac_etl/lambda_generator_package
+
+    - name: Upload Lambda Package Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: lambda-package
+        path: lambda_package.zip
+
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
       with:
