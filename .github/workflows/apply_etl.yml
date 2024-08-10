@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies for Lambda Generator
       run: |
         python -m pip install --upgrade pip
-        pip install -r iac_etl/lambda_generator_package/requirements.txt -t iac_etl/lambda_generator_package
+        pip install --no-cache-dir --no-deps -r iac_etl/lambda_generator_package/requirements.txt -t iac_etl/lambda_generator_package
 
     - name: Package Lambda Generator Function
       run: |
@@ -37,7 +37,7 @@ jobs:
     - name: Install dependencies for Lambda ETL
       run: |
         mkdir python
-        pip install -r iac_etl/lambda_etl/requirements.txt -t iac_etl/lambda_etl_dependencies
+        pip install --no-cache-dir --no-deps -r iac_etl/lambda_etl/requirements.txt -t iac_etl/lambda_etl_dependencies
         
 
     - name: Package Lambda ETL Function
