@@ -10,7 +10,9 @@ def read_json_from_s3(s3_client, bucket_name, key):
     """Read a JSON file from S3 and return as a DataFrame."""
     obj = s3_client.get_object(Bucket=bucket_name, Key=key)
     data = json.loads(obj['Body'].read().decode('utf-8'))
-    return pd.DataFrame(data)
+    # Normalize JSON data to handle nested dictionaries
+    df = pd.json_normalize(data)
+    return df
 
 
 def write_parquet_to_s3(s3_client, df, bucket_name, key):
