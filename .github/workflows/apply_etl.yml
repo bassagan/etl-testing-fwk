@@ -24,10 +24,10 @@ jobs:
       with:
         python-version: '3.9'
 
-    - name: Install dependencies
+    - name: Install dependencies for Lambda
       run: |
         python -m pip install --upgrade pip
-        pip install -r iac_etl/lambda_generator_package/requirements.txt
+        pip install -r iac_etl/lambda_generator_package/requirements.txt -t iac_etl/lambda_generator_package
 
     - name: Package Lambda Function
       run: |
