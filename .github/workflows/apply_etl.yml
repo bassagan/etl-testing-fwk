@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir python
         pip install -r requirements.txt -t python/
-        zip -r ../../lambda_layer.zip python
+        zip -r ../../../lambda_layer.zip python
 
     - name: Package Lambda ETL Function
       run: |
