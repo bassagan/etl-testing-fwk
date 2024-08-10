@@ -31,17 +31,18 @@ jobs:
 
     - name: Package Lambda Generator Function
       run: |
-        zip -r ../../lambda_generator_package.zip .
+        zip -r lambda_generator_package.zip .
       working-directory: iac_etl/lambda_generator_package
 
     - name: Install dependencies for Lambda ETL
       run: |
-        python -m pip install --upgrade pip
-        pip install -r iac_etl/lambda_etl/requirements.txt -t iac_etl/lambda_etl
+        mkdir python
+        pip install -r requirements.txt -t python/
+        zip -r lambda_layer.zip python
 
     - name: Package Lambda ETL Function
       run: |
-        zip -r ../../lambda_etl.zip .
+        zip -r lambda_etl.zip .
       working-directory: iac_etl/lambda_etl
 
     - name: Set up Terraform
@@ -72,12 +73,11 @@ jobs:
     - name: Run ls
       run: ls
 
-    - name: Upload Lambda Packages to S3
+    - name: Upload Lambda Packages and Layer to S3
       run: |
         aws s3 cp lambda_generator_package.zip s3://etl-tutorial-bucket-dev/lambda_generator_package.zip
         aws s3 cp lambda_etl.zip s3://etl-tutorial-bucket-dev/lambda_etl.zip
-
-
+        aws s3 cp lambda_layer.zip s3://etl-tutorial-bucket-dev/lambda_layer.zip
 
     - name: Terraform Init
       working-directory: ./iac_etl
