@@ -36,10 +36,7 @@ resource "aws_iam_role_policy" "lambda_s3_policy" {
           "s3:GetObject",
           "s3:ListBucket"
         ],
-        Resource = [
-          "arn:aws:s3:::${var.lambda_bucket}",
-          "arn:aws:s3:::${var.lambda_bucket}/*"
-        ]
+        Resource = "*"
       }
     ]
   })
