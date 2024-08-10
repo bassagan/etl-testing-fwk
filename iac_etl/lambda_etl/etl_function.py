@@ -1,88 +1,73 @@
 import json
-import boto3
-import os
 import pandas as pd
-from io import StringIO
+import boto3
+import io
+from pyarrow import parquet as pq
 from datetime import datetime
 
-# Initialize the S3 client
-s3_client = boto3.client('s3')
 
-# Initialize the SNS client
-sns_client = boto3.client('sns')
+def read_json_from_s3(s3_client, bucket_name, key):
+    """Read a JSON file from S3 and return as a DataFrame."""
+    obj = s3_client.get_object(Bucket=bucket_name, Key=key)
+    data = json.loads(obj['Body'].read().decode('utf-8'))
+    return pd.DataFrame(data)
 
-# Initialize the DynamoDB client for historization
-dynamodb = boto3.resource('dynamodb')
-table_name = os.environ.get('HISTORICAL_TABLE_NAME')
+
+def write_parquet_to_s3(s3_client, df, bucket_name, key):
+    """Write a DataFrame as a Parquet file to S3."""
+    buffer = io.BytesIO()
+    df.to_parquet(buffer, index=False, engine='pyarrow')
+    s3_client.put_object(Bucket=bucket_name, Key=key, Body=buffer.getvalue())
+
 
 def lambda_handler(event, context):
-    # Get the bucket and object key from the event
-    bucket_name = event['Records'][0]['s3']['bucket']['name']
-    object_key = event['Records'][0]['s3']['object']['key']
+    """AWS Lambda handler."""
+    s3_client = boto3.client('s3')
 
-    try:
-        # Download the file from S3
-        response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
-        content = response['Body'].read().decode('utf-8')
+    source_bucket = event.get('source_bucket', 'raw-etl-bucket-dev')
+    destination_bucket = event.get('destination_bucket', 'clean-etl-bucket-dev')
+    source_key_prefix = event.get('source_key_prefix', 'source_a/')
+    destination_key_prefix = event.get('destination_key_prefix', 'curated_data/')
 
-        # Process the file (for example, parse JSON or CSV)
-        processed_data = process_data(content)
+    # List objects in the source S3 bucket
+    response = s3_client.list_objects_v2(Bucket=source_bucket, Prefix=source_key_prefix)
 
-        # Store the historical data
-        store_historical_data(processed_data, object_key)
+    if 'Contents' not in response:
+        return {
+            'statusCode': 404,
+            'body': json.dumps("No files found in the specified S3 prefix.")
+        }
 
-        # Send a notification via SNS
-        sns_topic_arn = os.environ['SNS_TOPIC_ARN']
-        sns_client.publish(
-            TopicArn=sns_topic_arn,
-            Message=f'Processed and stored data from {object_key} in {bucket_name}: {processed_data}',
-            Subject='ETL Process Notification'
-        )
+    # Process each file
+    data_frames = []
+    for obj in response['Contents']:
+        df = read_json_from_s3(s3_client, source_bucket, obj['Key'])
+        data_frames.append(df)
+
+    # Concatenate all data into a single DataFrame
+    if data_frames:
+        df_combined = pd.concat(data_frames, ignore_index=True)
+
+        # Remove duplicates
+        df_cleaned = df_combined.drop_duplicates()
+
+        # Generate the destination key
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        destination_key = f"{destination_key_prefix}curated_data_{timestamp}.parquet"
+
+        # Write the cleaned DataFrame to Parquet and upload to S3
+        write_parquet_to_s3(s3_client, df_cleaned, destination_bucket, destination_key)
 
         return {
             'statusCode': 200,
-            'body': json.dumps('Processing and historization complete')
+            'body': json.dumps(f"Data successfully transformed and saved to {destination_key}")
+        }
+    else:
+        return {
+            'statusCode': 404,
+            'body': json.dumps("No data files found to process.")
         }
 
-    except Exception as e:
-        print(f"Error processing file {object_key} from bucket {bucket_name}: {str(e)}")
-        raise e
 
-def process_data(data):
-    """
-    Apply business rules to transform the data using Pandas.
-    """
-    # Convert the CSV data into a Pandas DataFrame
-    df = pd.read_csv(StringIO(data))
-
-    # Example transformations:
-    # 1. Convert the 'name' column to uppercase
-    df['name'] = df['name'].str.upper()
-
-    # 2. Apply a discount to 'price' if it exceeds a threshold
-    discount_threshold = 100
-    discount_rate = 0.1
-    df['price'] = df['price'].apply(lambda x: x * (1 - discount_rate) if x > discount_threshold else x)
-
-    # 3. Add a timestamp column for when the data was processed
-    df['timestamp'] = datetime.utcnow().isoformat()
-
-    # 4. Convert 'status' to a boolean 'is_active' column
-    df['is_active'] = df['status'].apply(lambda x: True if x == 'active' else False)
-
-    # Convert the DataFrame back to JSON
-    return df.to_dict(orient='records')
-
-def store_historical_data(processed_data, object_key):
-    """
-    Store the processed data in DynamoDB for historization.
-    """
-    table = dynamodb.Table(table_name)
-
-    for record in processed_data:
-        # Add the S3 object key and processing time for historization
-        record['s3_object_key'] = object_key
-        record['processed_at'] = datetime.utcnow().isoformat()
-
-        # Store the record in DynamoDB
-        table.put_item(Item=record)
+if __name__ == "__main__":
+    lambda_handler(None, None)
