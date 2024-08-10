@@ -1,6 +1,7 @@
 resource "aws_lambda_layer_version" "etl_layer" {
-  filename         = "s3://etl-tutorial-bucket-dev/lambda_layer.zip"
-  layer_name       = "etl_layer"
+  s3_bucket         = var.lambda_bucket
+  s3_key            = var.lambda_layer_s3_key
+  layer_name        = "etl_layer"
   compatible_runtimes = ["python3.9"]
 }
 

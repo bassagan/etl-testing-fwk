@@ -45,3 +45,7 @@ variable "data_generator_function_name" {
   type        = string
   default     = "data-generator-function"
 }
+variable "lambda_layer_s3_key" {
+  description = "The S3 key for the Lambda layer ZIP file"
+  default     = "lambda_layer.zip"
+}
