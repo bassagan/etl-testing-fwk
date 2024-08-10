@@ -72,9 +72,11 @@ jobs:
     - name: Run ls
       run: ls
 
-    - name: Upload Lambda Package to S3
+    - name: Upload Lambda Packages to S3
       run: |
         aws s3 cp lambda_generator_package.zip s3://etl-tutorial-bucket-dev/lambda_generator_package.zip
+        aws s3 cp lambda_etl.zip s3://etl-tutorial-bucket-dev/lambda_etl.zip
+
 
 
     - name: Terraform Init
