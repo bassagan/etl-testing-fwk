@@ -1,10 +1,3 @@
-resource "aws_lambda_layer_version" "etl_layer" {
-  s3_bucket         = var.lambda_bucket
-  s3_key            = var.lambda_layer_s3_key
-  layer_name        = "etl_layer"
-  compatible_runtimes = ["python3.9"]
-}
-
 resource "aws_lambda_function" "etl_function" {
   function_name    = "${var.function_name}-${var.env}"
   handler          = "etl_function.lambda_handler"
@@ -13,9 +6,6 @@ resource "aws_lambda_function" "etl_function" {
   s3_bucket        = var.lambda_bucket
   s3_key           = "lambda_etl.zip"
   memory_size = 256
-  layers = [
-    aws_lambda_layer_version.etl_layer.arn,
-  ]
   environment {
     variables = {
       S3_BUCKET = var.s3_bucket

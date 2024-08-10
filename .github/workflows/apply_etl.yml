@@ -36,19 +36,14 @@ jobs:
 
     - name: Install dependencies for Lambda ETL
       run: |
-        mkdir python
-        pip install --no-cache-dir --no-deps -r iac_etl/lambda_etl/requirements.txt -t iac_etl/lambda_etl_dependencies
+        python -m pip install --upgrade pip
+        pip install --no-cache-dir --no-deps -r iac_etl/lambda_etl/requirements.txt -t iac_etl/lambda_etl
         
 
     - name: Package Lambda ETL Function
       run: |
         zip -r ../../lambda_etl.zip .
       working-directory: iac_etl/lambda_etl
-
-    - name: Package Lambda ETL Function Dependencies
-      run: |
-        zip -r ../../lambda_layer.zip .
-      working-directory: iac_etl/lambda_etl_dependencies
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
@@ -85,7 +80,6 @@ jobs:
       run: |
         aws s3 cp lambda_generator_package.zip s3://etl-tutorial-bucket-dev/lambda_generator_package.zip
         aws s3 cp lambda_etl.zip s3://etl-tutorial-bucket-dev/lambda_etl.zip
-        aws s3 cp lambda_layer.zip s3://etl-tutorial-bucket-dev/lambda_layer.zip
 
     - name: Terraform Init
       working-directory: ./iac_etl
