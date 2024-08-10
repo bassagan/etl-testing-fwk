@@ -73,8 +73,6 @@ jobs:
     - name: Run ls
       run: |
         ls
-        cd python
-        ls
 
     - name: Upload Lambda Packages and Layer to S3
       run: |
