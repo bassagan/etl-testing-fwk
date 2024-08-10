@@ -47,7 +47,7 @@ resource "aws_lambda_function" "data_generator_function" {
 resource "aws_s3_object" "data_generator_lambda_zip" {
   bucket = var.lambda_bucket
   key    = "${var.data_generator_function_name}.zip"
-  source = var.lambda_package
+  source = var.lambda_package_data_generator
   etag   = filemd5(var.lambda_package)
   depends_on = [var.lambda_bucket]
 }
