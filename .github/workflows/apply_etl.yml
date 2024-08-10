@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir python
         pip install -r requirements.txt -t python/
-        zip -r ../../../lambda_layer.zip python
+        zip -r ../../lambda_layer.zip python
 
     - name: Package Lambda ETL Function
       run: |
@@ -71,7 +71,10 @@ jobs:
       run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_etl
 
     - name: Run ls
-      run: ls
+      run: |
+        ls
+        cd python
+        ls
 
     - name: Upload Lambda Packages and Layer to S3
       run: |
