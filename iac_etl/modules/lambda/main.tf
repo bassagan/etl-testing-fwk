@@ -32,8 +32,6 @@ resource "aws_lambda_function" "data_generator_function" {
   role             = var.lambda_role_arn
   s3_bucket        = var.lambda_bucket
   s3_key           = "lambda_generator_package.zip"
-  source_code_hash = filebase64sha256(var.lambda_package_data_generator)
-
   environment {
     variables = {
       S3_BUCKET = var.lambda_bucket
