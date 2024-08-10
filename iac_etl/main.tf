@@ -51,7 +51,7 @@ module "eventbridge" {
   source               = "./modules/eventbridge"
 
   lambda_function_arn  = module.lambda.lambda_function_arn
-  lambda_function_name = var.lambda_name
+  lambda_function_name = module.lambda.lambda_function_name
   schedule_expression  = var.schedule_expression
   env                  = var.env
   depends_on = [
