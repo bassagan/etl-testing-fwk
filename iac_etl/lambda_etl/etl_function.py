@@ -2,6 +2,7 @@ import boto3
 from datetime import datetime
 import pandas as pd
 import json
+import re
 from data_reader import DataReader
 from data_cleaner import DataCleaner
 from scd_historization import SCDHistorization

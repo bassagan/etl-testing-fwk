@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import boto3
 import io
+import re
 
 class DataReader:
     def __init__(self, s3_client, bucket_name, last_processed_timestamp_key):
