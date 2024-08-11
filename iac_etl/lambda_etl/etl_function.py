@@ -64,7 +64,7 @@ def lambda_handler(event, context):
         df_patients = data_cleaner_patients.remove_duplicates(df_patients)
 
         # Retrieve existing patient data for SCD Type 2
-        existing_patients_key = 'cleaned/patients/latest.parquet'
+        existing_patients_key = 'cleaned/patients/latest/patients_latest.parquet'
         try:
             df_existing_patients = data_reader.read_parquet_from_s3(existing_patients_key)
         except:
@@ -81,6 +81,9 @@ def lambda_handler(event, context):
             partition_key = f'cleaned/patients/year={year}/month={month}/patients_{timestamp}.parquet'
             data_writer.write_parquet_to_s3(group, partition_key)
 
+        # Write the latest patients data to a "latest" file
+        data_writer.write_parquet_to_s3(df_patients, existing_patients_key)
+
         # Update the last processed timestamp to the most recent file processed
         latest_timestamp = max(re.search(r'(\d{14})', file).group(1) for file in patient_files)
         data_reader.update_last_processed_timestamp(latest_timestamp)
@@ -94,7 +97,7 @@ def lambda_handler(event, context):
         df_visits = data_cleaner_visits.remove_duplicates(df_visits)
 
         # Retrieve existing visit data for SCD Type 2
-        existing_visits_key = 'cleaned/visits/latest.parquet'
+        existing_visits_key = 'cleaned/visits/latest/visits_latest.parquet'
         try:
             df_existing_visits = data_reader.read_parquet_from_s3(existing_visits_key)
         except:
@@ -110,6 +113,9 @@ def lambda_handler(event, context):
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
             partition_key = f'cleaned/visits/year={year}/month={month}/visits_{timestamp}.parquet'
             data_writer.write_parquet_to_s3(group, partition_key)
+
+        # Write the latest visits data to a "latest" file
+        data_writer.write_parquet_to_s3(df_visits, existing_visits_key)
 
         # Update the last processed timestamp to the most recent file processed
         latest_timestamp = max(re.search(r'(\d{14})', file).group(1) for file in visit_files)
