@@ -8,6 +8,10 @@ from data_cleaner import DataCleaner
 from scd_historization import SCDHistorization
 from data_writer import DataWriter
 
+def normalize_month(month):
+    """Ensure month is always in MM format."""
+    return f'{int(month):02d}'
+
 def lambda_handler(event, context):
     s3_client = boto3.client('s3')
 
@@ -74,7 +78,7 @@ def lambda_handler(event, context):
 
         # Partition patients data by year and month of birth
         df_patients['year_of_birth'] = df_patients['date_of_birth'].dt.year
-        df_patients['month_of_birth'] = df_patients['date_of_birth'].dt.month
+        df_patients['month_of_birth'] = df_patients['date_of_birth'].dt.month.apply(normalize_month)
 
         for (year, month), group in df_patients.groupby(['year_of_birth', 'month_of_birth']):
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -107,7 +111,7 @@ def lambda_handler(event, context):
 
         # Partition visits data by year and month of appointment
         df_visits['year'] = df_visits['appointment_date'].dt.year
-        df_visits['month'] = df_visits['appointment_date'].dt.month
+        df_visits['month'] = df_visits['appointment_date'].dt.month.apply(normalize_month)
 
         for (year, month), group in df_visits.groupby(['year', 'month']):
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
