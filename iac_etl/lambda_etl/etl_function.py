@@ -10,9 +10,10 @@ from data_writer import DataWriter
 def lambda_handler(event, context):
     s3_client = boto3.client('s3')
 
-    # Define the source and destination buckets
+    # Define the source and destination buckets and the key to store the last processed timestamp
     source_bucket = event.get('source_bucket', 'raw-etl-bucket-dev')
     destination_bucket = event.get('destination_bucket', 'clean-etl-bucket-dev')
+    last_processed_timestamp_key = 'last-processed-timestamp.txt'
 
     # Define schema and keys for patients and visits
     patients_schema = {
@@ -46,7 +47,7 @@ def lambda_handler(event, context):
     visits_keys = ['appointment_id', 'patient_id']
 
     # Instantiate the classes
-    data_reader = DataReader(s3_client, source_bucket)
+    data_reader = DataReader(s3_client, source_bucket, last_processed_timestamp_key)
     data_cleaner_patients = DataCleaner(patients_schema)
     data_cleaner_visits = DataCleaner(visits_schema)
     scd_patients = SCDHistorization(patients_keys)
@@ -54,7 +55,7 @@ def lambda_handler(event, context):
     data_writer = DataWriter(s3_client, destination_bucket)
 
     # Process patients data
-    patient_files = data_reader.list_files('patients/')
+    patient_files = data_reader.list_unprocessed_files('patients/')
     patients_data_frames = [data_reader.read_json_from_s3(file) for file in patient_files]
     if patients_data_frames:
         df_patients = pd.concat(patients_data_frames, ignore_index=True)
@@ -76,8 +77,12 @@ def lambda_handler(event, context):
         data_writer.write_parquet_to_s3(df_patients, patients_key)
         data_writer.write_parquet_to_s3(df_patients, existing_patients_key)
 
+        # Update the last processed timestamp to the most recent file processed
+        latest_timestamp = max(re.search(r'(\d{14})', file).group(1) for file in patient_files)
+        data_reader.update_last_processed_timestamp(latest_timestamp)
+
     # Process visits data
-    visit_files = data_reader.list_files('visits/')
+    visit_files = data_reader.list_unprocessed_files('visits/')
     visits_data_frames = [data_reader.read_json_from_s3(file) for file in visit_files]
     if visits_data_frames:
         df_visits = pd.concat(visits_data_frames, ignore_index=True)
@@ -97,6 +102,10 @@ def lambda_handler(event, context):
         visits_key = f'cleaned/visits/visits_{timestamp}.parquet'
         data_writer.write_parquet_to_s3(df_visits, visits_key)
         data_writer.write_parquet_to_s3(df_visits, existing_visits_key)
+
+        # Update the last processed timestamp to the most recent file processed
+        latest_timestamp = max(re.search(r'(\d{14})', file).group(1) for file in visit_files)
+        data_reader.update_last_processed_timestamp(latest_timestamp)
 
     return {
         'statusCode': 200,
