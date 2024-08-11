@@ -6,13 +6,15 @@ import faker
 from medical_provider import MedicalProvider
 
 class DataGenerator:
-    def __init__(self, bucket_name, s3_client, patients_file, visits_file):
+    def __init__(self, bucket_name, s3_client, patients_file, visits_file, latest_patients_prefix, latest_visits_prefix):
         self.fake = faker.Faker()
         self.fake.add_provider(MedicalProvider)
         self.bucket_name = bucket_name
         self.s3_client = s3_client
         self.patients_file = patients_file
         self.visits_file = visits_file
+        self.latest_patients_prefix = latest_patients_prefix
+        self.latest_visits_prefix = latest_visits_prefix
         self.patients = []
         self.visits = []
 
@@ -27,6 +29,14 @@ class DataGenerator:
             return json.loads(obj['Body'].read().decode('utf-8'))
         except self.s3_client.exceptions.NoSuchKey:
             return None
+
+    def get_latest_file(self, prefix):
+        """Gets the latest file from the specified S3 prefix."""
+        response = self.s3_client.list_objects_v2(Bucket=self.bucket_name, Prefix=prefix)
+        if 'Contents' in response:
+            latest_file = max(response['Contents'], key=lambda x: x['LastModified'])
+            return latest_file['Key']
+        return None
 
     def generate_new_patients(self, num_patients):
         new_patients = [{
@@ -55,8 +65,7 @@ class DataGenerator:
                     "patient_id": patient['patient_id'],
                     "appointment_date": self.fake.date_time_this_year().isoformat(),
                     "doctor": self.fake.name(),
-                    "department": random.choice(
-                        ['Cardiology', 'Neurology', 'Oncology', 'Pediatrics', 'General Medicine']),
+                    "department": random.choice(['Cardiology', 'Neurology', 'Oncology', 'Pediatrics', 'General Medicine']),
                     "purpose": random.choice(['Routine Checkup', 'Follow-up', 'Consultation', 'Specialist Referral']),
                     "status": random.choice(['Scheduled', 'Completed', 'Cancelled']),
                     "diagnosis": None,
@@ -68,8 +77,14 @@ class DataGenerator:
                 self.visits.append(visit)
 
     def load_existing_data(self):
-        self.patients = self.load_from_s3(self.patients_file) or []
-        self.visits = self.load_from_s3(self.visits_file) or []
+        """Loads the most recent patient and visit data from S3."""
+        latest_patients_file = self.get_latest_file(self.latest_patients_prefix)
+        latest_visits_file = self.get_latest_file(self.latest_visits_prefix)
+
+        if latest_patients_file:
+            self.patients = self.load_from_s3(latest_patients_file) or []
+        if latest_visits_file:
+            self.visits = self.load_from_s3(latest_visits_file) or []
 
     def update_patient_record(self, patient):
         if random.random() < 0.3:  # 30% chance to update the patient's address
