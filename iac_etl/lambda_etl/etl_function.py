@@ -72,11 +72,14 @@ def lambda_handler(event, context):
 
         df_patients = scd_patients.apply_scd_type_2(df_patients, df_existing_patients)
 
-        # Write cleaned patients data to S3
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        patients_key = f'cleaned/patients/patients_{timestamp}.parquet'
-        data_writer.write_parquet_to_s3(df_patients, patients_key)
-        data_writer.write_parquet_to_s3(df_patients, existing_patients_key)
+        # Partition patients data by year and month of birth
+        df_patients['year_of_birth'] = df_patients['date_of_birth'].dt.year
+        df_patients['month_of_birth'] = df_patients['date_of_birth'].dt.month
+
+        for (year, month), group in df_patients.groupby(['year_of_birth', 'month_of_birth']):
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            partition_key = f'cleaned/patients/year={year}/month={month}/patients_{timestamp}.parquet'
+            data_writer.write_parquet_to_s3(group, partition_key)
 
         # Update the last processed timestamp to the most recent file processed
         latest_timestamp = max(re.search(r'(\d{14})', file).group(1) for file in patient_files)
@@ -99,10 +102,14 @@ def lambda_handler(event, context):
 
         df_visits = scd_visits.apply_scd_type_2(df_visits, df_existing_visits)
 
-        # Write cleaned visits data to S3
-        visits_key = f'cleaned/visits/visits_{timestamp}.parquet'
-        data_writer.write_parquet_to_s3(df_visits, visits_key)
-        data_writer.write_parquet_to_s3(df_visits, existing_visits_key)
+        # Partition visits data by year and month of appointment
+        df_visits['year'] = df_visits['appointment_date'].dt.year
+        df_visits['month'] = df_visits['appointment_date'].dt.month
+
+        for (year, month), group in df_visits.groupby(['year', 'month']):
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            partition_key = f'cleaned/visits/year={year}/month={month}/visits_{timestamp}.parquet'
+            data_writer.write_parquet_to_s3(group, partition_key)
 
         # Update the last processed timestamp to the most recent file processed
         latest_timestamp = max(re.search(r'(\d{14})', file).group(1) for file in visit_files)

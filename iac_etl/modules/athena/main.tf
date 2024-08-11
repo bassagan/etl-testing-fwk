@@ -117,7 +117,18 @@ resource "aws_glue_catalog_table" "patients_table" {
       serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
     }
   }
+
+  partition_keys {
+    name = "year_of_birth"
+    type = "int"
+  }
+
+  partition_keys {
+    name = "month_of_birth"
+    type = "int"
+  }
 }
+
 
 resource "aws_glue_catalog_table" "visits_table" {
   name          = "visits"
@@ -210,4 +221,15 @@ resource "aws_glue_catalog_table" "visits_table" {
       serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
     }
   }
+
+  partition_keys {
+    name = "year"
+    type = "int"
+  }
+
+  partition_keys {
+    name = "month"
+    type = "int"
+  }
 }
+
