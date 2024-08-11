@@ -21,6 +21,11 @@ module "iam" {
   env    = var.env
   tags   = var.tags
   lambda_bucket = module.s3.bucket_name
+  clean_bucket_name = module.s3.clean_bucket_name
+  raw_bucket_name = module.s3.raw_bucket_name
+  athena_result_bucket_name = module.s3.clean_bucket_name
+  query_input_bucket_name =  module.s3.clean_bucket_name
+  region = "eu-west-1"
   depends_on = [
     module.s3
   ]

@@ -30,4 +30,30 @@ resource "aws_s3_bucket" "raw_bucket" {
 resource "aws_s3_bucket" "clean_bucket" {
   bucket = var.clean_bucket_name
   tags = var.tags
+
+}
+
+resource "aws_s3_bucket_policy" "clean_bucket_policy" {
+  bucket = aws_s3_bucket.clean_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "athena.amazonaws.com"
+        },
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.clean_bucket.id}",
+          "arn:aws:s3:::${aws_s3_bucket.clean_bucket.id}/*"
+        ]
+      }
+    ]
+  })
 }
