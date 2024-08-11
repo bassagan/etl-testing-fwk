@@ -1,6 +1,6 @@
 resource "aws_athena_database" "etl_db" {
   name   = var.athena_db_name
-  bucket = var.bucket_name
+  bucket = var.clean_bucket_name
 
 
 }
@@ -14,7 +14,7 @@ resource "aws_athena_workgroup" "etl_workgroup" {
     enforce_workgroup_configuration = true
 
     result_configuration {
-      output_location = "s3://${var.bucket_name}/athena-results/"
+      output_location = "s3://${var.clean_bucket_name}/athena-results/"
     }
   }
 }

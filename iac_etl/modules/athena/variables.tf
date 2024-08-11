@@ -3,7 +3,7 @@ variable "athena_db_name" {
   type        = string
   default     = "etl_db"
 }
-variable "bucket_name" {
+variable "clean_bucket_name" {
   description = "Name of the Athena bucket"
   type        = string
 
