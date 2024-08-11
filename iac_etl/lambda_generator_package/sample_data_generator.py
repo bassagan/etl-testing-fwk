@@ -8,12 +8,11 @@ def lambda_handler(event, context):
     s3_client = boto3.client('s3')
     bucket_name = event.get('s3_bucket', 'default-bucket-name')
 
-    # Create the mock S3 bucket
-    s3_client.create_bucket(Bucket=bucket_name)
+
 
     # Set ranges for initial patients and new patients over time
-    initial_patients_range = (5, 100)
-    new_patients_range = (5, 100)
+    initial_patients_range = (50, 100)
+    new_patients_range = (5, 50)
 
     # Generate a timestamp or unique identifier for this execution
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
