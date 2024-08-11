@@ -1,18 +1,16 @@
 import json
 import boto3
+from moto import mock_aws
 from data_generator import DataGenerator
 
 # S3 bucket and file names
 PATIENTS_FILE = 'patients.json'
 VISITS_FILE = 'visits.json'
 
-
+@mock_aws
 def lambda_handler(event, context):
     s3_client = boto3.client('s3')
     bucket_name = event.get('s3_bucket', 'default-bucket-name')
-
-    # Create the mock S3 bucket
-    s3_client.create_bucket(Bucket=bucket_name)
 
     # Set ranges for initial patients and new patients over time
     initial_patients_range = (50, 100)
@@ -36,4 +34,9 @@ def lambda_handler(event, context):
     }
 
 if __name__ == "__main__":
-    lambda_handler(None, None)
+    mock_event = {
+        '{
+  "s3_bucket": "your-s3-bucket-name"
+}s3_bucket': 'my-test-bucket',
+    }
+    lambda_handler(mock_event, None)
