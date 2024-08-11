@@ -31,13 +31,13 @@ resource "aws_athena_named_query" "etl_query" {
   ]
 }
 
-resource "aws_glue_catalog_table" "etl_table" {
-  name          = "etl_table"
+resource "aws_glue_catalog_table" "patients_table" {
+  name          = "patients"
   database_name = aws_athena_database.etl_db.name
   table_type    = "EXTERNAL_TABLE"
 
   storage_descriptor {
-    location          = "s3://${var.clean_bucket_name}/curated_data"
+    location          = "s3://${var.clean_bucket_name}/cleaned/patients/"
     input_format      = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
     output_format     = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
     compressed        = false
@@ -55,11 +55,114 @@ resource "aws_glue_catalog_table" "etl_table" {
 
     columns {
       name = "date_of_birth"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "address"
       type = "string"
     }
 
     columns {
-      name = "visit_date"
+      name = "phone_number"
+      type = "string"
+    }
+
+    columns {
+      name = "email"
+      type = "string"
+    }
+
+    columns {
+      name = "insurance_provider"
+      type = "string"
+    }
+
+    columns {
+      name = "policy_number"
+      type = "string"
+    }
+
+    columns {
+      name = "policy_valid_till"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "record_created_at"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "record_updated_at"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "start_date"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "end_date"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "is_current"
+      type = "boolean"
+    }
+
+    ser_de_info {
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "visits_table" {
+  name          = "visits"
+  database_name = aws_athena_database.etl_db.name
+  table_type    = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    location          = "s3://${var.clean_bucket_name}/cleaned/visits/"
+    input_format      = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format     = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+    compressed        = false
+    number_of_buckets = -1
+
+    columns {
+      name = "appointment_id"
+      type = "string"
+    }
+
+    columns {
+      name = "patient_id"
+      type = "string"
+    }
+
+    columns {
+      name = "appointment_date"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "doctor"
+      type = "string"
+    }
+
+    columns {
+      name = "department"
+      type = "string"
+    }
+
+    columns {
+      name = "purpose"
+      type = "string"
+    }
+
+    columns {
+      name = "status"
       type = "string"
     }
 
@@ -74,20 +177,37 @@ resource "aws_glue_catalog_table" "etl_table" {
     }
 
     columns {
-      name = "doctor"
+      name = "notes"
       type = "string"
     }
 
     columns {
-      name = "address"
-      type = "string"
+      name = "record_created_at"
+      type = "timestamp"
     }
 
+    columns {
+      name = "record_updated_at"
+      type = "timestamp"
+    }
 
+    columns {
+      name = "start_date"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "end_date"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "is_current"
+      type = "boolean"
+    }
 
     ser_de_info {
       serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
     }
   }
-
 }

@@ -1,75 +1,109 @@
-import json
-import pandas as pd
 import boto3
-import io
-from pyarrow import parquet as pq
 from datetime import datetime
-
-
-def read_json_from_s3(s3_client, bucket_name, key):
-    """Read a JSON file from S3 and return as a DataFrame."""
-    obj = s3_client.get_object(Bucket=bucket_name, Key=key)
-    data = json.loads(obj['Body'].read().decode('utf-8'))
-    # Normalize JSON data to handle nested dictionaries
-    df = pd.json_normalize(data)
-    return df
-
-
-def write_parquet_to_s3(s3_client, df, bucket_name, key):
-    """Write a DataFrame as a Parquet file to S3."""
-    buffer = io.BytesIO()
-    df.to_parquet(buffer, index=False, engine='pyarrow')
-    s3_client.put_object(Bucket=bucket_name, Key=key, Body=buffer.getvalue())
-
+from data_reader import DataReader
+from data_cleaner import DataCleaner
+from scd_historization import SCDHistorization
+from data_writer import DataWriter
 
 def lambda_handler(event, context):
-    """AWS Lambda handler."""
     s3_client = boto3.client('s3')
 
+    # Define the source and destination buckets
     source_bucket = event.get('source_bucket', 'raw-etl-bucket-dev')
     destination_bucket = event.get('destination_bucket', 'clean-etl-bucket-dev')
-    source_key_prefix = event.get('source_key_prefix', 'source_a/')
-    destination_key_prefix = event.get('destination_key_prefix', 'curated_data/')
 
-    # List objects in the source S3 bucket
-    response = s3_client.list_objects_v2(Bucket=source_bucket, Prefix=source_key_prefix)
+    # Define schema and keys for patients and visits
+    patients_schema = {
+        'patient_id': 'string',
+        'name': 'string',
+        'date_of_birth': 'datetime64[ns]',
+        'address': 'string',
+        'phone_number': 'string',
+        'email': 'string',
+        'insurance_provider': 'string',
+        'policy_number': 'string',
+        'policy_valid_till': 'datetime64[ns]',
+        'record_created_at': 'datetime64[ns]',
+        'record_updated_at': 'datetime64[ns]'
+    }
+    visits_schema = {
+        'appointment_id': 'string',
+        'patient_id': 'string',
+        'appointment_date': 'datetime64[ns]',
+        'doctor': 'string',
+        'department': 'string',
+        'purpose': 'string',
+        'status': 'string',
+        'diagnosis': 'string',
+        'medication': 'string',
+        'notes': 'string',
+        'record_created_at': 'datetime64[ns]',
+        'record_updated_at': 'datetime64[ns]'
+    }
+    patients_keys = ['patient_id']
+    visits_keys = ['appointment_id', 'patient_id']
 
-    if 'Contents' not in response:
-        return {
-            'statusCode': 404,
-            'body': json.dumps("No files found in the specified S3 prefix.")
-        }
+    # Instantiate the classes
+    data_reader = DataReader(s3_client, source_bucket)
+    data_cleaner_patients = DataCleaner(patients_schema)
+    data_cleaner_visits = DataCleaner(visits_schema)
+    scd_patients = SCDHistorization(patients_keys)
+    scd_visits = SCDHistorization(visits_keys)
+    data_writer = DataWriter(s3_client, destination_bucket)
 
-    # Process each file
-    data_frames = []
-    for obj in response['Contents']:
-        df = read_json_from_s3(s3_client, source_bucket, obj['Key'])
-        data_frames.append(df)
+    # Process patients data
+    patient_files = data_reader.list_files('patients/')
+    patients_data_frames = [data_reader.read_json_from_s3(file) for file in patient_files]
+    if patients_data_frames:
+        df_patients = pd.concat(patients_data_frames, ignore_index=True)
+        df_patients = data_cleaner_patients.enforce_schema(df_patients)
+        df_patients = data_cleaner_patients.remove_duplicates(df_patients)
 
-    # Concatenate all data into a single DataFrame
-    if data_frames:
-        df_combined = pd.concat(data_frames, ignore_index=True)
+        # Retrieve existing patient data for SCD Type 2
+        existing_patients_key = 'cleaned/patients/latest.parquet'
+        try:
+            df_existing_patients = data_reader.read_parquet_from_s3(existing_patients_key)
+        except:
+            df_existing_patients = None
 
-        # Remove duplicates
-        df_cleaned = df_combined.drop_duplicates()
+        df_patients = scd_patients.apply_scd_type_2(df_patients, df_existing_patients)
 
-        # Generate the destination key
+        # Write cleaned patients data to S3
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        destination_key = f"{destination_key_prefix}curated_data_{timestamp}.parquet"
+        patients_key = f'cleaned/patients/patients_{timestamp}.parquet'
+        data_writer.write_parquet_to_s3(df_patients, patients_key)
+        data_writer.write_parquet_to_s3(df_patients, existing_patients_key)
 
-        # Write the cleaned DataFrame to Parquet and upload to S3
-        write_parquet_to_s3(s3_client, df_cleaned, destination_bucket, destination_key)
+    # Process visits data
+    visit_files = data_reader.list_files('visits/')
+    visits_data_frames = [data_reader.read_json_from_s3(file) for file in visit_files]
+    if visits_data_frames:
+        df_visits = pd.concat(visits_data_frames, ignore_index=True)
+        df_visits = data_cleaner_visits.enforce_schema(df_visits)
+        df_visits = data_cleaner_visits.remove_duplicates(df_visits)
 
-        return {
-            'statusCode': 200,
-            'body': json.dumps(f"Data successfully transformed and saved to {destination_key}")
-        }
-    else:
-        return {
-            'statusCode': 404,
-            'body': json.dumps("No data files found to process.")
-        }
+        # Retrieve existing visit data for SCD Type 2
+        existing_visits_key = 'cleaned/visits/latest.parquet'
+        try:
+            df_existing_visits = data_reader.read_parquet_from_s3(existing_visits_key)
+        except:
+            df_existing_visits = None
 
+        df_visits = scd_visits.apply_scd_type_2(df_visits, df_existing_visits)
+
+        # Write cleaned visits data to S3
+        visits_key = f'cleaned/visits/visits_{timestamp}.parquet'
+        data_writer.write_parquet_to_s3(df_visits, visits_key)
+        data_writer.write_parquet_to_s3(df_visits, existing_visits_key)
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps({
+            "message": "Data processing complete.",
+            "patients_count": len(df_patients) if patients_data_frames else 0,
+            "visits_count": len(df_visits) if visits_data_frames else 0
+        })
+    }
 
 if __name__ == "__main__":
     lambda_handler(None, None)
