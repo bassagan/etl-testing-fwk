@@ -119,12 +119,12 @@ resource "aws_glue_catalog_table" "patients_table" {
   }
 
   partition_keys {
-    name = "year_of_birth"
+    name = "year"
     type = "int"
   }
 
   partition_keys {
-    name = "month_of_birth"
+    name = "month"
     type = "int"
   }
 }
