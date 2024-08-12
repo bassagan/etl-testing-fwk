@@ -87,12 +87,12 @@ class DataGenerator:
             self.visits = self.load_from_s3(latest_visits_file) or []
 
     def update_patient_record(self, patient):
-        if random.random() < 0.3:  # 30% chance to update the patient's address
+        if random.random() < 0.2:  # 20% chance to update the patient's address
             patient["address"] = self.fake.address().replace("\n", ", ")
             patient["record_updated_at"] = datetime.now().isoformat()
 
     def update_visit_record(self, visit):
-        if visit["status"] == "Scheduled":
+        if visit["status"] == "Scheduled" and random.random() < 0.5:
             visit["status"] = "Completed"
             if random.random() < 0.8:  # 80% chance to add diagnosis/medication on completion
                 visit["diagnosis"] = self.fake.diagnosis()
@@ -104,8 +104,9 @@ class DataGenerator:
         self.visits = [visit for visit in self.visits if datetime.fromisoformat(visit["appointment_date"]) > one_day_ago]
 
     def remove_patients_with_no_visits(self):
-        patient_ids_with_visits = {visit['patient_id'] for visit in self.visits}
-        self.patients = [patient for patient in self.patients if patient['patient_id'] in patient_ids_with_visits]
+        if random.random() < 0.1:
+            patient_ids_with_visits = {visit['patient_id'] for visit in self.visits}
+            self.patients = [patient for patient in self.patients if patient['patient_id'] in patient_ids_with_visits]
 
     def update_existing_data(self, initial_patients_range, new_patients_range):
         for patient in self.patients:
