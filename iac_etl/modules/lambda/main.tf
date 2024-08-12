@@ -4,7 +4,7 @@ resource "aws_lambda_function" "etl_function" {
   runtime          = "python3.9"
   role             = var.lambda_role_arn
   s3_bucket        = var.lambda_bucket
-  s3_key           = "lambda_etl.zip"
+  s3_key           = "lambda_raw_clean.zip"
 
   memory_size = 256
   timeout = 60
