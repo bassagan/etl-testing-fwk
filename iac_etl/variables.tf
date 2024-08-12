@@ -64,6 +64,12 @@ variable "clean_bucket_name" {
   type        = string
 }
 
+variable "curated_bucket_name" {
+  description = "Name of the S3 bucket"
+  type        = string
+}
+
+
 variable "lambda_package_data_generator" {
   description = "Path to the zip package for the data generator lambda function"
   type        = string

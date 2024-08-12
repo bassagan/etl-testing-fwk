@@ -9,6 +9,7 @@ module "s3" {
   bucket_name = var.bucket_name
   raw_bucket_name = var.raw_bucket_name
   clean_bucket_name = var.clean_bucket_name
+  curated_bucket_name = var.curated_bucket_name
   env         = var.env
 
   tags = var.tags
@@ -64,8 +65,10 @@ module "sns" {
 module "eventbridge" {
   source               = "./modules/eventbridge"
 
-  lambda_function_arn  = module.lambda.lambda_function_arn
-  lambda_function_name = module.lambda.lambda_function_name
+  raw_clean_function_arn  = module.lambda.raw_clean_lambda_function_arn
+  clean_curated_function_arn  = module.lambda.clean_curated_lambda_function_arn
+  raw_clean_function_name = module.lambda.raw_clean_lambda_function_name
+  clean_curated_function_name = module.lambda.clean_curated_lambda_function_name
   schedule_expression  = var.schedule_expression
   env                  = var.env
   depends_on = [

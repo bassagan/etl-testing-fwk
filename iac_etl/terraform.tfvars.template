@@ -9,6 +9,7 @@ tags = {
 bucket_name = "etl-tutorial-bucket-dev"
 raw_bucket_name = "raw-etl-bucket-dev"
 clean_bucket_name = "clean-etl-bucket-dev"
+curated_bucket_name = "curated-etl-bucket-dev"
 
 # Lambda Function
 lambda_name    = "raw-clean-lambda-dev-function"

@@ -8,7 +8,12 @@ variable "raw_bucket_name" {
 }
 
 variable "clean_bucket_name" {
-  description = "Name of the S3 bucket"
+  description = "Name of the S3 bucket for clean layer"
+  type        = string
+}
+
+variable "curated_bucket_name" {
+  description = "Name of the S3 bucket for curated layer"
   type        = string
 }
 

@@ -1,4 +1,4 @@
-resource "aws_lambda_function" "etl_function" {
+resource "aws_lambda_function" "raw_clean_function" {
   function_name    = "${var.function_name}-${var.env}"
   handler          = "etl_function.lambda_handler"
   runtime          = "python3.9"
@@ -17,7 +17,24 @@ resource "aws_lambda_function" "etl_function" {
   depends_on = [var.lambda_bucket]
 }
 
+resource "aws_lambda_function" "clean_curated_function" {
+  function_name    = "${var.clean_curated_function_name}-${var.env}"
+  handler          = "clean_curated_function.lambda_handler"
+  runtime          = "python3.9"
+  role             = var.lambda_role_arn
+  s3_bucket        = var.lambda_bucket
+  s3_key           = "lambda_clean_curated.zip"
 
+  memory_size = 256
+  timeout = 60
+  environment {
+    variables = {
+      S3_BUCKET = var.s3_bucket
+    }
+  }
+  tags = var.tags
+  depends_on = [var.lambda_bucket]
+}
 resource "aws_lambda_function" "data_generator_function" {
   function_name    = "${var.data_generator_function_name}-${var.env}"
   handler          = "sample_data_generator.lambda_handler"
@@ -36,10 +53,32 @@ resource "aws_lambda_function" "data_generator_function" {
   tags = var.tags
   depends_on = [var.lambda_bucket]
 }
+# Create the CloudWatch EventBridge Rule for successful execution of raw_clean_function
+resource "aws_cloudwatch_event_rule" "raw_clean_success_rule" {
+  name        = "raw-clean-success-rule-${var.env}"
+  event_pattern = jsonencode({
+    "source": ["aws.lambda"],
+    "detail-type": ["Lambda Function Invocation Result - Success"],
+    "detail": {
+      "requestContext": {
+        "functionArn": [aws_lambda_function.raw_clean_function.arn]
+      }
+    }
+  })
+}
 
+# Create the EventBridge Target to trigger the clean_curated_function
+resource "aws_cloudwatch_event_target" "clean_curated_target" {
+  rule      = aws_cloudwatch_event_rule.raw_clean_success_rule.name
+  target_id = "clean-curated-target"
+  arn       = aws_lambda_function.clean_curated_function.arn
+}
 
-
-resource "aws_cloudwatch_event_rule" "invoke_data_generator" {
-  name                = "invoke-data-generator"
-  schedule_expression = "rate(1 hour)"  # Adjust the schedule as needed
+# Grant EventBridge permission to invoke clean_curated_function
+resource "aws_lambda_permission" "allow_eventbridge_invoke_clean_curated" {
+  statement_id  = "AllowExecutionFromEventBridge"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.clean_curated_function.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.raw_clean_success_rule.arn
 }

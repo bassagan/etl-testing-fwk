@@ -8,12 +8,21 @@ variable "schedule_expression" {
   type        = string
 }
 
-variable "lambda_function_arn" {
+variable "raw_clean_function_arn" {
   description = "ARN of the Lambda function to trigger"
   type        = string
 }
 
-variable "lambda_function_name" {
+variable "clean_curated_function_arn" {
+  description = "ARN of the Lambda function to trigger"
+  type        = string
+}
+
+variable "raw_clean_function_name" {
+  description = "Name of the Lambda function"
+  type        = string
+}
+variable "clean_curated_function_name" {
   description = "Name of the Lambda function"
   type        = string
 }
