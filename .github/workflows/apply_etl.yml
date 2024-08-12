@@ -90,6 +90,7 @@ jobs:
       run: |
         aws s3 cp lambda_generator_package.zip s3://etl-tutorial-bucket-dev/lambda_generator_package.zip
         aws s3 cp lambda_raw_clean.zip s3://etl-tutorial-bucket-dev/lambda_raw_clean.zip
+        aws s3 cp lambda_clean_curated.zip s3://etl-tutorial-bucket-dev/lambda_clean_curated.zip
 
     - name: Terraform Init
       working-directory: ./iac_etl
