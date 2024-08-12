@@ -48,7 +48,7 @@ def lambda_handler(event, context):
         'record_created_at': 'datetime64[ns]',
         'record_updated_at': 'datetime64[ns]'
     }
-    patients_keys = ['patient_id']
+    patients_keys = ['patient_id', 'address']
     visits_keys = ['appointment_id', 'patient_id']
 
     # Instantiate the classes
@@ -136,3 +136,4 @@ def lambda_handler(event, context):
 
 if __name__ == "__main__":
     lambda_handler(None, None)
+
