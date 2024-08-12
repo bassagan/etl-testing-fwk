@@ -17,6 +17,7 @@ lambda_package = "lambda_raw_clean.zip" # This is the location of your Lambda pa
 lambda_package_data_generator = "lambda_generator_package.zip"
 data_generator_function_name = "lambda_generator_source"
 lambda_layer_s3_key = "lambda_layer.zip"
+clean_curated_function_name = "clean_curated_function"
 
 # IAM Role
 lambda_role_name = "lambda-execution-role"

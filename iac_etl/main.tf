@@ -41,6 +41,7 @@ module "lambda" {
   s3_bucket       = module.s3.bucket_name
   lambda_package  = var.lambda_package
   lambda_bucket   = var.bucket_name
+  clean_curated_function_name = var.clean_curated_function_name
   data_generator_function_name = var.data_generator_function_name
   lambda_role_arn = module.iam.lambda_role_arn
   env             = var.env

@@ -49,7 +49,6 @@ variable "data_generator_function_name" {
 variable "clean_curated_function_name" {
   description = "Name of the data generator lambda function"
   type        = string
-  default     = "data-generator-function"
 }
 
 variable "lambda_layer_s3_key" {
