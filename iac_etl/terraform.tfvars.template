@@ -11,8 +11,8 @@ raw_bucket_name = "raw-etl-bucket-dev"
 clean_bucket_name = "clean-etl-bucket-dev"
 
 # Lambda Function
-lambda_name    = "etl-lambda-function"
-lambda_package = "lambda_etl.zip" # This is the location of your Lambda package
+lambda_name    = "raw-clean-lambda-dev-function"
+lambda_package = "lambda_raw_clean.zip" # This is the location of your Lambda package
 lambda_package_data_generator = "lambda_generator_package.zip"
 data_generator_function_name = "lambda_generator_source"
 lambda_layer_s3_key = "lambda_layer.zip"
