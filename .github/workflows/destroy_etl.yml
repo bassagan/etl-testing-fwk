@@ -1,0 +1,46 @@
+name: Terraform Destroy ETL Infrastructure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform_destroy_etl:
+    name: Terraform Destroy ETL
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
+    - name: Prepare variables
+      run: |
+        branch_name=$(echo "${GITHUB_REF#refs/heads/}")
+        repo_name=$(basename ${{ github.repository }})
+        echo "BRANCH_NAME=$branch_name" >> $GITHUB_ENV
+        echo "REPO_NAME=$repo_name" >> $GITHUB_ENV
+
+    - name: Make modify_tfvars.sh executable
+      run: chmod +x ./scripts/modify_tfvars.sh
+
+    - name: Run modify_tfvars.sh
+      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_etl
+
+    - name: Terraform Init
+      working-directory: ./iac_etl
+      run: terraform init -input=false
+
+    - name: Terraform Destroy ETL
+      working-directory: ./iac_etl
+      run: terraform destroy -auto-approve

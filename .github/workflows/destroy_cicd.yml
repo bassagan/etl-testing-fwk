@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: Terraform Destroy CICD
 
 on:
   workflow_dispatch:
@@ -36,16 +36,16 @@ jobs:
       run: chmod +x ./scripts/modify_tfvars.sh
 
     - name: Run modify_tfvars.sh
-      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev
+      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_cicd
 
     - name: Terraform Init
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform init -input=false
 
     - name: List Terraform State
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform state list
 
     - name: Terraform Destroy
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform destroy -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"

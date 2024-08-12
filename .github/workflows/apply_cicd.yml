@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Terraform Apply CICD
 
 on:
   push:
@@ -43,29 +43,29 @@ jobs:
       run: chmod +x ./scripts/modify_tfvars.sh
 
     - name: Run modify_tfvars.sh
-      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev
+      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_cicd
 
     - name: Terraform Init
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform init
 
     - name: Import S3 Bucket
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform import aws_s3_bucket.codepipeline_bucket etl-codepipeline-bucket || echo "S3 Bucket already imported"
 
     - name: Import CodeBuild IAM Role
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform import module.iam.aws_iam_role.codebuild_role codebuild-role || echo "CodeBuild IAM Role already imported"
 
     - name: Import CodePipeline IAM Role
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform import module.iam.aws_iam_role.codepipeline_role codepipeline-role || echo "CodePipeline IAM Role already imported"
 
     - name: Import CodeBuild Project
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform import module.codebuild.aws_codebuild_project.etl_build arn:aws:codebuild:your-aws-region:***:project/etl-build || echo "CodeBuild Project already imported"
 
     - name: Terraform Apply
-      working-directory: ./iac
+      working-directory: ./iac_cicd
       run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
 

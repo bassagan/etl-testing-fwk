@@ -1,0 +1,31 @@
+region       = "eu-west-1"
+env          = "{env}" # Could be "dev", "staging", "prod", etc.
+tags = {
+  Environment = "{env}"
+  Project     = "etl-testing-framework"
+}
+
+# S3 Bucket
+bucket_name = "etl-tutorial-bucket-dev"
+raw_bucket_name = "raw-etl-bucket-dev"
+clean_bucket_name = "clean-etl-bucket-dev"
+
+# Lambda Function
+lambda_name    = "etl-lambda-function"
+lambda_package = "lambda_etl.zip" # This is the location of your Lambda package
+lambda_package_data_generator = "lambda_generator_package.zip"
+data_generator_function_name = "lambda_generator_source"
+lambda_layer_s3_key = "lambda_layer.zip"
+
+# IAM Role
+lambda_role_name = "lambda-execution-role"
+
+# SNS Topic
+sns_topic_name = "paula.odena@gmail.com"
+
+# EventBridge Rule
+event_rule_name     = "etl-schedule-rule"
+schedule_expression = "rate(60 minutes)" # Adjust the schedule expression as needed
+
+# Athena
+athena_db_name = "etl_clean_athena_dev"
