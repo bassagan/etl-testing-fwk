@@ -2,7 +2,11 @@ import boto3
 from datetime import datetime
 import pandas as pd
 import json
+import logging
+import io
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     s3_client = boto3.client('s3')
@@ -29,7 +33,14 @@ def lambda_handler(event, context):
 
     # Read the clean visits data from S3
     clean_visits_key = 'cleaned/visits/visits_latest.parquet'
-    df_visits = read_parquet_from_s3(s3_client, clean_bucket, clean_visits_key, visits_schema)
+    try:
+        df_visits = read_parquet_from_s3(s3_client, clean_bucket, clean_visits_key, visits_schema)
+    except s3_client.exceptions.NoSuchKey:
+        logger.error(f"The key {clean_visits_key} was not found in the bucket {clean_bucket}.")
+        return {
+            'statusCode': 404,
+            'body': json.dumps(f"Key {clean_visits_key} not found in bucket {clean_bucket}.")
+        }
 
     # Transform data
     df_curated_visits = transform_visits_data(df_visits)
