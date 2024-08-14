@@ -53,28 +53,28 @@ resource "aws_lambda_function" "data_generator_function" {
   tags = var.tags
   depends_on = [var.lambda_bucket]
 }
-# Create the CloudWatch EventBridge Rule for successful execution of raw_clean_function
+# CloudWatch EventBridge rule for success of raw_clean_function
 resource "aws_cloudwatch_event_rule" "raw_clean_success_rule" {
-  name        = "raw-clean-success-rule-${var.env}"
+  name = "raw-clean-success-rule-${var.env}"
   event_pattern = jsonencode({
     "source": ["aws.lambda"],
     "detail-type": ["Lambda Function Invocation Result - Success"],
     "detail": {
-      "requestContext": {
+      "responseElements": {
         "functionArn": [aws_lambda_function.raw_clean_function.arn]
       }
     }
   })
 }
 
-# Create the EventBridge Target to trigger the clean_curated_function
+# EventBridge target to trigger the clean_curated_function
 resource "aws_cloudwatch_event_target" "clean_curated_target" {
   rule      = aws_cloudwatch_event_rule.raw_clean_success_rule.name
   target_id = "clean-curated-target"
   arn       = aws_lambda_function.clean_curated_function.arn
 }
 
-# Grant EventBridge permission to invoke clean_curated_function
+# Grant permission for EventBridge to invoke clean_curated_function
 resource "aws_lambda_permission" "allow_eventbridge_invoke_clean_curated" {
   statement_id  = "AllowExecutionFromEventBridge"
   action        = "lambda:InvokeFunction"
