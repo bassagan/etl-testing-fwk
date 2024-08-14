@@ -100,4 +100,55 @@ resource "aws_iam_role_policy" "athena_s3_policy" {
     ]
   })
 }
+resource "aws_iam_role" "quicksight_role" {
+  name = "quicksight-access-role-${var.env}"
 
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "quicksight.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "quicksight_s3_policy" {
+  name   = "QuickSightS3AccessPolicy-${var.env}"
+  description = "Policy for QuickSight to access S3 and Athena"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::${var.curated_bucket_name}",
+          "arn:aws:s3:::${var.curated_bucket_name}/*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "athena:StartQueryExecution",
+          "athena:GetQueryResults",
+          "athena:GetQueryExecution"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "quicksight_s3_policy_attachment" {
+  policy_arn = aws_iam_policy.quicksight_s3_policy.arn
+  role       = aws_iam_role.quicksight_role.name
+}

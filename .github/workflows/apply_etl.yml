@@ -99,3 +99,11 @@ jobs:
     - name: Terraform Apply
       working-directory: ./iac_etl
       run: terraform apply -auto-approve
+
+    - name: Install Dashboard dependencies
+      run: |
+        pip install -r scripts/requirements.txt
+
+    - name: Create QuickSight Dashboard
+      run: |
+        python scripts/create_quicksight_dashboard.py   

@@ -385,7 +385,7 @@ resource "aws_glue_catalog_table" "curated_patients_table" {
 
     columns {
       name = "total_visits"
-      type = "int"
+      type = "double"
     }
 
     columns {
@@ -403,5 +403,23 @@ resource "aws_glue_catalog_table" "curated_patients_table" {
     }
   }
 }
+resource "aws_athena_named_query" "top_doctors_query" {
+  name      = "TopDoctorsQuery"
+  database  = aws_athena_database.etl_db.name
+  query     = file("${path.module}/queries/top_doctors.sql")
+  workgroup = aws_athena_workgroup.etl_workgroup.name
+}
 
+resource "aws_athena_named_query" "most_visited_departments_query" {
+  name      = "MostVisitedDepartmentsQuery"
+  database  = aws_athena_database.etl_db.name
+  query     = file("${path.module}/queries/most_visited_departments.sql")
+  workgroup = aws_athena_workgroup.etl_workgroup.name
+}
 
+resource "aws_athena_named_query" "diagnostic_trends_query" {
+  name      = "DiagnosticTrendsQuery"
+  database  = aws_athena_database.etl_db.name
+  query     = file("${path.module}/queries/diagnostic_trends.sql")
+  workgroup = aws_athena_workgroup.etl_workgroup.name
+}
