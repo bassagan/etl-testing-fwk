@@ -41,7 +41,9 @@ resource "aws_iam_role_policy" "lambda_s3_policy" {
           "arn:aws:s3:::${var.raw_bucket_name}",                     # Specific Raw data bucket
           "arn:aws:s3:::${var.raw_bucket_name}/*",                   # All objects in Raw data bucket
           "arn:aws:s3:::${var.clean_bucket_name}",                   # Specific Clean data bucket
-          "arn:aws:s3:::${var.clean_bucket_name}/*"                  # All objects in Clean data bucket
+          "arn:aws:s3:::${var.clean_bucket_name}/*",                  # All objects in Clean data bucket
+          "arn:aws:s3:::${var.curated_bucket_name}",                 # Specific Curated data bucket
+          "arn:aws:s3:::${var.curated_bucket_name}/*"
         ]
       }
     ]

@@ -14,6 +14,11 @@ variable "clean_bucket_name" {
   type        = string
 }
 
+variable "curated_bucket_name" {
+  description = "S3 bucket where cleaned data is stored"
+  type        = string
+}
+
 variable "athena_result_bucket_name" {
   description = "S3 bucket for storing Athena query results"
   type        = string
