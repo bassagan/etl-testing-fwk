@@ -32,7 +32,7 @@ def lambda_handler(event, context):
     }
 
     # Read the clean visits data from S3
-    clean_visits_key = 'cleaned/visits/visits_latest.parquet'
+    clean_visits_key = 'cleaned/visits/latest/visits_latest.parquet'
     try:
         df_visits = read_parquet_from_s3(s3_client, clean_bucket, clean_visits_key, visits_schema)
     except s3_client.exceptions.NoSuchKey:
