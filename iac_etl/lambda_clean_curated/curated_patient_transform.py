@@ -7,7 +7,7 @@ class CuratedPatientTransform:
         """Transforms the clean patient data into the curated patient model."""
 
         # Derive age from date_of_birth
-        today = datetime.today()
+        today = datetime.datetime.today()
         df_patients['age'] = df_patients['date_of_birth'].apply(
             lambda dob: today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day)))
 
