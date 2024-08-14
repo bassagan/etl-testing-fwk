@@ -4,6 +4,7 @@ import pandas as pd
 import json
 import logging
 import io
+import pyarrow.parquet as pq
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -62,8 +63,11 @@ def lambda_handler(event, context):
 def read_parquet_from_s3(s3_client, bucket, key, schema):
     """Reads a Parquet file from S3 and returns a DataFrame."""
     obj = s3_client.get_object(Bucket=bucket, Key=key)
-    data = pd.read_parquet(obj['Body'])
-    return data.astype(schema)
+    data = obj['Body'].read()
+    buffer = io.BytesIO(data)
+    table = pq.read_table(buffer)
+    df = table.to_pandas()
+    return df.astype(schema)
 
 
 def write_parquet_to_s3(s3_client, df, bucket, key):
