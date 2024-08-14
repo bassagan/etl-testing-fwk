@@ -1,28 +1,42 @@
-from visits_summary import VisitsSummary
 import pandas as pd
-import datetime
+from datetime import datetime
+
 
 class CuratedPatientTransform:
     def transform(self, df_patients, df_visits):
-        """Transforms the clean patient data into the curated patient model."""
+        today = datetime.today()
 
-        # Derive age from date_of_birth
-        today = datetime.datetime.today()
-        df_patients['age'] = df_patients['date_of_birth'].apply(
-            lambda dob: today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day)))
+        # Calculate the age
+        df_patients['age'] = today.year - df_patients['date_of_birth'].dt.year
 
-        # Generalize address (e.g., extract city or region)
-        df_patients['address'] = df_patients['address'].apply(lambda x: x.split(',')[-1].strip() if ',' in x else x)
+        # Extract year and month from date_of_birth
+        df_patients['year_of_birth'] = df_patients['date_of_birth'].dt.year
+        df_patients['month_of_birth'] = df_patients['date_of_birth'].dt.month
 
-        # Calculate total visits and last visit date
-        visits_summary = VisitsSummary(df_visits)
-        summary = visits_summary.get_summary()
+        # Summarize total visits and last visit date
+        visit_summary = df_visits.groupby('patient_id').agg(
+            total_visits=('appointment_id', 'count'),
+            last_visit_date=('appointment_date', 'max')
+        ).reset_index()
 
-        # Merge summary into patient data
-        df_curated = pd.merge(df_patients, summary, on='patient_id', how='left').fillna(
-            {'total_visits': 0, 'last_visit_date': pd.NaT})
+        # Merge the summary with the patients data
+        df_curated_patients = df_patients.merge(visit_summary, on='patient_id', how='left')
+        df_curated_patients['total_visits'].fillna(0, inplace=True)
+        df_curated_patients['last_visit_date'].fillna(pd.NaT, inplace=True)
 
-        # Return the curated DataFrame
-        return df_curated[['patient_id', 'name', 'date_of_birth', 'age', 'address', 'phone_number',
-                           'email', 'insurance_provider', 'policy_number', 'policy_valid_till',
-                           'total_visits', 'last_visit_date', 'record_created_at']]
+        # Extract city from address (assuming the city is the second last element in the address string)
+        df_curated_patients['city'] = df_curated_patients['address'].apply(self.extract_city)
+
+        return df_curated_patients
+
+    def extract_city(self, address):
+        """Extracts the city from the address string."""
+        # Assuming the city is located between the last and second-to-last commas
+        try:
+            parts = address.split(',')
+            if len(parts) > 2:
+                return parts[-2].strip()
+            else:
+                return address  # Return the full address if city extraction fails
+        except Exception as e:
+            return None  # Return None if the extraction fails
