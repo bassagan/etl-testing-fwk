@@ -84,6 +84,7 @@ module "athena" {
   athena_db_name = var.athena_db_name
 
   clean_bucket_name  = module.s3.clean_bucket_name
+  curated_bucket_name = module.s3.curated_bucket_name
 
   depends_on = [
     module.s3

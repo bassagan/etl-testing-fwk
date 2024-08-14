@@ -233,3 +233,175 @@ resource "aws_glue_catalog_table" "visits_table" {
   }
 }
 
+resource "aws_glue_catalog_table" "curated_visits_table" {
+  name          = "curated_visits"
+  database_name = aws_athena_database.etl_db.name
+  table_type    = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    location          = "s3://${var.curated_bucket_name}/curated/visits/"
+    input_format      = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format     = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+    compressed        = false
+    number_of_buckets = -1
+
+    columns {
+      name = "appointment_id"
+      type = "string"
+    }
+
+    columns {
+      name = "patient_id"
+      type = "string"
+    }
+
+    columns {
+      name = "appointment_date"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "doctor_name"
+      type = "string"
+    }
+
+    columns {
+      name = "department"
+      type = "string"
+    }
+
+    columns {
+      name = "purpose"
+      type = "string"
+    }
+
+    columns {
+      name = "status"
+      type = "string"
+    }
+
+    columns {
+      name = "diagnosis"
+      type = "string"
+    }
+
+    columns {
+      name = "medication"
+      type = "string"
+    }
+
+    columns {
+      name = "notes"
+      type = "string"
+    }
+
+    columns {
+      name = "visit_year"
+      type = "int"
+    }
+
+    columns {
+      name = "visit_month"
+      type = "int"
+    }
+
+    columns {
+      name = "record_created_at"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "record_updated_at"
+      type = "timestamp"
+    }
+
+    ser_de_info {
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "curated_patients_table" {
+  name          = "curated_patients"
+  database_name = aws_athena_database.etl_db.name
+  table_type    = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    location          = "s3://${var.curated_bucket_name}/curated/patients/"
+    input_format      = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format     = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+    compressed        = false
+    number_of_buckets = -1
+
+    columns {
+      name = "patient_id"
+      type = "string"
+    }
+
+    columns {
+      name = "name"
+      type = "string"
+    }
+
+    columns {
+      name = "date_of_birth"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "age"
+      type = "int"
+    }
+
+    columns {
+      name = "address"
+      type = "string"
+    }
+
+    columns {
+      name = "phone_number"
+      type = "string"
+    }
+
+    columns {
+      name = "email"
+      type = "string"
+    }
+
+    columns {
+      name = "insurance_provider"
+      type = "string"
+    }
+
+    columns {
+      name = "policy_number"
+      type = "string"
+    }
+
+    columns {
+      name = "policy_valid_till"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "total_visits"
+      type = "int"
+    }
+
+    columns {
+      name = "last_visit_date"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "record_created_at"
+      type = "timestamp"
+    }
+
+    ser_de_info {
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+    }
+  }
+}
+
+
