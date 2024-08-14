@@ -1,5 +1,5 @@
 from visits_summary import VisitsSummary
-from pandas import pd
+import pandas as pd
 import datetime
 
 class CuratedPatientTransform:
