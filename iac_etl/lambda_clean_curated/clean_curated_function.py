@@ -2,13 +2,13 @@ import boto3
 import json
 import logging
 import pandas as pd
+import io
 from curated_patient_transform import CuratedPatientTransform
 from curated_visit_transform import CuratedVisitTransform
 from data_writer import DataWriter
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
 
 def lambda_handler(event, context):
     s3_client = boto3.client('s3')
@@ -44,8 +44,8 @@ def lambda_handler(event, context):
         })
     }
 
-
 def load_parquet_from_s3(s3_client, bucket, key):
     """Reads a Parquet file from S3 and returns a DataFrame."""
     obj = s3_client.get_object(Bucket=bucket, Key=key)
-    return pd.read_parquet(obj['Body'])
+    data = obj['Body'].read()  # Read the entire file into memory
+    return pd.read_parquet(io.BytesIO(data))  # Use BytesIO to create a file-like object
