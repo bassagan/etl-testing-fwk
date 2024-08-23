@@ -18,7 +18,6 @@ variable "dynamodb_table_name" {
 variable "owner" {
   description = "Owner of the resources, this is your user name (NOT Account ID)"
   type        = string
-  default     = "Paula Bassaganas"
 }
 
 variable "env" {

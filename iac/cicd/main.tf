@@ -33,7 +33,6 @@ module "s3" {
   etl_codepipeline_bucket = var.etl_codepipeline_bucket
   tags = local.common_tags
   owner = var.owner
-  bucket_name = ""
 }
 
 

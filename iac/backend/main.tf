@@ -5,7 +5,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket = lower(replace("${var.owner}-${var.s3_bucket_name}", " ", "-"))
-  tags = var.tags
+  tags = local.common_tags
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "terraform_state_lifecycle" {
