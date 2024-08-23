@@ -38,6 +38,8 @@ Ensure you have an active AWS account. If you don't have one, [create an AWS acc
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
     - ![Screenshot of GitHub Fork Button](assets/github-fork-button.png)
+    - Remember to fork all branches! 
+    - ![Screenshot of GitHub Copy Master Only must be disabled](assets/github-fork-copy-branches.png)
 2. **Launch a Codespace**:
     - Once you have forked the repository, **navigate to your fork**.
     - Click on the "Code" button, then select "Open with Codespaces" and create a new Codespace.
