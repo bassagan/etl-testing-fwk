@@ -38,8 +38,6 @@ Ensure you have an active AWS account. If you don't have one, [create an AWS acc
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
     - ![Screenshot of GitHub Fork Button](assets/github-fork-button.png)
-    - Remember to fork all branches! 
-    - ![Screenshot of GitHub Copy Master Only must be disabled](assets/github-fork-copy-branches.png)
 2. **Launch a Codespace**:
     - Once you have forked the repository, **navigate to your fork**.
     - Click on the "Code" button, then select "Open with Codespaces" and create a new Codespace.
@@ -92,19 +90,20 @@ Ensure you have an active AWS account. If you don't have one, [create an AWS acc
 
 In this section, you will initialize and apply Terraform configurations for two different purposes:
 
-- **iac_cicd**: Infrastructure related to CI/CD pipelines.
-- **iac_etl**: Infrastructure related to ETL processes.
+- **iac/backend**: Infrastructure for the terraform state
+- **iac/cicd**: Infrastructure related to CI/CD pipelines.
+- **iac/etl**: Infrastructure related to ETL processes.
 
 Before deploying the CI/CD and ETL infrastructures, you need to set up the backend infrastructure where Terraform will store its state remotely in AWS using an S3 bucket and a DynamoDB table.
 
 #### 4.1 Deploy Terraform Backend Infrastructure
 
 1. **Navigate to the Backend Terraform Configuration**:
-    - First, navigate to the `backend` folder within both the `iac_cicd` and `iac_etl` directories.
-    - These folders contain the Terraform configuration files necessary to set up the S3 bucket and DynamoDB table that will store your Terraform state.
+    - First, navigate to the `backend` folder within`iac` 
+    - These folder contain the Terraform configuration files necessary to set up the S3 bucket and DynamoDB table that will store your Terraform state.
 
     ```bash
-    cd cicd/backend
+    cd iac/backend
     ```
 
 2. **Review the Terraform Configuration**:
@@ -123,22 +122,14 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
 
-4. **Repeat for ETL Infrastructure**:
-    - Repeat the above steps in the `iac_etl/backend` directory to set up the backend for the ETL infrastructure.
-
-    ```bash
-    cd ../../etl/backend
-    terraform init
-    terraform apply
-    ```
 
 #### 4.2 Deploy CI/CD Infrastructure
 
 1. **Navigate to the CI/CD Terraform Directory**:
-    - Move to the `iac_cicd` directory where the Terraform files for setting up CI/CD infrastructure are located.
+    - Move to the `iac/cicd` directory where the Terraform files for setting up CI/CD infrastructure are located.
 
     ```bash
-    cd ../../cicd
+    cd ../../iac/cicd
     ```
 
 2. **Initialize Terraform**:
