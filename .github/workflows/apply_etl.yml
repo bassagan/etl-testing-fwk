@@ -42,7 +42,7 @@ jobs:
 
     - name: Package Lambda Raw-Clean ETL
       run: |
-        zip -r ../../lambda_raw_clean.zip .
+        zip -r ../../../lambda_raw_clean.zip .
       working-directory: iac/etl/lambda_raw_clean
 
     - name: Install dependencies for Lambda Clean-Curated ETL
@@ -53,7 +53,7 @@ jobs:
 
     - name: Package Lambda Clean-Curated ETL
       run: |
-        zip -r ../../lambda_clean_curated.zip .
+        zip -r ../../../lambda_clean_curated.zip .
       working-directory: iac/etl/lambda_clean_curated
 
 
