@@ -45,15 +45,6 @@ jobs:
     - name: Run modify_tfvars.sh
       run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac/cicd
 
-    - name: Initialize Terraform Backend
-      working-directory: ./iac/backend
-      run: terraform init -input=false
-
-    - name: Apply Terraform to Create Backend
-      working-directory: ./iac/backend
-      run: terraform apply -auto-approve
-
-
     - name: Terraform Init
       working-directory: ./iac/cicd
       run: terraform init
