@@ -31,7 +31,7 @@ jobs:
 
     - name: Package Lambda Generator Function
       run: |
-        zip -r ../../lambda_generator_package.zip .
+        zip -r ../../../lambda_generator_package.zip .
       working-directory: iac/etl/lambda_generator_package
 
     - name: Install dependencies for Lambda Raw-Clean ETL
