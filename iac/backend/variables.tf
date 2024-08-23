@@ -15,3 +15,27 @@ variable "dynamodb_table_name" {
   type        = string
   default     = "etl-testing-fwk-locks"
 }
+variable "owner" {
+  description = "Owner of the resources, this is your user name (NOT Account ID)"
+  type        = string
+  default     = "Paula Bassaganas"
+}
+
+variable "env" {
+  description = "Environment (e.g., dev, staging, prod)"
+  type        = string
+  default = "dev"
+}
+
+variable "tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}
+
+locals {
+  common_tags = merge({
+    Owner = var.owner,
+    Environment = var.env
+  }, var.tags)
+}

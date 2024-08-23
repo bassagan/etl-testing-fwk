@@ -31,3 +31,8 @@ variable "commit" {
   description = "Git commit that triggered the pipeline"
   type        = string
 }
+variable "tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}

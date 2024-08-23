@@ -2,9 +2,16 @@ provider "aws" {
   region = var.region
 }
 
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
 # IAM Role for CodeBuild
 resource "aws_iam_role" "codebuild_role" {
-  name = "codebuild-service-role"
+  name = "codebuild-service-role-${random_string.suffix.result}"
+
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -16,6 +23,7 @@ resource "aws_iam_role" "codebuild_role" {
       Action = "sts:AssumeRole"
     }]
   })
+  tags = var.tags
 }
 
 # Attach necessary policies to the CodeBuild IAM role
@@ -55,7 +63,7 @@ resource "aws_iam_role_policy" "codebuild_report_permissions" {
 
 # IAM Role for CodePipeline
 resource "aws_iam_role" "codepipeline_role" {
-  name = "codepipeline-service-role"
+  name = "codepipeline-service-role-${random_string.suffix.result}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -67,6 +75,7 @@ resource "aws_iam_role" "codepipeline_role" {
       Action = "sts:AssumeRole"
     }]
   })
+  tags = var.tags
 }
 
 # Attach necessary policies to the CodePipeline IAM role
@@ -82,7 +91,7 @@ resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_policy" {
 
 # Custom policy to allow CodePipeline to start CodeBuild projects and use CodeStar connections
 resource "aws_iam_policy" "codepipeline_codebuild_startbuild" {
-  name        = "CodePipelineStartBuild"
+  name        = "CodePipelineStartBuild-${random_string.suffix.result}"
   description = "Allows CodePipeline to start CodeBuild projects and use CodeStar connections"
   policy = jsonencode({
     Version = "2012-10-17",
@@ -99,6 +108,7 @@ resource "aws_iam_policy" "codepipeline_codebuild_startbuild" {
       }
     ]
   })
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_startbuild_policy" {

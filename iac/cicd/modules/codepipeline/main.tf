@@ -1,7 +1,7 @@
 resource "aws_codepipeline" "etl_pipeline" {
   name     = var.codepipeline_name
   role_arn = var.codepipeline_role
-
+  tags = var.tags
   artifact_store {
     location = var.artifact_bucket
     type     = "S3"

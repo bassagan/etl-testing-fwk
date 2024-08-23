@@ -4,7 +4,8 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = var.s3_bucket_name
+  bucket = lower(replace("${var.owner}-${var.s3_bucket_name}", " ", "-"))
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "terraform_state_lifecycle" {
@@ -20,7 +21,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state_lifecycle" {
   }
 }
 resource "aws_dynamodb_table" "terraform_locks" {
-  name         = var.dynamodb_table_name
+  name         = lower(replace("${var.owner}-manage-users-dynamodb", " ", "-"))
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   attribute {

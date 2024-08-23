@@ -5,6 +5,9 @@ tags = {
   Project     = "etl-testing-framework"
 }
 
+#Backend variables:
+backend_bucket = "etl-testing-fwk-backend-s3"
+
 # S3 Bucket
 bucket_name = "etl-tutorial-bucket-dev"
 raw_bucket_name = "raw-etl-bucket-dev"

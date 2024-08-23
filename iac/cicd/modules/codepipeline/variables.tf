@@ -36,3 +36,8 @@ variable "artifact_bucket" {
 variable "region" {
   default = "eu-west-1"
 }
+variable "tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}

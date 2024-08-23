@@ -1,5 +1,11 @@
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
 resource "aws_codebuild_project" "etl_build" {
-  name         = "etl-build"
+  name         = "etl-build-${random_string.suffix.result}"
   service_role = var.codebuild_role
 
   artifacts {
@@ -40,4 +46,5 @@ resource "aws_codebuild_project" "etl_build" {
       status      = "ENABLED"
     }
   }
+  tags = var.tags
 }
