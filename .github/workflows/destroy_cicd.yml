@@ -31,21 +31,33 @@ jobs:
         echo "BRANCH_NAME=$branch_name" >> $GITHUB_ENV
         echo "REPO_NAME=$repo_name" >> $GITHUB_ENV
 
-
     - name: Make modify_tfvars.sh executable
       run: chmod +x ./scripts/modify_tfvars.sh
 
     - name: Run modify_tfvars.sh
-      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_cicd
+      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac/cicd
 
     - name: Terraform Init
-      working-directory: ./iac_cicd
+      working-directory: ./cicd
       run: terraform init -input=false
 
     - name: List Terraform State
-      working-directory: ./iac_cicd
+      working-directory: ./iac/cicd
       run: terraform state list
 
-    - name: Terraform Destroy
-      working-directory: ./iac_cicd
-      run: terraform destroy -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+    - name: Terraform Destroy with Unstable Behavior
+      working-directory: ./iac/cicd
+      continue-on-error: true
+      run: |
+        terraform destroy -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}" | tee destroy_output.txt
+        grep "Error" destroy_output.txt || echo "All resources destroyed successfully."
+        if grep -q "Error" destroy_output.txt; then
+          echo "Some resources could not be destroyed:" >> failed_resources.txt
+          grep "Error" destroy_output.txt >> failed_resources.txt
+        fi
+
+    - name: Output Failed Resources (If Any)
+      if: failure()
+      run: |
+        echo "The following resources could not be destroyed:"
+        cat failed_resources.txt

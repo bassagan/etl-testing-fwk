@@ -72,7 +72,7 @@ def create_dataset_from_query(data_source_arn, query):
 def main():
     data_source_arn = create_data_source()
 
-    with open('../iac_etl/modules/athena/queries/top_doctors.sql', 'r') as file:
+    with open('../iac/etl/modules/athena/queries/top_doctors.sql', 'r') as file:
         top_doctors_query = file.read()
 
     dataset_arn = create_dataset_from_query(data_source_arn, top_doctors_query)

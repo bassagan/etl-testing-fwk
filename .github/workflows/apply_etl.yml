@@ -32,7 +32,7 @@ jobs:
     - name: Package Lambda Generator Function
       run: |
         zip -r ../../lambda_generator_package.zip .
-      working-directory: iac_etl/lambda_generator_package
+      working-directory: iac/etl/lambda_generator_package
 
     - name: Install dependencies for Lambda Raw-Clean ETL
       run: |
@@ -43,7 +43,7 @@ jobs:
     - name: Package Lambda Raw-Clean ETL
       run: |
         zip -r ../../lambda_raw_clean.zip .
-      working-directory: iac_etl/lambda_raw_clean
+      working-directory: iac/etl/lambda_raw_clean
 
     - name: Install dependencies for Lambda Clean-Curated ETL
       run: |
@@ -54,7 +54,7 @@ jobs:
     - name: Package Lambda Clean-Curated ETL
       run: |
         zip -r ../../lambda_clean_curated.zip .
-      working-directory: iac_etl/lambda_clean_curated
+      working-directory: iac/etl/lambda_clean_curated
 
 
     - name: Set up Terraform
@@ -80,7 +80,7 @@ jobs:
       run: chmod +x ./scripts/modify_tfvars.sh
 
     - name: Run modify_tfvars.sh
-      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac_etl
+      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac/etl
 
     - name: Run ls
       run: |
@@ -93,11 +93,11 @@ jobs:
         aws s3 cp lambda_clean_curated.zip s3://etl-tutorial-bucket-dev/lambda_clean_curated.zip
 
     - name: Terraform Init
-      working-directory: ./iac_etl
+      working-directory: ./iac/etl
       run: terraform init -input=false
 
     - name: Terraform Apply
-      working-directory: ./iac_etl
+      working-directory: ./iac/etl
       run: terraform apply -auto-approve
 
     - name: Install Dashboard dependencies

@@ -48,7 +48,7 @@ Ensure you have an active AWS account. If you don't have one, [create an AWS acc
     - You will know the CodeSpace is ready when you can see: 
    ![Screenshot of CodeSpace Building](assets/github-codespace-ready.png)
 2. **Checkout the initial branch**:
-   -In order to switch branches you can run git commands in the terminal:
+   - In order to switch branches you can run git commands in the terminal:
    ```bash
     git checkout master
     ```
@@ -78,43 +78,142 @@ Ensure you have an active AWS account. If you don't have one, [create an AWS acc
 2. **Set Up Python Environment**:
     - Activate the pre-configured Python environment:
     ```bash
+    python3 -m venv venv
     source venv/bin/activate 
     ```
     - Install the necessary Python dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-    - ![Screenshot of Python environment setup](path/to/screenshot-python-env.png)
 
 ### 4. Terraform Initialization
-1. **Terraform Backend Setup**:
-    - Update the `terraform.tfvars.template` file with your specific values and rename it to `terraform.tfvars`.
-    - ![Screenshot of terraform.tfvars.template](path/to/screenshot-terraform-tfvars.png)
+
+In this section, you will initialize and apply Terraform configurations for two different purposes:
+
+- **iac_cicd**: Infrastructure related to CI/CD pipelines.
+- **iac_etl**: Infrastructure related to ETL processes.
+
+Before deploying the CI/CD and ETL infrastructures, you need to set up the backend infrastructure where Terraform will store its state remotely in AWS using an S3 bucket and a DynamoDB table.
+
+#### 4.1 Deploy Terraform Backend Infrastructure
+
+1. **Navigate to the Backend Terraform Configuration**:
+    - First, navigate to the `backend` folder within both the `iac_cicd` and `iac_etl` directories.
+    - These folders contain the Terraform configuration files necessary to set up the S3 bucket and DynamoDB table that will store your Terraform state.
+
+    ```bash
+    cd cicd/backend
+    ```
+
+2. **Review the Terraform Configuration**:
+    - The `main.tf` file creates an S3 bucket to store your Terraform state files and a DynamoDB table to manage state locking and consistency.
+
+
+3. **Initialize and Apply the Backend Configuration**:
+    - Initialize and apply the Terraform configuration to create the S3 bucket and DynamoDB table.
+
+    ```bash
+    terraform init
+    terraform apply
+    ```
+
+    - Confirm the apply action when prompted writting `yes`.
+
+    ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
+
+4. **Repeat for ETL Infrastructure**:
+    - Repeat the above steps in the `iac_etl/backend` directory to set up the backend for the ETL infrastructure.
+
+    ```bash
+    cd ../../etl/backend
+    terraform init
+    terraform apply
+    ```
+
+#### 4.2 Deploy CI/CD Infrastructure
+
+1. **Navigate to the CI/CD Terraform Directory**:
+    - Move to the `iac_cicd` directory where the Terraform files for setting up CI/CD infrastructure are located.
+
+    ```bash
+    cd ../../cicd
+    ```
+
 2. **Initialize Terraform**:
-    - Run the following command to initialize Terraform:
+    - Initialize Terraform in this directory to download the necessary providers and prepare the environment.
+
     ```bash
     terraform init
     ```
-    - ![Screenshot of Terraform init output](path/to/screenshot-terraform-init.png)
+
 3. **Validate Terraform Configuration**:
-    - Validate the Terraform files to ensure there are no syntax errors:
+    - Run the following command to ensure that the Terraform configuration files are syntactically correct.
+
     ```bash
     terraform validate
     ```
-    - ![Screenshot of Terraform validate output](path/to/screenshot-terraform-validate.png)
-4. **Plan the Infrastructure**:
-    - Create an execution plan to see what Terraform will do:
+
+4. **Plan the CI/CD Infrastructure**:
+    - Create an execution plan to see what resources Terraform will create or modify.
+
     ```bash
     terraform plan
     ```
-    - ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
-5. **Apply the Infrastructure**:
-    - Deploy the infrastructure:
+
+    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+
+5. **Apply the CI/CD Infrastructure**:
+    - Apply the Terraform configuration to provision the CI/CD infrastructure. Confirm when prompted.
+
     ```bash
     terraform apply
     ```
-    - Confirm the apply action.
-    - ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+
+    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+
+#### 4.3 Deploy ETL Infrastructure
+
+1. **Navigate to the ETL Terraform Directory**:
+    - Now, move to the `iac_etl` directory to deploy the ETL infrastructure.
+
+    ```bash
+    cd ../etl
+    ```
+
+2. **Initialize Terraform**:
+    - Initialize Terraform in this directory to download the necessary providers and prepare the environment.
+
+    ```bash
+    terraform init
+    ```
+
+3. **Validate Terraform Configuration**:
+    - Run the following command to ensure that the Terraform configuration files are syntactically correct.
+
+    ```bash
+    terraform validate
+    ```
+
+4. **Plan the ETL Infrastructure**:
+    - Create an execution plan to see what resources Terraform will create or modify.
+
+    ```bash
+    terraform plan
+    ```
+
+    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+
+5. **Apply the ETL Infrastructure**:
+    - Apply the Terraform configuration to provision the ETL infrastructure. Confirm when prompted.
+
+    ```bash
+    terraform apply
+    ```
+
+    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+
+---
+
 
 ### 5. AWS Resource Verification
 1. **Login to AWS Console**: Log in to your AWS account and verify that all resources have been created.

@@ -4,7 +4,7 @@ provider "aws" {
 
 # Include S3 bucket module for ETL
 module "s3" {
-  source = "./modules/s3"
+  source = "modules/s3"
 
   bucket_name = var.bucket_name
   raw_bucket_name = var.raw_bucket_name
@@ -17,7 +17,7 @@ module "s3" {
 
 # Include IAM role for Lambda
 module "iam" {
-  source = "./modules/iam"
+  source = "modules/iam"
 
   env    = var.env
   tags   = var.tags
@@ -36,7 +36,7 @@ module "iam" {
 
 # Include Lambda module for ETL processing
 module "lambda" {
-  source = "./modules/lambda"
+  source = "modules/lambda"
 
   function_name   = var.lambda_name
   s3_bucket       = module.s3.bucket_name
@@ -57,7 +57,7 @@ module "lambda" {
 
 # Include SNS module for notifications
 module "sns" {
-  source = "./modules/sns"
+  source = "modules/sns"
   notification_email = var.notification_mail
   env            = var.env
 
@@ -65,7 +65,7 @@ module "sns" {
 
 # Include EventBridge module for scheduling
 module "eventbridge" {
-  source               = "./modules/eventbridge"
+  source               = "modules/eventbridge"
 
   raw_clean_function_arn  = module.lambda.raw_clean_lambda_function_arn
   clean_curated_function_arn  = module.lambda.clean_curated_lambda_function_arn
@@ -79,7 +79,7 @@ module "eventbridge" {
 }
 
 module "athena" {
-  source = "./modules/athena"
+  source = "modules/athena"
 
   athena_db_name = var.athena_db_name
 
