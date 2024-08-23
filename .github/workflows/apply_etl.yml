@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies for Lambda Generator
       run: |
         python -m pip install --upgrade pip
-        pip install --no-cache-dir --no-deps -r iac_etl/lambda_generator_package/requirements.txt -t iac_etl/lambda_generator_package
+        pip install --no-cache-dir --no-deps -r iac/etl/lambda_generator_package/requirements.txt -t iac/etl/lambda_generator_package
 
     - name: Package Lambda Generator Function
       run: |
@@ -37,7 +37,7 @@ jobs:
     - name: Install dependencies for Lambda Raw-Clean ETL
       run: |
         python -m pip install --upgrade pip
-        pip install --no-cache-dir --no-deps -r iac_etl/lambda_raw_clean/requirements.txt -t iac_etl/lambda_raw_clean
+        pip install --no-cache-dir --no-deps -r iac/etl/lambda_raw_clean/requirements.txt -t iac/etl/lambda_raw_clean
         
 
     - name: Package Lambda Raw-Clean ETL
@@ -48,7 +48,7 @@ jobs:
     - name: Install dependencies for Lambda Clean-Curated ETL
       run: |
         python -m pip install --upgrade pip
-        pip install --no-cache-dir --no-deps -r iac_etl/lambda_clean_curated/requirements.txt -t iac_etl/lambda_clean_curated
+        pip install --no-cache-dir --no-deps -r iac/etl/lambda_clean_curated/requirements.txt -t iac/etl/lambda_clean_curated
         
 
     - name: Package Lambda Clean-Curated ETL
