@@ -48,7 +48,7 @@ jobs:
 
     - name: Terraform Plan for Backend
       working-directory: ./iac/backend
-      run: terraform plan -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+      run: terraform plan
 
     # Terraform Plan for CICD
     - name: Terraform Init for CICD
@@ -57,7 +57,7 @@ jobs:
 
     - name: Terraform Plan for CICD
       working-directory: ./iac/cicd
-      run: terraform plan -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+      run: terraform plan
 
     # Terraform Plan for ETL
     - name: Terraform Init for ETL
@@ -66,4 +66,4 @@ jobs:
 
     - name: Terraform Plan for ETL
       working-directory: ./iac/etl
-      run: terraform plan -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+      run: terraform plan
