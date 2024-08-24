@@ -1,11 +1,7 @@
 name: Terraform Apply ETL Infrastructure
 
 on:
-  workflow_dispatch: # Allows manual triggering
-  push:
-    branches:
-      - master
-      - feature/*
+  workflow_dispatch:  # Allows manual trigger
 
 permissions:
   contents: read
