@@ -1,7 +1,11 @@
 name: Terraform Destroy ETL Infrastructure
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering
+
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   terraform_destroy_etl:
@@ -24,36 +28,14 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
 
-    - name: Prepare variables
-      run: |
-        branch_name=$(echo "${GITHUB_REF#refs/heads/}")
-        repo_name=$(basename ${{ github.repository }})
-        echo "BRANCH_NAME=$branch_name" >> $GITHUB_ENV
-        echo "REPO_NAME=$repo_name" >> $GITHUB_ENV
+    - name: Make setup_infrastructure.sh executable
+      run: chmod +x ./scripts/setup_infrastructure.sh
 
-    - name: Make modify_tfvars.sh executable
-      run: chmod +x ./scripts/modify_tfvars.sh
+    - name: Run setup_infrastructure.sh
+      run: ./scripts/setup_infrastructure.sh ${{ github.actor }}
 
-    - name: Run modify_tfvars.sh
-      run: ./scripts/modify_tfvars.sh ${{ github.ref_name }} ${{ github.repository }} dev iac/etl
-
-    - name: Terraform Init
+    - name: Terraform Init and Destroy
       working-directory: ./iac/etl
-      run: terraform init -input=false
-
-    - name: Terraform Destroy ETL with Unstable Behavior
-      working-directory: ./iac/etl
-      continue-on-error: true
       run: |
-        terraform destroy -auto-approve | tee destroy_etl_output.txt
-        grep "Error" destroy_etl_output.txt || echo "All ETL resources destroyed successfully."
-        if grep -q "Error" destroy_etl_output.txt; then
-          echo "Some ETL resources could not be destroyed:" >> failed_etl_resources.txt
-          grep "Error" destroy_etl_output.txt >> failed_etl_resources.txt
-        fi
-
-    - name: Output Failed ETL Resources (If Any)
-      if: failure()
-      run: |
-        echo "The following ETL resources could not be destroyed:"
-        cat failed_etl_resources.txt
+        terraform init -input=false
+        terraform destroy -auto-approve

@@ -1,0 +1,69 @@
+name: Terraform Plan Check
+
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+  pull_request:  # To ensure that pull requests are also checked
+
+permissions:
+  contents: read
+
+jobs:
+  terraform_plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
+    - name: Make setup_infrastructure.sh executable
+      run: chmod +x ./scripts/setup_infrastructure.sh
+
+    - name: Run setup_infrastructure.sh
+      run: ./scripts/setup_infrastructure.sh <owner>
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: eu-west-1
+
+    # Terraform Plan for Backend
+    - name: Terraform Init for Backend
+      working-directory: ./iac/backend
+      run: terraform init
+
+    - name: Terraform Plan for Backend
+      working-directory: ./iac/backend
+      run: terraform plan -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+
+    # Terraform Plan for CICD
+    - name: Terraform Init for CICD
+      working-directory: ./iac/cicd
+      run: terraform init
+
+    - name: Terraform Plan for CICD
+      working-directory: ./iac/cicd
+      run: terraform plan -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+
+    # Terraform Plan for ETL
+    - name: Terraform Init for ETL
+      working-directory: ./iac/etl
+      run: terraform init
+
+    - name: Terraform Plan for ETL
+      working-directory: ./iac/etl
+      run: terraform plan -var="github_token=${{ secrets.GITHUB_TOKEN }}"
