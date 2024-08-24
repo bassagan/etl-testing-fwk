@@ -16,7 +16,7 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 
 ## Overview
 In this exercise, you will:
-- Set up your AWS account and configure your environment within GitHub Codespaces.
+- Get a temporary AWS account provided by the speaker on the conference. 
 - Fork the GitHub repository and launch a Codespace.
 - Initialize and deploy the infrastructure using Terraform.
 - Verify that all necessary AWS resources have been created.
@@ -37,7 +37,7 @@ During this tutorial, each attendee will be provided with temporary AWS credenti
 ### Using Provided AWS Credentials
 
 - **Access Key ID** and **Secret Access Key** will be shared with you at the start of the tutorial.
-- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh`, see section 3. 
+- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh>`, [see section 3](#3-environment-setup).
 ### 2. Fork the Repository
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
@@ -151,7 +151,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform plan
     ```
 
-    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+    ![Screenshot of Terraform plan output](assets/terminal-terraform-plan.png)
 
 5. **Apply the CI/CD Infrastructure**:
     - Apply the Terraform configuration to provision the CI/CD infrastructure. Confirm when prompted.
@@ -160,7 +160,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform apply
     ```
 
-    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+    ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
 
 #### 4.3 Deploy ETL Infrastructure
 
@@ -192,7 +192,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform plan
     ```
 
-    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+    ![Screenshot of Terraform plan output](assets/terminal-terraform-etl-plan.png)
 
 5. **Apply the ETL Infrastructure**:
     - Apply the Terraform configuration to provision the ETL infrastructure. Confirm when prompted.
