@@ -23,9 +23,10 @@ In this exercise, you will:
 
 ## Prerequisites
 Before you begin, make sure you have the following:
-- An AWS account. Temporary accounts will be provided
+- An AWS account. Temporary accounts will be provided.
 - A GitHub account with access to the repository and GitHub Codespaces enabled.
 - Basic understanding of Git, Terraform, and AWS services.
+- IAM role with administrative privileges or specific permissions for S3, IAM, Lambda, DynamoDB, CodeBuild, and CodePipeline.
 
 
 ## Step-by-Step Instructions
@@ -98,7 +99,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     - These folder contain the Terraform configuration files necessary to set up the S3 bucket and DynamoDB table that will store your Terraform state.
 
     ```bash
-    cd iac/backend
+    cd ../iac/backend
     ```
 
 2. **Review the Terraform Configuration**:
@@ -110,9 +111,11 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ```bash
     terraform init
+      ```
+     ```bash
     terraform apply
-    ```
-
+      ```
+   
     - Confirm the apply action when prompted writting `yes`.
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
