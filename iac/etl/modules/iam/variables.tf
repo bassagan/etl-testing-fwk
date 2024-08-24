@@ -44,3 +44,7 @@ variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
 }
+variable "owner" {
+  description = "The owner of the resources"
+  type        = string
+}

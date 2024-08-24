@@ -26,3 +26,8 @@ variable "clean_curated_function_name" {
   description = "Name of the Lambda function"
   type        = string
 }
+
+variable "tags" {
+  description = "Tags to apply to the S3 bucket"
+  type        = map(string)
+}

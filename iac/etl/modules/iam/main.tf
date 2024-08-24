@@ -1,5 +1,14 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.64.0"  # Update this to match the provider version in your root module
+    }
+  }
+}
+
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda-execution-role-${var.env}"
+  name = "${var.owner}-lambda-execution-role-${var.env}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -19,6 +28,7 @@ resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
   name       = "lambda-basic-execution-role-attachment-${var.env}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   roles      = [aws_iam_role.lambda_role.name]
+  
 }
 
 resource "aws_iam_role_policy" "lambda_s3_policy" {
@@ -53,7 +63,7 @@ resource "aws_iam_role_policy" "lambda_s3_policy" {
 
 
 resource "aws_iam_role" "athena_role" {
-  name = "athena-execution-role-${var.env}"
+  name = "${var.owner}-athena-execution-role-${var.env}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -101,8 +111,8 @@ resource "aws_iam_role_policy" "athena_s3_policy" {
   })
 }
 resource "aws_iam_role" "quicksight_role" {
-  name = "quicksight-access-role-${var.env}"
-
+  name = "${var.owner}-quicksight-access-role-${var.env}"
+  tags = var.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -114,7 +124,6 @@ resource "aws_iam_role" "quicksight_role" {
     }]
   })
 
-  tags = var.tags
 }
 
 resource "aws_iam_policy" "quicksight_s3_policy" {
@@ -146,9 +155,11 @@ resource "aws_iam_policy" "quicksight_s3_policy" {
       }
     ]
   })
+    tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "quicksight_s3_policy_attachment" {
   policy_arn = aws_iam_policy.quicksight_s3_policy.arn
   role       = aws_iam_role.quicksight_role.name
+  
 }

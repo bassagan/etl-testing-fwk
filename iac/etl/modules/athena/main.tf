@@ -2,13 +2,14 @@ resource "aws_athena_database" "etl_db" {
   name   = var.athena_db_name
   bucket = var.clean_bucket_name
 
-
 }
 
 resource "aws_athena_workgroup" "etl_workgroup" {
-  name        = "etl-workgroup-dev"
+  name        = "${var.owner}-etl-workgroup-dev"
   state       = "ENABLED"
   description = "Workgroup for ETL queries"
+  tags = var.tags
+
 
   configuration {
     enforce_workgroup_configuration = true
@@ -402,6 +403,7 @@ resource "aws_glue_catalog_table" "curated_patients_table" {
       serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
     }
   }
+  
 }
 resource "aws_athena_named_query" "top_doctors_query" {
   name      = "TopDoctorsQuery"

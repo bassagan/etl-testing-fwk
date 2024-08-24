@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-    random = {
-      source = "hashicorp/random"
-      version = "3.0.0"
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.64.0"  # Update this to match the provider version in your root module
     }
   }
 }
@@ -23,6 +23,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
   versioning_configuration {
     status = "Enabled"
   }
+  
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "lifecycle" {
@@ -80,6 +81,7 @@ resource "aws_s3_bucket_policy" "clean_bucket_policy" {
 
 resource "aws_s3_bucket_policy" "curated_bucket_policy" {
   bucket = aws_s3_bucket.curated_bucket.id
+  
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -100,4 +102,5 @@ resource "aws_s3_bucket_policy" "curated_bucket_policy" {
       }
     ]
   })
+  
 }

@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.64.0"  # Update this to match the provider version in your root module
+    }
+  }
+}
+
 resource "aws_lambda_function" "raw_clean_function" {
   function_name    = "${var.function_name}-${var.env}"
   handler          = "etl_function.lambda_handler"
@@ -65,6 +74,7 @@ resource "aws_cloudwatch_event_rule" "raw_clean_success_rule" {
       }
     }
   })
+    tags = var.tags
 }
 
 # EventBridge target to trigger the clean_curated_function
@@ -72,6 +82,7 @@ resource "aws_cloudwatch_event_target" "clean_curated_target" {
   rule      = aws_cloudwatch_event_rule.raw_clean_success_rule.name
   target_id = "clean-curated-target"
   arn       = aws_lambda_function.clean_curated_function.arn
+  
 }
 
 # Grant permission for EventBridge to invoke clean_curated_function
@@ -81,4 +92,5 @@ resource "aws_lambda_permission" "allow_eventbridge_invoke_clean_curated" {
   function_name = aws_lambda_function.clean_curated_function.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.raw_clean_success_rule.arn
+  
 }

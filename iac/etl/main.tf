@@ -2,6 +2,19 @@ provider "aws" {
   region = var.region
 }
 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.64.0"  # Update to the version you need
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.6.2"  # Update to the version you need
+    }
+  }
+}
+
 # Include S3 bucket module for ETL
 module "s3" {
   source = "./modules/s3"
@@ -20,6 +33,9 @@ module "s3" {
 
 # Include IAM role for Lambda
 module "iam" {
+  providers = {
+    aws = aws
+  }
   source = "./modules/iam"
 
   env                      = var.env
@@ -31,7 +47,7 @@ module "iam" {
   query_input_bucket_name  = module.s3.clean_bucket_name
   region                   = var.region
   depends_on               = [module.s3]
-
+  owner = var.owner
   tags = local.common_tags
 }
 
@@ -42,7 +58,7 @@ module "lambda" {
   function_name                  = var.lambda_name
   s3_bucket                      = module.s3.bucket_name
   lambda_package                 = var.lambda_package
-  lambda_bucket                  = var.bucket_name
+  lambda_bucket                  = module.s3.bucket_name
   clean_curated_function_name    = var.clean_curated_function_name
   data_generator_function_name   = var.data_generator_function_name
   lambda_role_arn                = module.iam.lambda_role_arn
@@ -84,6 +100,6 @@ module "athena" {
   clean_bucket_name    = module.s3.clean_bucket_name
   curated_bucket_name  = module.s3.curated_bucket_name
   depends_on           = [module.s3]
-
+  owner = var.owner
   tags = local.common_tags
 }
