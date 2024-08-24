@@ -61,19 +61,19 @@ check_scripts() {
 
 # Run the scripts in sequence
 run_scripts() {
-    # Run configure_backend.sh
-    echo "Running configure_backend.sh..."
-    bash "$CONFIGURE_BACKEND_SCRIPT"
-    if [ $? -ne 0 ]; then
-        echo "Error: configure_backend.sh failed."
-        exit 1
-    fi
-
     # Run generate_tfvars.sh with the required argument for the owner
     echo "Running generate_tfvars.sh..."
     bash "$GENERATE_TFVARS_SCRIPT" "$1"
     if [ $? -ne 0 ]; then
         echo "Error: generate_tfvars.sh failed."
+        exit 1
+    fi
+
+    # Run configure_backend.sh
+    echo "Running configure_backend.sh..."
+    bash "$CONFIGURE_BACKEND_SCRIPT"
+    if [ $? -ne 0 ]; then
+        echo "Error: configure_backend.sh failed."
         exit 1
     fi
 
