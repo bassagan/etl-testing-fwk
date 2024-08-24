@@ -28,6 +28,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
 
+    - name: Run setup_infrastructure.sh
+      run: |
+        chmod +x ./scripts/setup_infrastructure.sh
+        ./scripts/setup_infrastructure.sh ${{ github.actor }}  # Use GitHub username as the owner
+        aws configure set default.s3.max_bandwidth 50MB/s
+
     - name: Terraform Init
       working-directory: ./iac/cicd
       run: terraform init
