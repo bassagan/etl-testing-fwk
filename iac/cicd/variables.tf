@@ -1,12 +1,6 @@
 variable "region" {
   default = "eu-west-1"
 }
-
-variable "github_token" {
-  description = "GitHub OAuth token"
-  type        = string
-}
-
 variable "github_owner" {
   description = "GitHub repository owner"
   type        = string
@@ -34,6 +28,11 @@ variable "project_name" {
   description = "The name of the project"
   type        = string
   default     = "etl-testing-fwk"
+}
+variable "branch" {
+  description = "The name of the working branch"
+  type        = string
+  default     = "master"
 }
 
 variable "environment" {
@@ -74,4 +73,34 @@ locals {
     Owner = var.owner,
     Environment = var.env
   }, var.tags)
+}
+
+
+variable "codebuild_role_name" {
+  description = "Code build role name"
+  type = string
+  default = "codebuild-service-role"
+}
+
+variable "codebuild_report_permissions_name" {
+  description = "Code build permissions"
+  type = string
+  default = "CodeBuildReportPermissions"
+}
+
+variable "codepipeline_role_name" {
+    description = "Code pipeline role name"
+  type = string
+  default = "codepipeline-service-role"
+}
+variable "codepipeline_report_permissions_name" {
+  description = "Code pipeline permissions"
+  type = string
+  default = "CodePipelineStartBuild"
+}
+
+variable "codebuild_name" {
+  description = "Code Build Name"
+  type = string
+  default = "etl-build"
 }

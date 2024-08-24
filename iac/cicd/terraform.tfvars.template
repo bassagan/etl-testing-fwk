@@ -1,9 +1,17 @@
+#AWS Info:
 region       = "eu-west-1"
-github_token = "YOUR_GITHUB_TOKEN"
-github_owner = "git_owner"
-github_repo  = "etl-testing-fwk"
-s3_bucket_name = "etl-testing-fwk-backend-s3"
-dynamodb_table_name = "etl-testing-fwk-dynamo"
-codebuild_role = "arn:aws:iam::123456789012:role/codebuild-service-role"
-codepipeline_name = "{branch_name}-{repo_name}-codepipeline-{env}"
+owner         = "{owner}"
+
+#Github info for executing tests on aws cicd
+github_owner = "{github_owner}"
+github_repo  = "{repo_name}"
+branch       = "{branch}"
+
+
+codepipeline_name = "codepipeline"
 etl_codepipeline_bucket = "etl-codepipeline-bucket"
+
+codebuild_role_name = "codebuild-service-role"
+codebuild_report_permissions_name = "CodeBuildReportPermissions"
+codepipeline_role_name = "codepipeline-service-role"
+

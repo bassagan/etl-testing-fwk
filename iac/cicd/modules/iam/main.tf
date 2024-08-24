@@ -2,15 +2,10 @@ provider "aws" {
   region = var.region
 }
 
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
-  upper   = false
-}
 
 # IAM Role for CodeBuild
 resource "aws_iam_role" "codebuild_role" {
-  name = "codebuild-service-role-${random_string.suffix.result}"
+  name = var.codebuild_role_name
 
 
   assume_role_policy = jsonencode({
@@ -44,7 +39,7 @@ resource "aws_iam_role_policy_attachment" "codebuild_basic_execution" {
 
 # Custom policy for CodeBuild to manage report groups and test cases
 resource "aws_iam_role_policy" "codebuild_report_permissions" {
-  name = "CodeBuildReportPermissions"
+  name = var.codebuild_report_permissions_name
   role = aws_iam_role.codebuild_role.id
 
   policy = jsonencode({
@@ -63,7 +58,7 @@ resource "aws_iam_role_policy" "codebuild_report_permissions" {
 
 # IAM Role for CodePipeline
 resource "aws_iam_role" "codepipeline_role" {
-  name = "codepipeline-service-role-${random_string.suffix.result}"
+  name = var.codepipeline_role_name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -91,7 +86,7 @@ resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_policy" {
 
 # Custom policy to allow CodePipeline to start CodeBuild projects and use CodeStar connections
 resource "aws_iam_policy" "codepipeline_codebuild_startbuild" {
-  name        = "CodePipelineStartBuild-${random_string.suffix.result}"
+  name        = var.codepipeline_report_permissions_name
   description = "Allows CodePipeline to start CodeBuild projects and use CodeStar connections"
   policy = jsonencode({
     Version = "2012-10-17",

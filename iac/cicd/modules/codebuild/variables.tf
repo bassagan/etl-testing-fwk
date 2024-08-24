@@ -13,11 +13,6 @@ variable "github_owner" {
   type        = string
 }
 
-variable "github_token" {
-  description = "GitHub OAuth token"
-  type        = string
-}
-
 variable "region" {
   default = "eu-west-1"
 }
@@ -35,4 +30,9 @@ variable "tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+variable "codebuild_name" {
+  description = "Code Build Name"
+  default = "etl-build"
 }

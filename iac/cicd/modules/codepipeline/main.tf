@@ -20,8 +20,8 @@ resource "aws_codepipeline" "etl_pipeline" {
 
       configuration = {
         ConnectionArn    = "arn:aws:codeconnections:eu-west-1:087559609246:connection/b0171203-62d8-4ebb-964d-907be5d5a213"
-        FullRepositoryId = "${var.github_owner}/${var.github_repo}"
-        BranchName       = "feature/initial-pytest-config"
+        FullRepositoryId = var.full_repository
+        BranchName       = var.branch
       }
     }
   }

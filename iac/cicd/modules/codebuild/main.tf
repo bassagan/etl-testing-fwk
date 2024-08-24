@@ -1,11 +1,5 @@
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
-  upper   = false
-}
-
 resource "aws_codebuild_project" "etl_build" {
-  name         = "etl-build-${random_string.suffix.result}"
+  name         = var.codebuild_name
   service_role = var.codebuild_role
 
   artifacts {
@@ -23,12 +17,12 @@ resource "aws_codebuild_project" "etl_build" {
     }
     environment_variable {
       name  = "GIT_BRANCH"
-      value = "${var.branch}"
+      value = var.branch
     }
 
     environment_variable {
       name  = "GIT_COMMIT"
-      value = "${var.commit}"
+      value = var.commit
     }
   }
 

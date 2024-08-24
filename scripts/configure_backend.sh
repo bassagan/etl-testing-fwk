@@ -10,8 +10,10 @@ BACKEND_DIR="${SCRIPT_DIR}/../iac/backend"
 ETL_BACKEND_DIR="${SCRIPT_DIR}/../iac/etl"
 CICD_BACKEND_DIR="${SCRIPT_DIR}/../iac/cicd"
 
-# Extract the 'owner' value from iac/backend/terraform.tfvars
+# Extract the 'owner' value from iac/backend/old_terraform.tfvars
 OWNER=$(grep '^owner' "${BACKEND_DIR}/terraform.tfvars" | sed 's/.*= *"\([^"]*\)".*/\1/')
+BACKEND_S3_BUCKET_NAME=$(grep '^s3_bucket_name' "${BACKEND_DIR}/terraform.tfvars" | sed 's/.*= *"\([^"]*\)".*/\1/')
+DYNAMODB_TABLE_NAME=$(grep '^dynamodb_table_name' "${BACKEND_DIR}/terraform.tfvars" | sed 's/.*= *"\([^"]*\)".*/\1/')
 
 # Check if OWNER is extracted correctly
 if [ -z "$OWNER" ]; then
@@ -19,9 +21,13 @@ if [ -z "$OWNER" ]; then
     exit 1
 fi
 
+# Convert OWNER to lowercase and replace spaces with dashes
+OWNER=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]' | sed 's/ /-/g')
+
+
 # Define the S3 bucket and DynamoDB table names using the extracted OWNER
-S3_BUCKET_NAME="${OWNER}-etl-testing-fwk-backend-s3"
-DYNAMODB_TABLE_NAME="${OWNER}-manage-users-dynamodb"
+S3_BUCKET_NAME="${OWNER}-${BACKEND_S3_BUCKET_NAME}"
+DYNAMODB_TABLE_NAME="${OWNER}-${DYNAMODB_TABLE_NAME}"
 
 # Define the backend configuration file path for both ETL and CICD
 ETL_BACKEND_CONFIG="${ETL_BACKEND_DIR}/backend.tf"

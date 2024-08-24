@@ -12,22 +12,6 @@ variable "codebuild_project" {
   type        = string
 }
 
-
-variable "github_repo" {
-  description = "GitHub repository name"
-  type        = string
-}
-
-variable "github_owner" {
-  description = "GitHub repository owner"
-  type        = string
-}
-
-variable "github_token" {
-  description = "GitHub OAuth token"
-  type        = string
-}
-
 variable "artifact_bucket" {
   description = "S3 bucket for CodePipeline artifacts"
   type        = string
@@ -40,4 +24,11 @@ variable "tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+variable "full_repository" {
+  default = ""
+}
+variable "branch" {
+  default = ""
 }
