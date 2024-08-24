@@ -9,61 +9,72 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
-  terraform_plan:
-    name: Terraform Plan
+  terraform_plan_check:
+    name: Terraform Plan Check
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.0.0
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1
+      # Initialize Terraform with Local Backend for Backend Infrastructure
+      - name: Initialize Terraform with Local Backend for Backend
+        working-directory: ./iac/backend
+        run: |
+          echo "Using local backend for Terraform."
+          cat > backend.tf <<EOF
+          terraform {
+            backend "local" {
+              path = "./terraform.tfstate"
+            }
+          }
+          EOF
+          terraform init
 
-    - name: Make setup_infrastructure.sh executable
-      run: chmod +x ./scripts/setup_infrastructure.sh
+      - name: Terraform Plan for Backend
+        working-directory: ./iac/backend
+        run: terraform plan
 
-    - name: Run setup_infrastructure.sh
-      run: ./scripts/setup_infrastructure.sh ${{ github.actor }}
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: eu-west-1
+      # Initialize Terraform with Local Backend for CICD Infrastructure
+      - name: Initialize Terraform with Local Backend for CICD
+        working-directory: ./iac/cicd
+        run: |
+          echo "Using local backend for Terraform."
+          cat > backend.tf <<EOF
+          terraform {
+            backend "local" {
+              path = "./terraform.tfstate"
+            }
+          }
+          EOF
+          terraform init
 
-    # Terraform Plan for Backend
-    - name: Terraform Init for Backend
-      working-directory: ./iac/backend
-      run: terraform init
+      - name: Terraform Plan for CICD
+        working-directory: ./iac/cicd
+        run: terraform plan
 
-    - name: Terraform Plan for Backend
-      working-directory: ./iac/backend
-      run: terraform plan
+      # Initialize Terraform with Local Backend for ETL Infrastructure
+      - name: Initialize Terraform with Local Backend for ETL
+        working-directory: ./iac/etl
+        run: |
+          echo "Using local backend for Terraform."
+          cat > backend.tf <<EOF
+          terraform {
+            backend "local" {
+              path = "./terraform.tfstate"
+            }
+          }
+          EOF
+          terraform init
 
-    # Terraform Plan for CICD
-    - name: Terraform Init for CICD
-      working-directory: ./iac/cicd
-      run: terraform init
-
-    - name: Terraform Plan for CICD
-      working-directory: ./iac/cicd
-      run: terraform plan
-
-    # Terraform Plan for ETL
-    - name: Terraform Init for ETL
-      working-directory: ./iac/etl
-      run: terraform init
-
-    - name: Terraform Plan for ETL
-      working-directory: ./iac/etl
-      run: terraform plan
+      - name: Terraform Plan for ETL
+        working-directory: ./iac/etl
+        run: terraform plan
