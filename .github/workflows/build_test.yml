@@ -24,6 +24,12 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.0
+      - name: Run setup_infrastructure.sh
+        run: ./scripts/setup_infrastructure.sh ${{ github.actor }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-west-1
 
       # Initialize Terraform with Local Backend for Backend Infrastructure
       - name: Initialize Terraform with Local Backend for Backend
