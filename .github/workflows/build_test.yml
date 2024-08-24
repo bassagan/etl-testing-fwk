@@ -24,6 +24,10 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.0
+
+      - name: Make setup_infrastructure.sh executable
+        run: chmod +x ./scripts/setup_infrastructure.sh
+
       - name: Run setup_infrastructure.sh
         run: ./scripts/setup_infrastructure.sh ${{ github.actor }}
         env:
