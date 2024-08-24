@@ -46,10 +46,11 @@ update_backend_config() {
     # Use sed to update the backend configuration directly in the backend.tf file
     sed -i '' -e "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" \
         -e "s/dynamodb_table *= *\".*\"/dynamodb_table = \"${DYNAMODB_TABLE_NAME}\"/" \
-        "$backend_file"
+        -e '$a\' "$backend_file"
 
     echo "Backend configuration has been updated in $backend_file."
 }
+
 
 # Update backend configuration for ETL
 update_backend_config "${ETL_BACKEND_CONFIG}"
