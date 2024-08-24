@@ -24,6 +24,7 @@ fi
 # Convert OWNER to lowercase and replace spaces with dashes
 OWNER=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]' | sed 's/ /-/g')
 
+
 # Define the S3 bucket and DynamoDB table names using the extracted OWNER
 S3_BUCKET_NAME="${OWNER}-${BACKEND_S3_BUCKET_NAME}"
 DYNAMODB_TABLE_NAME="${OWNER}-${DYNAMODB_TABLE_NAME}"
@@ -43,18 +44,16 @@ update_backend_config() {
     fi
 
     # Use sed to update the backend configuration directly in the backend.tf file
-    sed -i -e "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" \
-        -e "s/dynamodb_table *= *\".*\"/dynamodb_table = \"${DYNAMODB_TABLE_NAME}\"/" "$backend_file"
-
-    # Ensure a newline after the last configuration line
-    echo "" >> "$backend_file"
+    sed -i '' -e "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" \
+        -e "s/dynamodb_table *= *\".*\"/dynamodb_table = \"${DYNAMODB_TABLE_NAME}\"/" \
+        -e '$a\' "$backend_file"
 
     echo "Backend configuration has been updated in $backend_file."
-
     # Print the contents of the backend.tf file
     echo "Contents of ${backend_file}:"
     cat "$backend_file"
 }
+
 
 # Update backend configuration for ETL
 update_backend_config "${ETL_BACKEND_CONFIG}"
