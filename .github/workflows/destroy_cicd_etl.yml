@@ -1,4 +1,4 @@
-name: Destroy CICD Infrastructure
+name: Destroy CICD & ETL Infrastructure
 
 on:
   workflow_dispatch:  # Allows manual trigger
@@ -34,19 +34,20 @@ jobs:
         ./scripts/setup_infrastructure.sh ${{ github.actor }}  # Use GitHub username as the owner
         aws configure set default.s3.max_bandwidth 50MB/s
 
-    - name: Terraform Init
+    - name: CICD Terraform Init &  Destroy
       working-directory: ./iac/cicd
-      run: terraform init
+      run: |
+          terraform init -input=false
+          terraform destroy -auto-approve
 
-    - name: Terraform Destroy
-      working-directory: ./iac/cicd
-      run: terraform destroy -auto-approve
+    - name: ETL Terraform Init and Destroy
+      working-directory: ./iac/etl
+      run: |
+        terraform init -input=false
+        terraform destroy -auto-approve
 
-    # Initialize and destroy backend infrastructure
-    - name: Terraform Init Backend
+    - name: Backend Terraform Init & Destroy Backend
       working-directory: ./iac/backend
-      run: terraform init
-
-    - name: Terraform Destroy Backend
-      working-directory: ./iac/backend
-      run: terraform destroy -auto-approve
+      run: |
+        terraform init -input=false
+        terraform destroy -auto-approve

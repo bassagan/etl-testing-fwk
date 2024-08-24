@@ -1,4 +1,4 @@
-name: Create CICD Infrastructure
+name: Create CICD & ETL Infrastructure
 
 on:
   workflow_dispatch:  # Allows manual trigger
@@ -43,10 +43,16 @@ jobs:
       working-directory: ./iac/backend
       run: terraform apply -auto-approve
 
-    - name: Terraform Init
-      working-directory: ./iac/cicd
-      run: terraform init
 
-    - name: Terraform Apply
+    - name: CICD Terraform Init & Apply
       working-directory: ./iac/cicd
-      run: terraform apply -auto-approve
+      run: |
+        terraform init -input=false
+        terraform apply -auto-approve
+
+
+    - name: ETL Terraform Init and Apply
+      working-directory: ./iac/etl
+      run: |
+        terraform init -input=false
+        terraform apply -auto-approve
