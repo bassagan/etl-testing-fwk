@@ -34,10 +34,19 @@ jobs:
         ./scripts/setup_infrastructure.sh ${{ github.actor }}  # Use GitHub username as the owner
         aws configure set default.s3.max_bandwidth 50MB/s
 
+    # Initialize and apply backend infrastructure
+    - name: Terraform Init Backend
+      working-directory: ./iac/backend
+      run: terraform init
+
+    - name: Terraform Apply Backend
+      working-directory: ./iac/backend
+      run: terraform apply -auto-approve
+
     - name: Terraform Init
       working-directory: ./iac/cicd
       run: terraform init
 
     - name: Terraform Apply
       working-directory: ./iac/cicd
-      run: terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+      run: terraform apply -auto-approve

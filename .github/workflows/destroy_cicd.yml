@@ -34,4 +34,13 @@ jobs:
 
     - name: Terraform Destroy
       working-directory: ./iac/cicd
-      run: terraform destroy -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+      run: terraform destroy -auto-approve
+
+    # Initialize and destroy backend infrastructure
+    - name: Terraform Init Backend
+      working-directory: ./iac/backend
+      run: terraform init
+
+    - name: Terraform Destroy Backend
+      working-directory: ./iac/backend
+      run: terraform destroy -auto-approve

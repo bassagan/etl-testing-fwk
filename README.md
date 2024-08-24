@@ -23,7 +23,7 @@ In this exercise, you will:
 
 ## Prerequisites
 Before you begin, make sure you have the following:
-- An AWS account.
+- An AWS account. Temporary accounts will be provided
 - A GitHub account with access to the repository and GitHub Codespaces enabled.
 - Basic understanding of Git, Terraform, and AWS services.
 
@@ -31,9 +31,12 @@ Before you begin, make sure you have the following:
 ## Step-by-Step Instructions
 
 ### 1. AWS Account Setup
-Ensure you have an active AWS account. If you don't have one, [create an AWS account here](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
+During this tutorial, each attendee will be provided with temporary AWS credentials (Access Key ID and Secret Access Key) that can be used to set up and deploy the required infrastructure. **These credentials are strictly temporary and will be removed immediately after the tutorial.**
 
+### Using Provided AWS Credentials
 
+- **Access Key ID** and **Secret Access Key** will be shared with you at the start of the tutorial.
+- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh`, see section 3. 
 ### 2. Fork the Repository
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
