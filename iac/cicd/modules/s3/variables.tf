@@ -1,0 +1,15 @@
+variable "tags" {
+  description = "Common tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "etl_codepipeline_bucket" {
+  description = "Codepipeline bucket"
+  type        = string
+}
+
+variable "owner" {
+  description = "The owner of the resources"
+  type        = string
+}

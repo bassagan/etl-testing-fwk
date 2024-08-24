@@ -1,22 +1,31 @@
 #!/bin/bash
 
 # Check if the correct number of arguments are provided
-if [ "$#" -ne 5 ]; then
-    echo "Usage: $0 <owner> <github_token> <codepipeline_name> <s3_bucket_name_etl> <dynamodb_table_name_etl>"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <owner> "
     exit 1
 fi
 
 # Assign input arguments to variables
 OWNER="$1"
 GITHUB_TOKEN="$2"
-CODEPIPELINE_NAME="$3"
-S3_BUCKET_NAME_ETL="$4"
-DYNAMODB_TABLE_NAME_ETL="$5"
+
+# Retrieve current Git branch name
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9._-]/-/g')
+
+# Retrieve Git repository name
+REPO_NAME=$(basename -s .git $(git config --get remote.origin.url) | sed 's/[^a-zA-Z0-9._-]/-/g')
+
+# Retrieve GitHub owner (assumes the URL is in the form of https://github.com/owner/repo.git)
+GITHUB_OWNER=$(git config --get remote.origin.url | awk -F'[:/]' '{print $(NF-1)}')
 
 # Define paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+BACKEND_TEMPLATE_FILE="${SCRIPT_DIR}/../iac/backend/terraform.tfvars.template"
 ETL_TEMPLATE_FILE="${SCRIPT_DIR}/../iac/etl/terraform.tfvars.template"
 CICD_TEMPLATE_FILE="${SCRIPT_DIR}/../iac/cicd/terraform.tfvars.template"
+BACKEND_TFVARS_FILE="${SCRIPT_DIR}/../iac/backend/terraform.tfvars"
 ETL_TFVARS_FILE="${SCRIPT_DIR}/../iac/etl/terraform.tfvars"
 CICD_TFVARS_FILE="${SCRIPT_DIR}/../iac/cicd/terraform.tfvars"
 
@@ -36,18 +45,18 @@ generate_tfvars() {
     fi
 
     # Replace placeholders with values
-    sed -e "s/{owner}/$OWNER/" \
+    sed -e "s/{branch}/$BRANCH_NAME/" \
+        -e "s/{repo_name}/$REPO_NAME/" \
+        -e "s/{github_owner}/$GITHUB_OWNER/" \
+        -e "s/{owner}/$OWNER/" \
         -e "s/{region}/$REGION/" \
         -e "s/{env}/$ENV/" \
-        -e "s/{github_token}/$GITHUB_TOKEN/" \
-        -e "s/{codepipeline_name}/$CODEPIPELINE_NAME/" \
-        -e "s/{s3_bucket_name_etl}/$S3_BUCKET_NAME_ETL/" \
-        -e "s/{dynamodb_table_name_etl}/$DYNAMODB_TABLE_NAME_ETL/" \
         "$template_file" > "$output_file"
 
     echo "Terraform variable file has been generated at $output_file."
 }
 
-# Generate tfvars for both ETL and CICD
+# Generate tfvars for all BACKEND,  ETL and CICD
+generate_tfvars "$BACKEND_TEMPLATE_FILE" "$BACKEND_TFVARS_FILE"
 generate_tfvars "$ETL_TEMPLATE_FILE" "$ETL_TFVARS_FILE"
 generate_tfvars "$CICD_TEMPLATE_FILE" "$CICD_TFVARS_FILE"

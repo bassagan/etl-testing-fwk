@@ -1,0 +1,17 @@
+#AWS Info:
+region       = "eu-west-1"
+owner         = "{owner}"
+
+#Github info for executing tests on aws cicd
+github_owner = "{github_owner}"
+github_repo  = "{repo_name}"
+branch       = "{branch}"
+
+
+codepipeline_name = "codepipeline"
+etl_codepipeline_bucket = "etl-codepipeline-bucket"
+
+codebuild_role_name = "codebuild-service-role"
+codebuild_report_permissions_name = "CodeBuildReportPermissions"
+codepipeline_role_name = "codepipeline-service-role"
+
