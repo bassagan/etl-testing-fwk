@@ -43,7 +43,7 @@ update_backend_config() {
     fi
 
     # Use sed to update the backend configuration directly in the backend.tf file
-    sed -i '' -e "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" \
+    sed -i -e "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" \
         -e "s/dynamodb_table *= *\".*\"/dynamodb_table = \"${DYNAMODB_TABLE_NAME}\"/" "$backend_file"
 
     # Ensure a newline after the last configuration line
