@@ -57,9 +57,16 @@ update_backend_config() {
 
     echo "Updating backend configuration in $backend_file"
 
-    # Adjust the sed command for macOS compatibility
-    sed -i '' "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" "$backend_file"
-    sed -i '' "s/dynamodb_table *= *\".*\"/dynamodb_table = \"${DYNAMODB_TABLE_NAME}\"/" "$backend_file"
+    # Detect operating system and use appropriate sed command
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        sed -i '' "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" "$backend_file"
+        sed -i '' "s/dynamodb_table *= *\".*\"/dynamodb_table = \"${DYNAMODB_TABLE_NAME}\"/" "$backend_file"
+    else
+        # Linux
+        sed -i "s/bucket *= *\".*\"/bucket = \"${S3_BUCKET_NAME}\"/" "$backend_file"
+        sed -i "s/dynamodb_table *= *\".*\"/dynamodb_table = \"${DYNAMODB_TABLE_NAME}\"/" "$backend_file"
+    fi
 
     # Ensure a newline after the last configuration line
     echo "" >> "$backend_file"
