@@ -28,20 +28,23 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
 
-    - name: Make setup_infrastructure.sh executable
-      run: chmod +x ./scripts/setup_infrastructure.sh
-
     - name: Run setup_infrastructure.sh
-      run: ./scripts/setup_infrastructure.sh ${{ github.actor }}
+      run: |
+        chmod +x ./scripts/setup_infrastructure.sh
+        ./scripts/setup_infrastructure.sh ${{ github.actor }}  # Use GitHub username as the owner
+        aws configure set default.s3.max_bandwidth 50MB/s
+
+    # Initialize and apply backend infrastructure
+    - name: Terraform Init Backend
+      working-directory: ./iac/backend
+      run: terraform init
+
+    - name: Terraform Apply Backend
+      working-directory: ./iac/backend
+      run: terraform apply -auto-approve
 
     - name: Terraform Init and Apply
       working-directory: ./iac/etl
       run: |
         terraform init -input=false
         terraform apply -auto-approve
-
-    - name: Install Dashboard dependencies
-      run: pip install -r scripts/requirements.txt
-
-    - name: Create QuickSight Dashboard
-      run: python scripts/create_quicksight_dashboard.py
