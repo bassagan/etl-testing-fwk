@@ -17,11 +17,6 @@ variable "curated_bucket_name" {
   type        = string
 }
 
-variable "env" {
-  description = "Deployment environment"
-  type        = string
-}
-
 variable "enable_versioning" {
   description = "Enable versioning on the bucket"
   type        = bool
@@ -44,9 +39,4 @@ variable "tags" {
   description = "Tags to apply to the S3 bucket"
   type        = map(string)
   default     = {}
-}
-
-variable "owner" {
-  description = "The owner of the resources"
-  type        = string
 }

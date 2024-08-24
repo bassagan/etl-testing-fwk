@@ -4,8 +4,9 @@ resource "aws_athena_database" "etl_db" {
 
 }
 
+
 resource "aws_athena_workgroup" "etl_workgroup" {
-  name        = "${var.owner}-etl-workgroup-dev"
+  name        = var.etl_workgorup_name
   state       = "ENABLED"
   description = "Workgroup for ETL queries"
   tags = var.tags

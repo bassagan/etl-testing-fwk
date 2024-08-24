@@ -75,15 +75,15 @@ variable "data_generator_function_name" {
   default     = "data-generator-function"
 }
 
+variable "etl_workgorup_name" {
+  description = "Athena workgroup"
+  default = "etl-workgroup"
+}
+
 variable "clean_curated_function_name" {
   description = "Name of the data generator lambda function"
   type        = string
   default     = "clean_curated_function"
-}
-
-variable "backend_bucket" {
-  description = "Name of the data generator lambda function"
-  type        = string
 }
 
 variable "owner" {

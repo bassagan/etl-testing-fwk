@@ -7,15 +7,11 @@ terraform {
   }
 }
 
-resource "random_string" "bucket_suffix" {
-  length  = 8
-  special = false
-  upper   = false
-}
 
 resource "aws_s3_bucket" "etl_bucket" {
-  bucket = "${var.owner}-${var.bucket_name}-${random_string.bucket_suffix.result}"
+  bucket = var.bucket_name
   tags = var.tags
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
@@ -39,17 +35,20 @@ resource "aws_s3_bucket_lifecycle_configuration" "lifecycle" {
   }
 }
 resource "aws_s3_bucket" "raw_bucket" {
-  bucket = "${var.raw_bucket_name}-${random_string.bucket_suffix.result}"
+  bucket = var.raw_bucket_name
+  force_destroy = true
   tags = var.tags
 }
 
 resource "aws_s3_bucket" "clean_bucket" {
-  bucket = "${var.clean_bucket_name}-${random_string.bucket_suffix.result}"
+  bucket = var.clean_bucket_name
+  force_destroy = true
   tags = var.tags
 
 }
 resource "aws_s3_bucket" "curated_bucket" {
-  bucket = "${var.curated_bucket_name}-${random_string.bucket_suffix.result}"
+  bucket = var.curated_bucket_name
+  force_destroy = true
   tags = var.tags
 
 }
@@ -103,4 +102,26 @@ resource "aws_s3_bucket_policy" "curated_bucket_policy" {
     ]
   })
   
+}
+
+# Upload ZIP Files to S3
+resource "aws_s3_object" "upload_lambda_generator" {
+  bucket = aws_s3_bucket.etl_bucket.bucket
+  key    = "lambda_generator_package.zip"
+  source = "${path.module}/../../lambda_generator_package.zip"  # Adjust path to your ZIP file
+  acl    = "private"
+}
+
+resource "aws_s3_object" "upload_lambda_raw_clean" {
+  bucket = aws_s3_bucket.etl_bucket.bucket
+  key    = "lambda_raw_clean.zip"
+  source = "${path.module}/../../lambda_raw_clean.zip"  # Adjust path to your ZIP file
+  acl    = "private"
+}
+
+resource "aws_s3_object" "upload_lambda_clean_curated" {
+  bucket = aws_s3_bucket.etl_bucket.bucket
+  key    = "lambda_clean_curated.zip"
+  source = "${path.module}/../../lambda_clean_curated.zip"  # Adjust path to your ZIP file
+  acl    = "private"
 }

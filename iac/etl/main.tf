@@ -1,13 +1,6 @@
-variable "access_key" {
-  default = ""
-}
-variable "secret_key" {
-  default = ""
-}
 provider "aws" {
   region = var.region
-  access_key = var.access_key
-  secret_key = var.secret_key
+
 }
 
 terraform {
@@ -22,19 +15,21 @@ terraform {
     }
   }
 }
-
+resource "random_string" "bucket_suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
 # Include S3 bucket module for ETL
 module "s3" {
   source = "./modules/s3"
   providers = {
     aws = aws
   }
-  owner = var.owner
-  bucket_name         = var.bucket_name
-  raw_bucket_name     = var.raw_bucket_name
-  clean_bucket_name   = var.clean_bucket_name
-  curated_bucket_name = var.curated_bucket_name
-  env                 = var.env
+  bucket_name         = "${var.owner}-${var.bucket_name}"
+  raw_bucket_name     = "${var.owner}-${var.raw_bucket_name}-${random_string.bucket_suffix.result}"
+  clean_bucket_name     = "${var.owner}-${var.clean_bucket_name}-${random_string.bucket_suffix.result}"
+  curated_bucket_name     = "${var.owner}-${var.curated_bucket_name}-${random_string.bucket_suffix.result}"
 
   tags = local.common_tags
 }
@@ -105,10 +100,10 @@ module "eventbridge" {
 module "athena" {
   source = "./modules/athena"
 
-  athena_db_name       = var.athena_db_name
+  athena_db_name       = replace("${var.owner}-${var.athena_db_name}", "-", "_")
   clean_bucket_name    = module.s3.clean_bucket_name
   curated_bucket_name  = module.s3.curated_bucket_name
+  etl_workgorup_name   = "${var.owner}-${var.etl_workgorup_name}"
   depends_on           = [module.s3]
-  owner = var.owner
   tags = local.common_tags
 }

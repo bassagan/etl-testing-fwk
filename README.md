@@ -55,40 +55,32 @@ Ensure you have an active AWS account. If you don't have one, [create an AWS acc
    Or you can interact directly with the IDE  ![Screenshot of CodeSpace Branches section](assets/github-codespace-change-branche.png)
    
 ### 3. Environment Setup
-1. **Set Up AWS CLI in Codespaces**:
-    - Open the terminal in Codespaces and configure the AWS CLI with your credentials:
-    ```bash
-    aws configure
-    ```
-    - When prompted, enter:
-        - **AWS Access Key ID**: [Follow this guide to obtain it.](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey)
-        - **AWS Secret Access Key**: [See instructions here.](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey)
-        - **Default Region Name**: Choose the appropriate region, like `us-east-1` or `eu-west-1`.
-        - **Default Output Format**: Use `json` unless otherwise needed.
-    - Example of terminal input:
-    
-   ```bash
-    $ aws configure
-    AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-    AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    Default region name [None]: eu-west-1
-    Default output format [None]: json
-    ```
+To set up the necessary AWS infrastructure for the ETL testing framework, use the `setup_infrastructure.sh` script. This script will automate parts of the setup process, including configuring backends, generating necessary Terraform variable files, and packaging Lambda functions.
 
-2. **Set Up Python Environment**:
-    - Activate the pre-configured Python environment:
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate 
-    ```
-    - Install the necessary Python dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+#### What `setup_infrastructure.sh` Does:
+- **Configures Terraform Backends**: Runs the `configure_backend.sh` script to set up Terraform backend configurations based on your user details.
+- **Generates Terraform Variable Files**: Executes the `generate_tfvars.sh` script to create `.tfvars` files with the appropriate parameters for your environment.
+- **Packages Lambda Functions**: Calls the `package_lambdas.sh` script to package Lambda functions and prepare them for deployment.
+
+#### Running the `setup_infrastructure.sh` Script
+
+1. **Navigate to the `scripts` Directory**:
+   - First, ensure you are in the root directory of your repository:
+   Replace `<owner>` with your provided aws user account (i.e. conference-user-x).
+   ```bash
+   cd scripts && ./setup_infrastructure.sh <owner>
+   ```
+2. **AWS Configuration**:
+   -  During the script execution, you may be prompted to configure your AWS credentials. If so, enter your AWS access key, secret access key, default region name, and default output format. This is typically handled using the aws configure command:`aws configure`but you don't need to execute it because it is already executed on the setup-environment.sh
+   - When prompted, enter:
+     - AWS Access Key ID: Your AWS access key ID.
+     - AWS Secret Access Key: Your AWS secret access key.
+     - Default Region Name: The AWS region you wish to use (e.g., eu-west-1).
+     - Default Output Format: Use json unless otherwise needed.
 
 ### 4. Terraform Initialization
 
-In this section, you will initialize and apply Terraform configurations for two different purposes:
+In this section, you will initialize and apply Terraform configurations for different purposes:
 
 - **iac/backend**: Infrastructure for the terraform state
 - **iac/cicd**: Infrastructure related to CI/CD pipelines.

@@ -18,7 +18,7 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "owner" {
-  description = "The owner of the resources"
-  type        = string
+variable "etl_workgorup_name" {
+  description = "Athena workgroup"
+  default = "etl-workgroup"
 }
