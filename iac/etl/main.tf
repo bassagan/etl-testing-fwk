@@ -64,6 +64,7 @@ module "lambda" {
   lambda_role_arn                = module.iam.lambda_role_arn
   env                            = var.env
   lambda_package_data_generator  = var.lambda_package_data_generator
+  owner = var.owner
   depends_on                     = [module.s3]
 
   tags = local.common_tags
@@ -74,7 +75,7 @@ module "sns" {
   source               = "./modules/sns"
   notification_email   = var.notification_mail
   env                  = var.env
-
+  owner = var.owner
   tags = local.common_tags
 }
 

@@ -55,3 +55,7 @@ variable "lambda_layer_s3_key" {
   description = "The S3 key for the Lambda layer ZIP file"
   default     = "lambda_layer.zip"
 }
+variable "owner" {
+  description = "The owner of the resources"
+  type        = string
+}

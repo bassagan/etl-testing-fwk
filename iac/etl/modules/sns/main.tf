@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "aws_sns_topic" "etl_notifications" {
-  name = "etl-notifications-${var.env}"
+  name = "${var.owner}-etl-notifications-${var.env}"
     tags = var.tags
 }
 
