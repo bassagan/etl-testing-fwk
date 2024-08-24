@@ -35,7 +35,7 @@ jobs:
       run: chmod +x ./scripts/setup_infrastructure.sh
 
     - name: Run setup_infrastructure.sh
-      run: ./scripts/setup_infrastructure.sh <owner>
+      run: ./scripts/setup_infrastructure.sh ${{ github.actor }}
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
