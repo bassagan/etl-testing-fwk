@@ -19,7 +19,7 @@ resource "aws_codepipeline" "etl_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = "arn:aws:codeconnections:eu-west-1:087559609246:connection/b0171203-62d8-4ebb-964d-907be5d5a213"
+        ConnectionArn    = var.codestar_arn
         FullRepositoryId = var.full_repository
         BranchName       = var.branch
       }

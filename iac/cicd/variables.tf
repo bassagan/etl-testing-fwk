@@ -104,3 +104,8 @@ variable "codebuild_name" {
   type = string
   default = "etl-build"
 }
+
+variable "codestar_name" {
+  description = "Codestar name, connection to GitHub"
+  type        = string
+}

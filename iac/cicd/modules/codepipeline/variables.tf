@@ -17,6 +17,11 @@ variable "artifact_bucket" {
   type        = string
 }
 
+variable "codestar_arn" {
+  description = "Codestar arn for github connection"
+  type        = string
+}
+
 variable "region" {
   default = "eu-west-1"
 }
