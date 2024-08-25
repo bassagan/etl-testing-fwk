@@ -398,6 +398,18 @@ def attach_custom_policy(user_name):
         UserName=user_name,
         PolicyArn=policy_arn
     )
+    # New Resource Group policy
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyResourceGroups"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
+    # New Tagging policy
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyTagging"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
 
 
 def attach_custom_service_policy(user_name):

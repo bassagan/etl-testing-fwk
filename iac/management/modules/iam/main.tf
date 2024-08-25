@@ -19,7 +19,10 @@ resource "aws_iam_policy" "user_restricted_policy_lambda" {
       "Action": [
         "lambda:CreateFunction",
         "lambda:UpdateFunctionCode",
-        "lambda:DeleteFunction"
+        "lambda:DeleteFunction",
+        "lambda:TagResource",
+        "lambda:UntagResource",
+        "lambda:ListTagsForResource"
       ],
       "Resource": "arn:aws:lambda:eu-west-1:087559609246:function/*",
       "Condition": {
@@ -54,6 +57,9 @@ resource "aws_iam_policy" "user_restricted_policy_athena" {
       "Action": [
         "athena:CreateNamedQuery",
         "athena:DeleteNamedQuery",
+        "athena:TagResource",
+        "athena:UntagResource",
+        "athena:ListTagsForResource"
       ],
       "Resource": "arn:aws:athena:eu-west-1:087559609246:workgroup/*",
       "Condition": {
@@ -87,7 +93,10 @@ resource "aws_iam_policy" "user_restricted_policy_s3" {
       "Action": [
         "s3:GetObject",
         "s3:PutObject",
-        "s3:DeleteObject"
+        "s3:DeleteObject",
+        "s3:GetObjectTagging",
+        "s3:PutObjectTagging",
+        "s3:DeleteObjectTagging"
       ],
       "Resource": "arn:aws:s3:::*",
       "Condition": {
@@ -115,7 +124,10 @@ resource "aws_iam_policy" "user_restricted_policy_eventbridge" {
         "events:ListRules",
         "events:DescribeRule",
         "events:PutRule",
-        "events:DeleteRule"
+        "events:DeleteRule",
+        "events:TagResource",
+        "events:UntagResource",
+        "events:ListTagsForResource"
       ],
       "Resource": "arn:aws:events:eu-west-1:087559609246:rule/*",
       "Condition": {
@@ -150,7 +162,10 @@ resource "aws_iam_policy" "user_restricted_policy_dynamodb" {
       "Action": [
         "dynamodb:PutItem",
         "dynamodb:GetItem",
-        "dynamodb:DeleteItem"
+        "dynamodb:DeleteItem",
+        "dynamodb:TagResource",
+        "dynamodb:UntagResource",
+        "dynamodb:ListTagsForResource"
       ],
       "Resource": "arn:aws:dynamodb:eu-west-1:087559609246:table/*",
       "Condition": {
@@ -185,7 +200,13 @@ resource "aws_iam_policy" "user_restricted_policy_cicd" {
         "codebuild:StartBuild",
         "codebuild:BatchGetBuilds",
         "codepipeline:StartPipelineExecution",
-        "codepipeline:GetPipelineExecution"
+        "codepipeline:GetPipelineExecution",
+        "codebuild:TagResource",
+        "codebuild:UntagResource",
+        "codebuild:ListTagsForResource",
+        "codepipeline:TagResource",
+        "codepipeline:UntagResource",
+        "codepipeline:ListTagsForResource"
       ],
       "Resource": [
         "arn:aws:codebuild:eu-west-1:087559609246:project/*",
@@ -193,8 +214,8 @@ resource "aws_iam_policy" "user_restricted_policy_cicd" {
       ],
       "Condition": {
         "StringEquals": {
-          "codebuild:ResourceTag/Student": "$${aws:username}",
-          "codepipeline:ResourceTag/Student": "$${aws:username}"
+          "codebuild:ResourceTag/Owner": "$${aws:username}",
+          "codepipeline:ResourceTag/Owner": "$${aws:username}"
         }
       }
     }
@@ -202,6 +223,50 @@ resource "aws_iam_policy" "user_restricted_policy_cicd" {
 }
 
 )
+}
+
+resource "aws_iam_policy" "user_restricted_policy_resource_groups" {
+  name        = "UserRestrictedPolicyResourceGroups"
+  description = "Policy to allow resource groups and related actions"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "Statement1",
+        "Effect": "Allow",
+        "Action": [
+          "resource-groups:*",
+          "tag:GetResources",
+          "cloudformation:ListStackResources",
+          "cloudformation:DescribeStacks"
+        ],
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "user_restricted_policy_tagging" {
+  name        = "UserRestrictedPolicyTagging"
+  description = "Policy to allow users to manage tags on their resources"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "tag:GetResources",
+          "tag:TagResources",
+          "tag:UntagResources",
+          "tag:GetTagKeys",
+          "tag:GetTagValues"
+        ],
+        "Resource": "*"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_policy" "assume_restricted_user_role_policy" {
@@ -275,4 +340,9 @@ resource "aws_iam_role_policy_attachment" "attach_dynamodb_policy" {
 resource "aws_iam_role_policy_attachment" "attach_cicd_policy" {
   role       = aws_iam_role.restricted_user_role.name
   policy_arn = aws_iam_policy.user_restricted_policy_cicd.arn
+}
+
+resource "aws_iam_role_policy_attachment" "attach_tagging_policy" {
+  role       = aws_iam_role.restricted_user_role.name
+  policy_arn = aws_iam_policy.user_restricted_policy_tagging.arn
 }
