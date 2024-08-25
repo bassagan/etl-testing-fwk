@@ -105,7 +105,7 @@ def create_console_user(user_name, account_id):
     iam_client.create_login_profile(
         UserName=user_name,
         Password=password,
-        PasswordResetRequired=True  # Require password change on first login
+        PasswordResetRequired=False  # Require password change on first login
     )
 
     # Attach the policy that allows the user to change their password
