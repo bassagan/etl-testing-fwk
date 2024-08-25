@@ -44,7 +44,7 @@ During this tutorial, each attendee will be provided with temporary AWS credenti
     - ![Screenshot of GitHub Fork Button](assets/github-fork-button.png)
 2. **Launch a Codespace**:
     - Once you have forked the repository, **navigate to your fork**.
-    - Click on the "Code" button, then select "Open with Codespaces" and create a new Codespace.
+    - Click on the "Code" button, "Codespaces" tab, then select "Create codespace on master" to create a new Codespace.
     - ![Screenshot of Codespaces launch](assets/github-codespaces-new.png)
     - The Codespace will automatically set up your environment based on the repository's configuration (e.g., `.devcontainer`).
    **Important, this process can take few minutes, be patient:**
