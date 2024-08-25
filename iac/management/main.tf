@@ -71,7 +71,7 @@ resource "aws_iam_role_policy" "lambda_iam_policy" {
 data "aws_caller_identity" "current" {}
 
 # S3 Bucket to store the CSV file
-resource "aws_s3_bucket" "lambda_csv_bucket" {
+resource "aws_s3_bucket" "lambda_user_management_bucket" {
   bucket = var.s3_bucket_name  # Bucket name passed via variable
 
   tags = {
@@ -80,7 +80,7 @@ resource "aws_s3_bucket" "lambda_csv_bucket" {
 }
 
 resource "aws_s3_object" "upload_lambda_clean_curated" {
-  bucket = aws_s3_bucket.lambda_csv_bucket.bucket
+  bucket = aws_s3_bucket.lambda_user_management_bucket.bucket
   key    = "lambda_user_management.zip"
   source = "${path.root}/../../lambda_packages/lambda_user_management.zip"  # Adjust path to your ZIP file
   acl    = "private"
@@ -186,17 +186,11 @@ resource "aws_lambda_function" "user_management_lambda" {
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.9"
   role             = aws_iam_role.lambda_role.arn
-  s3_bucket        = aws_s3_bucket.lambda_csv_bucket.bucket
+  s3_bucket        = aws_s3_bucket.lambda_user_management_bucket.bucket
   s3_key           = "lambda_user_management.zip"
 
   memory_size = 256
   timeout = 60
-  environment {
-    variables = {
-      S3_BUCKET               = var.s3_bucket_name  # Bucket name where CSV will be uploaded
-      AWS_ORG_ROOT_ACCOUNT_ID = "o-n8mzc6cqti"
-    }
-  }
 
   tags = {
     "Environment" = "Conference"
@@ -204,18 +198,39 @@ resource "aws_lambda_function" "user_management_lambda" {
 
   depends_on = [
     aws_iam_role.lambda_role,  # Ensure IAM role is created before the Lambda function
-    aws_s3_bucket.lambda_csv_bucket
+    aws_s3_bucket.lambda_user_management_bucket
   ]
 }
+
+resource "aws_lambda_function_url" "create_user_url" {
+  function_name      = aws_lambda_function.user_management_lambda.function_name
+  authorization_type = "NONE"
+
+  cors {
+    allow_credentials = true
+    allow_origins     = ["*"]
+    allow_methods     = ["GET"]
+    allow_headers     = ["date", "keep-alive"]
+    expose_headers    = ["keep-alive", "date"]
+    max_age           = 86400
+  }
+}
+
 
 output "lambda_function_arn" {
   value = aws_lambda_function.user_management_lambda.arn
 }
 
 output "s3_bucket_name" {
-  value = aws_s3_bucket.lambda_csv_bucket.bucket
+  value = aws_s3_bucket.lambda_user_management_bucket.bucket
 }
 
 output "s3_bucket_arn" {
-  value = aws_s3_bucket.lambda_csv_bucket.arn
+  value = aws_s3_bucket.lambda_user_management_bucket.arn
+}
+
+
+# Output the Lambda Function URL
+output "lambda_function_url" {
+  value = aws_lambda_function_url.create_user_url.function_url
 }
