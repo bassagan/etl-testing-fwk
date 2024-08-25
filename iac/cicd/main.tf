@@ -47,7 +47,7 @@ module "s3" {
 
 module "codestar" {
   source          = "./modules/codestar"
-  codestar_name   = "${var.owner}-${var.codestar_name}-${random_string.bucket_suffix.result}"
+  codestar_name   = "${var.owner}-${var.codestar_name}"
 
 
   tags = local.common_tags
