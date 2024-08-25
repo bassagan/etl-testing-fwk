@@ -2,6 +2,13 @@ provider "aws" {
   region = "eu-west-1"
 }
 
+module "iam" {
+  providers = {
+    aws = aws
+  }
+  source = "./modules/iam"
+}
+
 
 # IAM Role for Lambda Execution
 resource "aws_iam_role" "lambda_role" {
@@ -46,13 +53,10 @@ resource "aws_iam_role_policy" "lambda_iam_policy" {
           "s3:PutObject",
           "s3:GetObject",
           "s3:ListBucket",
-          "iam:*"
+          "iam:*",
+          "tag:*"
         ],
-        Resource = [
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/*",
-          "arn:aws:s3:::${aws_s3_bucket.lambda_csv_bucket.bucket}",
-          "arn:aws:s3:::${aws_s3_bucket.lambda_csv_bucket.bucket}/*"
-        ]
+        Resource = "*"
       },
       {
         Effect = "Allow",
@@ -74,6 +78,14 @@ resource "aws_s3_bucket" "lambda_csv_bucket" {
     "Environment" = "Conference"
   }
 }
+
+resource "aws_s3_object" "upload_lambda_clean_curated" {
+  bucket = aws_s3_bucket.lambda_csv_bucket.bucket
+  key    = "lambda_user_management.zip"
+  source = "${path.root}/../../lambda_packages/lambda_user_management.zip"  # Adjust path to your ZIP file
+  acl    = "private"
+}
+
 resource "aws_iam_policy" "service_user_restricted_policy" {
   name        = "ServiceUserRestrictedPolicy"
   description = "Policy to restrict users to their own resources"

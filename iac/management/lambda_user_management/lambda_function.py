@@ -11,8 +11,8 @@ import time
 iam_client = boto3.client('iam')
 s3_client = boto3.client('s3')
 ssm_client = boto3.client('ssm')
-ec2_client = boto3.client('ec2')  # Example for EC2
-resource_tagging_client = boto3.client('resourcegroupstaggingapi')  # AWS Resource Groups Tagging API
+ec2_client = boto3.client('ec2')
+resource_tagging_client = boto3.client('resourcegroupstaggingapi')
 lambda_client = boto3.client('lambda')
 athena_client = boto3.client('athena')
 dynamodb_client = boto3.client('dynamodb')
@@ -29,32 +29,39 @@ def lambda_handler(event, context):
     target_destroy_user = event.get('destroy_user')
 
     if operation == 'create':
-        accounts = create_accounts(account_count)
-        csv_file_path = generate_csv(accounts)
-        s3_url = upload_to_s3(csv_file_path, s3_bucket)
-        user_name = event.get('user_name', None)  # Add user_name parameter for targeted deletion
-
-        return {
-            'statusCode': 200,
-            'body': {
-                'message': 'Accounts created successfully',
-                'csv_url': s3_url
-            }
-        }
-
+        response = handle_create_operation(account_count, s3_bucket)
     elif operation == 'destroy':
-        destroy_accounts(target_destroy_user)
+        response = handle_destroy_operation(target_destroy_user)
 
-        return {
-            'statusCode': 200,
-            'body': 'Accounts destroyed successfully'
+    else:
+        response = {
+            'statusCode': 400,
+            'body': f'Unknown operation: {operation}'
         }
-    elif operation == 'create_ssm_managed_instance':
-        instance_id = create_ssm_managed_instance()
-        return {
-            'statusCode': 200,
-            'body': f'SSM managed instance created with ID: {instance_id}'
+
+    return response
+
+
+def handle_create_operation(account_count, s3_bucket):
+    accounts = create_accounts(account_count)
+    csv_file_path = generate_csv(accounts)
+    s3_url = upload_to_s3(csv_file_path, s3_bucket)
+    return {
+        'statusCode': 200,
+        'body': {
+            'message': 'Accounts created successfully',
+            'csv_url': s3_url
         }
+    }
+
+
+def handle_destroy_operation(target_destroy_user):
+    destroy_accounts(target_destroy_user)
+    return {
+        'statusCode': 200,
+        'body': 'Accounts destroyed successfully'
+    }
+
 
 
 def create_accounts(count):
@@ -105,9 +112,9 @@ def create_console_user(user_name, account_id):
     # Attach the policy that allows the user to change their password
     attach_password_change_policy(user_name)
 
-    # Attach a custom policy that allows access to specific resources
-    attach_custom_policy(user_name)
 
+    # Attach policy allowing the user to assume the restricted-user-role
+    attach_assume_role_policy(user_name, 'restricted-user-role')
     # Store the account and user information
     login_url = f"https://{account_id}.signin.aws.amazon.com/console"
     account_info = {
@@ -117,8 +124,24 @@ def create_console_user(user_name, account_id):
         'login_url': login_url
     }
     return account_info
-    # accounts.append(account_info)
 
+def attach_assume_role_policy(user_name, role_name):
+    """Attaches a policy allowing the user to assume a specific role."""
+    assume_role_policy = {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": "sts:AssumeRole",
+                "Resource": f"arn:aws:iam::{boto3.client('sts').get_caller_identity().get('Account')}:role/{role_name}"
+            }
+        ]
+    }
+    iam_client.put_user_policy(
+        UserName=user_name,
+        PolicyName='AllowAssumeRole',
+        PolicyDocument=json.dumps(assume_role_policy)
+    )
 
 def create_service_user(user_name):
     """Creates a service user with access keys for programmatic access and tags the user as a service user."""
@@ -146,7 +169,6 @@ def create_service_user(user_name):
         'secret_access_key': access_keys['AccessKey']['SecretAccessKey']
     }
     return account_info
-    # accounts.append(account_info)
 
 
 def generate_random_password(length=12):
@@ -164,10 +186,10 @@ def generate_random_password(length=12):
 
 def attach_custom_policy(user_name):
     policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicy"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
+    iam_client.attach_role_policy(
+    RoleName='string',
+    PolicyArn='string'
+)
 
 
 def attach_custom_service_policy(user_name):
@@ -241,8 +263,7 @@ def destroy_accounts(target_user_name=None):
         if user_name.startswith("conference-user-") or user_name.startswith("service-conference-user-"):
             print(f"Deleting user: {user_name}")
 
-            # Destroy all resources managed by Terraform
-            destroy_terraform_resources(user_name)
+
 
             # Destroy all tagged resources
             destroy_tagged_resources(user_name)
@@ -264,43 +285,30 @@ def destroy_accounts(target_user_name=None):
             except iam_client.exceptions.NoSuchEntityException:
                 print(f"No inline policy found for {user_name}, skipping.")
 
-            # Detach any attached policies
-            attached_policies = iam_client.list_attached_user_policies(UserName=user_name)
-            for policy in attached_policies['AttachedPolicies']:
-                iam_client.detach_user_policy(UserName=user_name, PolicyArn=policy['PolicyArn'])
+                # Detach all managed policies attached to the user
+                attached_policies = iam_client.list_attached_user_policies(UserName=user_name)
+                for policy in attached_policies['AttachedPolicies']:
+                    print(f"Atached policies for {user_name}: {policy}")
+                    iam_client.detach_user_policy(UserName=user_name, PolicyArn=policy['PolicyArn'])
 
-            # Delete the user
-            iam_client.delete_user(UserName=user_name)
-            print(f"User {user_name} deleted successfully.")
+                # Delete all inline policies attached to the user
+                inline_policies = iam_client.list_user_policies(UserName=user_name)
+                for policy_name in inline_policies['PolicyNames']:
+                    print(f"Inline policies for {user_name}: {policy_name}")
+                    iam_client.delete_user_policy(UserName=user_name, PolicyName=policy_name)
+
+                # Finally, delete the user
+                try:
+                    iam_client.delete_user(UserName=user_name)
+                    print(f"User {user_name} deleted successfully.")
+                except iam_client.exceptions.DeleteConflictException as e:
+                    print(f"Error deleting user {user_name}: {e}")
 
     return {
         'statusCode': 200,
         'body': 'All conference users deleted successfully'
     }
 
-
-
-def destroy_terraform_resources(user_name):
-    """Destroys Terraform-managed resources for a specific user using SSM."""
-    # Assuming the S3 bucket and DynamoDB table names follow a pattern based on the user_name
-    s3_bucket_name = f"{user_name}-tf-backend-bucket"
-    dynamodb_table_name = f"{user_name}-tf-backend-dynamodb"
-
-    # Prepare the command to run Terraform destroy
-    commands = [
-        "aws s3 cp s3://{}/terraform.tfstate /tmp/terraform.tfstate".format(s3_bucket_name),
-        "terraform init -backend=true -backend-config='bucket={}' -backend-config='key=terraform.tfstate' -backend-config='region=eu-west-1'".format(s3_bucket_name),
-        "terraform destroy -auto-approve"
-    ]
-
-    # Send command to SSM
-    response = ssm_client.send_command(
-        InstanceIds=['<Your-Managed-Instance-ID>'],  # Replace with your managed instance ID
-        DocumentName="AWS-RunShellScript",
-        Parameters={'commands': commands},
-    )
-
-    print(f"Terraform destroy command initiated for user {user_name}. Check SSM for execution status.")
 
 
 
@@ -334,7 +342,6 @@ def destroy_tagged_resources(user_name):
                 print(f"Lambda function {resource_id} deleted.")
 
             elif service_name == 'athena':
-                # Athena resource handling: delete database or workgroup if appropriate
                 delete_athena_resources(resource_id)
 
             elif service_name == 'dynamodb':
@@ -354,14 +361,18 @@ def destroy_tagged_resources(user_name):
                 print(f"CodeBuild project {resource_id} deleted.")
 
             elif service_name == 'events':
-                events_client.delete_rule(Name=resource_id, Force=True)
+                # Detach targets from the rule before deletion
+                rule_targets = events_client.list_targets_by_rule(Rule=resource_id)
+                target_ids = [target['Id'] for target in rule_targets['Targets']]
+                if target_ids:
+                    events_client.remove_targets(Rule=resource_id, Ids=target_ids)
+                    print(f"Removed targets from EventBridge rule {resource_id}.")
+                events_client.delete_rule(Name=resource_id)
                 print(f"EventBridge rule {resource_id} deleted.")
 
             elif service_name == 'codestar-connections':
                 codestar_client.delete_connection(ConnectionArn=resource_arn)
                 print(f"CodeStar connection {resource_arn} deleted.")
-
-            # Continue adding handlers for each type of AWS service
 
 
 def delete_s3_bucket(bucket_name):
@@ -392,79 +403,11 @@ def delete_athena_resources(resource_id):
             # Deleting database in Athena requires first dropping all tables
             athena_client.start_query_execution(
                 QueryString=f"DROP DATABASE {database_name} CASCADE",
-                ResultConfiguration={'OutputLocation': 's3://your-output-bucket/'}
+                ResultConfiguration={'OutputLocation': 's3://your-output-bucket/'}  # Replace with your actual output location
             )
-            print(f"Athena database {database_name} deleted.")
+            print(f"Athena database {database_name} deletion initiated.")
     except Exception as e:
         print(f"Error deleting Athena resource {resource_id}: {e}")
 
-def create_ssm_managed_instance():
-    """Creates an EC2 instance that is managed by AWS Systems Manager (SSM)."""
-    # Create an IAM role for EC2 with SSM permissions
-    role_name = 'EC2SSMManagedRole'
-    instance_profile_name = 'EC2SSMInstanceProfile'
 
-    try:
-        # Create the IAM role for SSM
-        iam_client.create_role(
-            RoleName=role_name,
-            AssumeRolePolicyDocument=json.dumps({
-                "Version": "2012-10-17",
-                "Statement": [{
-                    "Effect": "Allow",
-                    "Principal": {"Service": "ec2.amazonaws.com"},
-                    "Action": "sts:AssumeRole"
-                }]
-            })
-        )
 
-        # Attach the AmazonSSMManagedInstanceCore policy to the role
-        iam_client.attach_role_policy(
-            RoleName=role_name,
-            PolicyArn='arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
-        )
-
-        # Create instance profile
-        iam_client.create_instance_profile(InstanceProfileName=instance_profile_name)
-
-        # Add role to instance profile
-        iam_client.add_role_to_instance_profile(
-            InstanceProfileName=instance_profile_name,
-            RoleName=role_name
-        )
-
-    except iam_client.exceptions.EntityAlreadyExistsException:
-        print("Role or Instance Profile already exists. Skipping creation.")
-
-    # Wait for the instance profile to be created and ready
-    time.sleep(10)
-
-    # User data script to install SSM agent (Amazon Linux 2 has it by default)
-    user_data_script = """#!/bin/bash
-    yum install -y aws-cli
-    """
-
-    # Launch the EC2 instance with the necessary IAM role
-    response = ec2_client.run_instances(
-        ImageId='ami-0c02fb55956c7d316',  # Amazon Linux 2 AMI (HVM) - Update with your region's AMI ID
-        InstanceType='t2.micro',
-        IamInstanceProfile={
-            'Name': instance_profile_name
-        },
-        MinCount=1,
-        MaxCount=1,
-        UserData=user_data_script,
-        TagSpecifications=[{
-            'ResourceType': 'instance',
-            'Tags': [{'Key': 'Owner', 'Value': 'ssm-managed-instance'}]
-        }]
-    )
-
-    instance_id = response['Instances'][0]['InstanceId']
-
-    # Wait for the instance to initialize and be managed by SSM
-    print(f"Waiting for instance {instance_id} to be ready...")
-    ec2_client.get_waiter('instance_status_ok').wait(InstanceIds=[instance_id])
-    print(f"Instance {instance_id} is ready and managed by SSM.")
-
-    return instance_id
