@@ -37,13 +37,7 @@ module "codebuild" {
 
   tags = local.common_tags
 }
-module "codestar" {
-  source          = "./modules/codestar"
-  codestar_name   = "${var.owner}-${var.codestar_name}-${random_string.bucket_suffix.result}"
 
-
-  tags = local.common_tags
-}
 module "s3" {
   source         = "./modules/s3"
   etl_codepipeline_bucket = "${var.owner}-${var.etl_codepipeline_bucket}-${random_string.bucket_suffix.result}"
@@ -67,7 +61,31 @@ module "codepipeline" {
   full_repository   = "${var.github_owner}/${var.github_repo}"
   branch            = var.branch
   codestar_arn      = module.codestar.codestar_arn
-  codepipeline_name = "${var.branch}-${var.codepipeline_name}-${var.environment}"
+  codepipeline_name = "${var.owner}-${var.branch}-${var.codepipeline_name}-${var.environment}"
   depends_on                     = [module.codestar]
   tags = local.common_tags
+}
+
+module "user-policy" {
+  source = "./modules/user-policy"
+  
+  owner  = var.owner
+  resource_arns = [
+    module.iam.codebuild_role_arn,
+    module.iam.codepipeline_role_arn,
+    module.codebuild.codebuild_project_arn,
+    module.codestar.codestar_arn,
+    module.s3.codepipeline_bucket_arn,
+    "${module.s3.codepipeline_bucket_arn}/*",
+    module.codepipeline.codepipeline_arn
+  ]
+  tags = local.common_tags
+
+  depends_on = [
+    module.iam,
+    module.codebuild,
+    module.codestar,
+    module.s3,
+    module.codepipeline
+  ]
 }

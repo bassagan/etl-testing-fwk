@@ -18,3 +18,15 @@ output "raw_bucket_name" {
 output "curated_bucket_name" {
   value = aws_s3_bucket.curated_bucket.bucket
 }
+
+output "clean_bucket_arn" {
+  value = aws_s3_bucket.clean_bucket.arn
+}
+
+output "raw_bucket_arn" {
+  value = aws_s3_bucket.raw_bucket.arn
+}
+
+output "curated_bucket_arn" {
+  value = aws_s3_bucket.curated_bucket.arn
+}
