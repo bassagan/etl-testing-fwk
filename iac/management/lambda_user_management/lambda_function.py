@@ -14,42 +14,74 @@ resource_groups_client = boto3.client('resource-groups')
 # Get account ID from environment variable
 ACCOUNT_ID = os.environ.get('AWS_ACCOUNT_ID', '087559609246')
 
+# Add this constant at the top of the file
+DESTROY_KEY = os.environ.get('DESTROY_KEY', 'default_destroy_key')
+
 def lambda_handler(event, context):
     # Check if it's a GET request
     if event['requestContext']['http']['method'] == 'GET':
-        try:
-            # Create user and get information
-            user_info, resource_group_url = create_user()
-
-            # Generate HTML content
-            html_content = generate_html_response(user_info, resource_group_url)
-
-            return {
-                'statusCode': 200,
-                'body': html_content,
-                'headers': {
-                    'Content-Type': 'text/html'
+        path = event['requestContext']['http']['path']
+        
+        if path == '/destroy':
+            # Check for the destroy key
+            query_params = event.get('queryStringParameters', {})
+            if query_params and query_params.get('key') == DESTROY_KEY:
+                try:
+                    destroy_users()
+                    return {
+                        'statusCode': 200,
+                        'body': json.dumps({'message': 'All users destroyed successfully'}),
+                        'headers': {
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                except Exception as e:
+                    return {
+                        'statusCode': 500,
+                        'body': json.dumps({'error': str(e)}),
+                        'headers': {
+                            'Content-Type': 'application/json'
+                        }
+                    }
+            else:
+                return {
+                    'statusCode': 403,
+                    'body': json.dumps({'error': 'Invalid or missing destroy key'}),
+                    'headers': {
+                        'Content-Type': 'application/json'
+                    }
                 }
-            }
-        except Exception as e:
-            error_html = f"""
-            <html>
-                <head>
-                    <title>ETL Testing Framework - Error</title>
-                </head>
-                <body>
-                    <h1>Error</h1>
-                    <p>{str(e)}</p>
-                </body>
-            </html>
-            """
-            return {
-                'statusCode': 500,
-                'body': error_html,
-                'headers': {
-                    'Content-Type': 'text/html'
+        else:
+            # Existing code for creating users
+            try:
+                user_info, resource_group_url = create_user()
+                html_content = generate_html_response(user_info, resource_group_url)
+                return {
+                    'statusCode': 200,
+                    'body': html_content,
+                    'headers': {
+                        'Content-Type': 'text/html'
+                    }
                 }
-            }
+            except Exception as e:
+                error_html = f"""
+                <html>
+                    <head>
+                        <title>ETL Testing Framework - Error</title>
+                    </head>
+                    <body>
+                        <h1>Error</h1>
+                        <p>{str(e)}</p>
+                    </body>
+                </html>
+                """
+                return {
+                    'statusCode': 500,
+                    'body': error_html,
+                    'headers': {
+                        'Content-Type': 'text/html'
+                    }
+                }
     else:
         method_not_allowed_html = """
         <html>
@@ -275,7 +307,7 @@ def user_exists(user_name):
 
 
 def create_console_user(user_name, account_id):
-    """Creates a console user with login profile and attaches necessary policies."""
+    """Creates a console user with login profile."""
     iam_client.create_user(UserName=user_name)
 
     # Generate a random password for the console user
@@ -287,15 +319,6 @@ def create_console_user(user_name, account_id):
         PasswordResetRequired=False
     )
 
-    # Attach the policy that allows the user to change their password
-    attach_password_change_policy(user_name)
-
-    # Attach policy allowing the user to assume the restricted-user-role
-    attach_custom_policy(user_name)
-
-    # Attach policy allowing the user to assume the restricted-user-role
-    attach_assume_role_policy(user_name, 'restricted-user-role')
-
     # Store the account and user information
     login_url = f"https://{account_id}.signin.aws.amazon.com/console"
     account_info = {
@@ -305,25 +328,6 @@ def create_console_user(user_name, account_id):
         'login_url': login_url
     }
     return account_info
-
-
-def attach_assume_role_policy(user_name, role_name):
-    """Attaches a policy allowing the user to assume a specific role."""
-    assume_role_policy = {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": "sts:AssumeRole",
-                "Resource": f"arn:aws:iam::{ACCOUNT_ID}:role/{role_name}"
-            }
-        ]
-    }
-    iam_client.put_user_policy(
-        UserName=user_name,
-        PolicyName='AssumeRestrictedUserRolePolicy',
-        PolicyDocument=json.dumps(assume_role_policy)
-    )
 
 
 def create_service_user(user_name):
@@ -367,51 +371,6 @@ def generate_random_password(length=12):
     return password
 
 
-def attach_custom_policy(user_name):
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyLambda"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyAthena"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyS3"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyEventbridge"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyDynamoDB"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyCICD"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-    # New Resource Group policy
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyResourceGroups"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-    # New Tagging policy
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyTagging"  # Replace with your custom policy ARN
-    iam_client.attach_user_policy(
-        UserName=user_name,
-        PolicyArn=policy_arn
-    )
-
-
 def attach_custom_service_policy(user_name):
     policy_arn = "arn:aws:iam::087559609246:policy/ServiceUserRestrictedPolicy"  # Replace with your custom policy ARN
     iam_client.attach_user_policy(
@@ -419,24 +378,6 @@ def attach_custom_service_policy(user_name):
         PolicyArn=policy_arn
     )
 
-
-def attach_password_change_policy(user_name):
-    """Attaches a policy allowing password changes."""
-    password_change_policy = {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": "iam:ChangePassword",
-                "Resource": f"arn:aws:iam::{ACCOUNT_ID}:user/{user_name}"
-            }
-        ]
-    }
-    iam_client.put_user_policy(
-        UserName=user_name,
-        PolicyName='AllowChangePassword',
-        PolicyDocument=json.dumps(password_change_policy)
-    )
 
 def create_resource_group_for_user(user_name):
     """Creates a resource group for the user based on the Owner tag and returns the console URL."""
@@ -471,3 +412,45 @@ def create_resource_group_for_user(user_name):
     except resource_groups_client.exceptions.BadRequestException as e:
         print(f"Error creating resource group: {str(e)}")
         return None
+
+def destroy_users():
+    """Destroy all service and console users and their associated resources."""
+    deleted_users = []
+    users = iam_client.list_users()['Users']
+    for user in users:
+        user_name = user['UserName']
+        if user_name.startswith('conference-user-') or user_name.startswith('service-conference-user-'):
+     
+            # Delete access keys
+            access_keys = iam_client.list_access_keys(UserName=user_name)['AccessKeyMetadata']
+            for key in access_keys:
+                iam_client.delete_access_key(UserName=user_name, AccessKeyId=key['AccessKeyId'])
+            
+            # Delete login profile if it exists
+            try:
+                iam_client.delete_login_profile(UserName=user_name)
+            except iam_client.exceptions.NoSuchEntityException:
+                pass
+            
+            # Detach all managed policies
+            attached_policies = iam_client.list_attached_user_policies(UserName=user_name)['AttachedPolicies']
+            for policy in attached_policies:
+                iam_client.detach_user_policy(UserName=user_name, PolicyArn=policy['PolicyArn'])
+            
+            # Delete all inline policies
+            inline_policies = iam_client.list_user_policies(UserName=user_name)['PolicyNames']
+            for policy_name in inline_policies:
+                iam_client.delete_user_policy(UserName=user_name, PolicyName=policy_name)
+            
+            # Delete the user
+            iam_client.delete_user(UserName=user_name)
+            deleted_users.append(user_name)
+    
+    # Delete resource groups
+    groups = resource_groups_client.list_groups()['GroupIdentifiers']
+    for group in groups:
+        if group['Name'].startswith('conference-user-') or group['Name'].startswith('service-conference-user-'):
+            resource_groups_client.delete_group(GroupName=group['Name'])
+    
+    return deleted_users
+
