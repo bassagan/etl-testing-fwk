@@ -1,2 +1,0 @@
-boto3==1.26.63      # AWS SDK for Python to interact with AWS services
-requests==2.28.1    # HTTP library, useful for making web requests if needed
