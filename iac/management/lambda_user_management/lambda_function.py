@@ -6,7 +6,6 @@ import json
 
 # Initialize AWS clients
 iam_client = boto3.client('iam')
-sts_client = boto3.client('sts')
 
 # Get account ID from environment variable
 ACCOUNT_ID = os.environ.get('AWS_ACCOUNT_ID', '087559609246')
