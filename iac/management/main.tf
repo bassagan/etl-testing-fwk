@@ -2,13 +2,6 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-module "iam" {
-  providers = {
-    aws = aws
-  }
-  source = "./modules/iam"
-}
-
 
 # IAM Role for Lambda Execution
 resource "aws_iam_role" "lambda_role" {

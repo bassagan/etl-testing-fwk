@@ -192,7 +192,7 @@ resource "aws_iam_policy" "user_restricted_policy_cicd" {
         "codebuild:ListProjects",
         "codepipeline:ListPipelines"
       ],
-      "Resource": "*"
+      "Resource": "*" 
     },
     {
       "Effect": "Allow",
