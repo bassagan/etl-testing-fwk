@@ -22,7 +22,16 @@ resource "aws_iam_policy" "owner_full_access" {
           "logs:*",
         ]
         Resource = var.resource_arns
-      }
+      },
+        {
+            "Action": [
+                "resource-groups:*",
+                "tag:*",
+                "cloudformation:*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
     ]
   })
 

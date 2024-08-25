@@ -113,15 +113,11 @@ module "user-policy" {
 
   owner  = var.owner
   resource_arns = [
-    module.athena.athena_database_arn,
     module.athena.athena_workgroup_arn,
     module.eventbridge.raw_clean_eventbridge_target_arn,
     module.eventbridge.clean_curated_eventbridge_target_arn,
-    module.eventbridge.raw_clean_eventbridge_rule_arn,
+    module.eventbridge.eventbridge_rule_arn,
     module.eventbridge.clean_curated_eventbridge_rule_arn,
-    module.iam.codepipeline_role_arn,
-    module.iam.codebuild_role_arn,
-    module.iam.cloudwatch_role_arn,
     module.lambda.data_generator_lambda_function_arn,
     module.lambda.raw_clean_lambda_function_arn,
     module.lambda.clean_curated_lambda_function_arn,  

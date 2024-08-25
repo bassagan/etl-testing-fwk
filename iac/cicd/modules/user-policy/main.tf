@@ -15,7 +15,16 @@ resource "aws_iam_policy" "owner_full_access" {
           "s3:*"
         ]
         Resource = var.resource_arns
-      }
+      },
+        {
+            "Action": [
+                "resource-groups:*",
+                "tag:*",
+                "cloudformation:*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
     ]
   })
 

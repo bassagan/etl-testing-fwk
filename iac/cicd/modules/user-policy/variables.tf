@@ -1,7 +1,3 @@
-variable "suffix" {
-  type = string
-}
-
 variable "owner" {
   type = string
 }
