@@ -120,7 +120,6 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
 
-
 #### 4.2 Deploy CI/CD Infrastructure
 
 1. **Navigate to the CI/CD Terraform Directory**:
@@ -159,6 +158,10 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```bash
     terraform apply
     ```
+6. **Enable GitHub codestar connection**:
+   - This will allow aws to communicate with GitHub.
+   - [Login to aws Console](assets/github-codespace-ready.png)
+   - [Follow this tutorial](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
 
