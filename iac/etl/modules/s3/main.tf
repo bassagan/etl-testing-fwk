@@ -108,20 +108,20 @@ resource "aws_s3_bucket_policy" "curated_bucket_policy" {
 resource "aws_s3_object" "upload_lambda_generator" {
   bucket = aws_s3_bucket.etl_bucket.bucket
   key    = "lambda_generator_package.zip"
-  source = "${path.module}/../../lambda_generator_package.zip"  # Adjust path to your ZIP file
+  source = "${path.root}/lambda_packages/lambda_generator_package.zip"  # Adjust path to your ZIP file
   acl    = "private"
 }
 
 resource "aws_s3_object" "upload_lambda_raw_clean" {
   bucket = aws_s3_bucket.etl_bucket.bucket
   key    = "lambda_raw_clean.zip"
-  source = "${path.module}/../../lambda_raw_clean.zip"  # Adjust path to your ZIP file
+  source = "${path.root}/lambda_packages/lambda_raw_clean.zip"  # Adjust path to your ZIP file
   acl    = "private"
 }
 
 resource "aws_s3_object" "upload_lambda_clean_curated" {
   bucket = aws_s3_bucket.etl_bucket.bucket
   key    = "lambda_clean_curated.zip"
-  source = "${path.module}/../../lambda_clean_curated.zip"  # Adjust path to your ZIP file
+  source = "${path.root}/lambda_packages/lambda_clean_curated.zip"  # Adjust path to your ZIP file
   acl    = "private"
 }
