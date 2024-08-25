@@ -16,24 +16,28 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 
 ## Overview
 In this exercise, you will:
-- Set up your AWS account and configure your environment within GitHub Codespaces.
+- Get a temporary AWS account provided by the speaker on the conference. 
 - Fork the GitHub repository and launch a Codespace.
 - Initialize and deploy the infrastructure using Terraform.
 - Verify that all necessary AWS resources have been created.
 
 ## Prerequisites
 Before you begin, make sure you have the following:
-- An AWS account.
+- An AWS account. Temporary accounts will be provided.
 - A GitHub account with access to the repository and GitHub Codespaces enabled.
 - Basic understanding of Git, Terraform, and AWS services.
+- IAM role with administrative privileges or specific permissions for S3, IAM, Lambda, DynamoDB, CodeBuild, and CodePipeline.
 
 
 ## Step-by-Step Instructions
 
 ### 1. AWS Account Setup
-Ensure you have an active AWS account. If you don't have one, [create an AWS account here](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
+During this tutorial, each attendee will be provided with temporary AWS credentials (Access Key ID and Secret Access Key) that can be used to set up and deploy the required infrastructure. **These credentials are strictly temporary and will be removed immediately after the tutorial.**
 
+### Using Provided AWS Credentials
 
+- **Access Key ID** and **Secret Access Key** will be shared with you at the start of the tutorial.
+- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh>`, [see section 3](#3-environment-setup).
 ### 2. Fork the Repository
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
@@ -95,7 +99,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     - These folder contain the Terraform configuration files necessary to set up the S3 bucket and DynamoDB table that will store your Terraform state.
 
     ```bash
-    cd iac/backend
+    cd ../iac/backend
     ```
 
 2. **Review the Terraform Configuration**:
@@ -107,13 +111,14 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ```bash
     terraform init
+      ```
+     ```bash
     terraform apply
-    ```
-
+      ```
+   
     - Confirm the apply action when prompted writting `yes`.
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
-
 
 #### 4.2 Deploy CI/CD Infrastructure
 
@@ -145,7 +150,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform plan
     ```
 
-    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+    ![Screenshot of Terraform plan output](assets/terminal-terraform-plan.png)
 
 5. **Apply the CI/CD Infrastructure**:
     - Apply the Terraform configuration to provision the CI/CD infrastructure. Confirm when prompted.
@@ -153,8 +158,12 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```bash
     terraform apply
     ```
+6. **Enable GitHub codestar connection**:
+   - This will allow aws to communicate with GitHub.
+   - [Login to aws Console](assets/github-codespace-ready.png)
+   - [Follow this tutorial](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)
 
-    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+    ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
 
 #### 4.3 Deploy ETL Infrastructure
 
@@ -186,7 +195,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform plan
     ```
 
-    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+    ![Screenshot of Terraform plan output](assets/terminal-terraform-etl-plan.png)
 
 5. **Apply the ETL Infrastructure**:
     - Apply the Terraform configuration to provision the ETL infrastructure. Confirm when prompted.

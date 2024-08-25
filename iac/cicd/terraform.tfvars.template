@@ -6,8 +6,7 @@ owner         = "{owner}"
 github_owner = "{github_owner}"
 github_repo  = "{repo_name}"
 branch       = "{branch}"
-codestar_name = "guithub_connection"
-
+codestar_name   = "github_connection"
 
 codepipeline_name = "codepipeline"
 etl_codepipeline_bucket = "etl-codepipeline-bucket"

@@ -14,5 +14,5 @@
         "python.pythonPath": "/opt/venv/bin/python"
     },
     "remoteUser": "vscode",
-    "postCreateCommand": "bash -c 'source /opt/venv/bin/activate'"
+    "postCreateCommand": "chmod +x /workspaces/etl-testing-fwk/scripts/*.sh && bash -c 'source /opt/venv/bin/activate'"
 }
