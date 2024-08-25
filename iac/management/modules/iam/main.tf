@@ -24,7 +24,7 @@ resource "aws_iam_policy" "user_restricted_policy_lambda" {
       "Resource": "arn:aws:lambda:eu-west-1:087559609246:function/*",
       "Condition": {
         "StringEquals": {
-          "lambda:ResourceTag/Owner": "$${{aws:username}}"
+          "lambda:ResourceTag/Owner": "$${aws:username}"
         }
       }
     }
@@ -58,7 +58,7 @@ resource "aws_iam_policy" "user_restricted_policy_athena" {
       "Resource": "arn:aws:athena:eu-west-1:087559609246:workgroup/*",
       "Condition": {
         "StringEquals": {
-          "athena:ResourceTag/Owner": "$${{aws:username}}"
+          "athena:ResourceTag/Owner": "$${aws:username}"
         }
       }
     }
@@ -80,7 +80,7 @@ resource "aws_iam_policy" "user_restricted_policy_s3" {
       "Action": [
         "s3:ListBucket"
       ],
-      "Resource": "arn:aws:s3:::$${{aws:username}}*"
+      "Resource": "arn:aws:s3:::$${aws:username}*"
     },
     {
       "Effect": "Allow",
@@ -92,7 +92,7 @@ resource "aws_iam_policy" "user_restricted_policy_s3" {
       "Resource": "arn:aws:s3:::*",
       "Condition": {
         "StringEquals": {
-          "s3:ResourceTag/Owner": "$${{aws:username}}"
+          "s3:ResourceTag/Owner": "$${aws:username}"
         }
       }
     }
@@ -120,7 +120,7 @@ resource "aws_iam_policy" "user_restricted_policy_eventbridge" {
       "Resource": "arn:aws:events:eu-west-1:087559609246:rule/*",
       "Condition": {
         "StringEquals": {
-          "events:ResourceTag/Owner": "$${{aws:username}}"
+          "events:ResourceTag/Owner": "$${aws:username}"
         }
       }
     }
@@ -155,7 +155,7 @@ resource "aws_iam_policy" "user_restricted_policy_dynamodb" {
       "Resource": "arn:aws:dynamodb:eu-west-1:087559609246:table/*",
       "Condition": {
         "StringEquals": {
-          "dynamodb:ResourceTag/Owner": "$${{aws:username}}"
+          "dynamodb:ResourceTag/Owner": "$${aws:username}"
         }
       }
     }
@@ -193,8 +193,8 @@ resource "aws_iam_policy" "user_restricted_policy_cicd" {
       ],
       "Condition": {
         "StringEquals": {
-          "codebuild:ResourceTag/Student": "$${{aws:username}}",
-          "codepipeline:ResourceTag/Student": "$${{aws:username}}"
+          "codebuild:ResourceTag/Student": "$${aws:username}",
+          "codepipeline:ResourceTag/Student": "$${aws:username}"
         }
       }
     }
@@ -202,6 +202,22 @@ resource "aws_iam_policy" "user_restricted_policy_cicd" {
 }
 
 )
+}
+
+resource "aws_iam_policy" "assume_restricted_user_role_policy" {
+  name        = "AssumeRestrictedUserRolePolicy"
+  description = "Policy that allows an IAM user to assume the restricted-user-role"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": aws_iam_role.restricted_user_role.arn
+      }
+    ]
+  })
 }
 
 
@@ -214,9 +230,14 @@ resource "aws_iam_role" "restricted_user_role" {
       {
         Effect = "Allow",
         Principal = {
-          AWS = "arn:aws:iam::087559609246:root"  # Adjust with your AWS account ID
+          AWS = "arn:aws:iam::087559609246:root"  # This allows any IAM user in the account to assume the role
         },
-        Action = "sts:AssumeRole"
+        Action = "sts:AssumeRole",
+        Condition = {
+          StringLike: {
+            "aws:userid": "087559609246:*"
+          }
+        }
       }
     ]
   })
