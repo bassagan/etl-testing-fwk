@@ -22,6 +22,7 @@ codebuild_client = boto3.client('codebuild')
 codestar_client = boto3.client('codestar-connections')
 events_client = boto3.client('events')
 
+
 def lambda_handler(event, context):
     operation = event.get('operation')
     account_count = event.get('account_count', 1)
@@ -32,7 +33,6 @@ def lambda_handler(event, context):
         response = handle_create_operation(account_count, s3_bucket)
     elif operation == 'destroy':
         response = handle_destroy_operation(target_destroy_user)
-
     else:
         response = {
             'statusCode': 400,
@@ -61,7 +61,6 @@ def handle_destroy_operation(target_destroy_user):
         'statusCode': 200,
         'body': 'Accounts destroyed successfully'
     }
-
 
 
 def create_accounts(count):
@@ -112,9 +111,12 @@ def create_console_user(user_name, account_id):
     # Attach the policy that allows the user to change their password
     attach_password_change_policy(user_name)
 
+    # Attach policy allowing the user to assume the restricted-user-role
+    attach_custom_policy(user_name)
 
     # Attach policy allowing the user to assume the restricted-user-role
     attach_assume_role_policy(user_name, 'restricted-user-role')
+
     # Store the account and user information
     login_url = f"https://{account_id}.signin.aws.amazon.com/console"
     account_info = {
@@ -124,6 +126,7 @@ def create_console_user(user_name, account_id):
         'login_url': login_url
     }
     return account_info
+
 
 def attach_assume_role_policy(user_name, role_name):
     """Attaches a policy allowing the user to assume a specific role."""
@@ -139,9 +142,10 @@ def attach_assume_role_policy(user_name, role_name):
     }
     iam_client.put_user_policy(
         UserName=user_name,
-        PolicyName='AllowAssumeRole',
+        PolicyName='AssumeRestrictedUserRolePolicy',
         PolicyDocument=json.dumps(assume_role_policy)
     )
+
 
 def create_service_user(user_name):
     """Creates a service user with access keys for programmatic access and tags the user as a service user."""
@@ -185,11 +189,36 @@ def generate_random_password(length=12):
 
 
 def attach_custom_policy(user_name):
-    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicy"  # Replace with your custom policy ARN
-    iam_client.attach_role_policy(
-    RoleName='string',
-    PolicyArn='string'
-)
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyLambda"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyAthena"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyS3"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyEventbridge"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyDynamoDB"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
+    policy_arn = "arn:aws:iam::087559609246:policy/UserRestrictedPolicyCICD"  # Replace with your custom policy ARN
+    iam_client.attach_user_policy(
+        UserName=user_name,
+        PolicyArn=policy_arn
+    )
 
 
 def attach_custom_service_policy(user_name):
@@ -263,8 +292,6 @@ def destroy_accounts(target_user_name=None):
         if user_name.startswith("conference-user-") or user_name.startswith("service-conference-user-"):
             print(f"Deleting user: {user_name}")
 
-
-
             # Destroy all tagged resources
             destroy_tagged_resources(user_name)
 
@@ -308,8 +335,6 @@ def destroy_accounts(target_user_name=None):
         'statusCode': 200,
         'body': 'All conference users deleted successfully'
     }
-
-
 
 
 def destroy_tagged_resources(user_name):
@@ -403,11 +428,11 @@ def delete_athena_resources(resource_id):
             # Deleting database in Athena requires first dropping all tables
             athena_client.start_query_execution(
                 QueryString=f"DROP DATABASE {database_name} CASCADE",
-                ResultConfiguration={'OutputLocation': 's3://your-output-bucket/'}  # Replace with your actual output location
+                ResultConfiguration={'OutputLocation': 's3://your-output-bucket/'}
+                # Replace with your actual output location
             )
             print(f"Athena database {database_name} deletion initiated.")
     except Exception as e:
         print(f"Error deleting Athena resource {resource_id}: {e}")
-
 
 
