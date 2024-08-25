@@ -12,12 +12,30 @@ PACKAGE_LAMBDAS_SCRIPT="${SCRIPT_DIR}/package_lambdas.sh"
 configure_aws_cli() {
     echo "Checking AWS CLI configuration..."
     if ! aws sts get-caller-identity >/dev/null 2>&1; then
-        echo "AWS CLI not configured. Running 'aws configure'..."
-        aws configure
+        echo "AWS CLI not configured. Running 'aws configure' for access key and secret access key..."
+        read -p "Enter AWS Access Key ID: " aws_access_key_id
+        read -s -p "Enter AWS Secret Access Key: " aws_secret_access_key
+        echo
+
+        aws configure set aws_access_key_id "$aws_access_key_id"
+        aws configure set aws_secret_access_key "$aws_secret_access_key"
+        aws configure set region "eu-west-1"
+        aws configure set output "json"
+
+        echo "AWS CLI configured with default region '$DEFAULT_REGION' and output format '$DEFAULT_OUTPUT_FORMAT'."
     else
         read -p "AWS CLI is already configured. Do you want to reconfigure it? (y/n): " choice
         if [[ "$choice" == [Yy]* ]]; then
-            aws configure
+            read -p "Enter AWS Access Key ID: " aws_access_key_id
+            read -s -p "Enter AWS Secret Access Key: " aws_secret_access_key
+            echo
+
+            aws configure set aws_access_key_id "$aws_access_key_id"
+            aws configure set aws_secret_access_key "$aws_secret_access_key"
+            aws configure set region "$DEFAULT_REGION"
+            aws configure set output "$DEFAULT_OUTPUT_FORMAT"
+
+            echo "AWS CLI reconfigured with default region '$DEFAULT_REGION' and output format '$DEFAULT_OUTPUT_FORMAT'."
         else
             echo "Proceeding with existing AWS configuration."
         fi

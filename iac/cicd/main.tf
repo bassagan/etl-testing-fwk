@@ -45,6 +45,13 @@ module "s3" {
   owner = var.owner
 }
 
+module "codestar" {
+  source          = "./modules/codestar"
+  codestar_name   = "${var.owner}-${var.codestar_name}"
+
+
+  tags = local.common_tags
+}
 
 module "codepipeline" {
   source            = "./modules/codepipeline"
@@ -53,7 +60,8 @@ module "codepipeline" {
   artifact_bucket   = module.s3.codepipeline_bucket
   full_repository   = "${var.github_owner}/${var.github_repo}"
   branch            = var.branch
+  codestar_arn      = module.codestar.codestar_arn
   codepipeline_name = "${var.branch}-${var.codepipeline_name}-${var.environment}"
-
+  depends_on                     = [module.codestar]
   tags = local.common_tags
 }

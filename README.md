@@ -16,7 +16,7 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 
 ## Overview
 In this exercise, you will:
-- Set up your AWS account and configure your environment within GitHub Codespaces.
+- Get a temporary AWS account provided by the speaker on the conference. 
 - Fork the GitHub repository and launch a Codespace.
 - Initialize and deploy the infrastructure using Terraform.
 - Verify that all necessary AWS resources have been created.
@@ -37,21 +37,21 @@ During this tutorial, each attendee will be provided with temporary AWS credenti
 ### Using Provided AWS Credentials
 
 - **Access Key ID** and **Secret Access Key** will be shared with you at the start of the tutorial.
-- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh`, see section 3. 
+- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh>`, [see section 3](#3-environment-setup).
 ### 2. Fork the Repository
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
     - ![Screenshot of GitHub Fork Button](assets/github-fork-button.png)
-2. **Launch a Codespace**:
+3. **Launch a Codespace**:
     - Once you have forked the repository, **navigate to your fork**.
-    - Click on the "Code" button, then select "Open with Codespaces" and create a new Codespace.
+    - Click on the "Code" button, "Codespaces" tab, then select "Create codespace on master" to create a new Codespace.
     - ![Screenshot of Codespaces launch](assets/github-codespaces-new.png)
     - The Codespace will automatically set up your environment based on the repository's configuration (e.g., `.devcontainer`).
    **Important, this process can take few minutes, be patient:**
    ![Screenshot of CodeSpace Building](assets/github-codespace-building.png)
     - You will know the CodeSpace is ready when you can see: 
    ![Screenshot of CodeSpace Building](assets/github-codespace-ready.png)
-2. **Checkout the initial branch**:
+4. **Checkout the initial branch**:
    - In order to switch branches you can run git commands in the terminal:
    ```bash
     git checkout master
@@ -95,7 +95,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 #### 4.1 Deploy Terraform Backend Infrastructure
 
 1. **Navigate to the Backend Terraform Configuration**:
-    - First, navigate to the `backend` folder within`iac` 
+    - First, navigate to the `backend` folder within `iac` 
     - These folder contain the Terraform configuration files necessary to set up the S3 bucket and DynamoDB table that will store your Terraform state.
 
     ```bash
@@ -111,15 +111,14 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ```bash
     terraform init
-      ```
-     ```bash
+    ```
+    ```bash
     terraform apply
-      ```
+    ```
    
     - Confirm the apply action when prompted writting `yes`.
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
-
 
 #### 4.2 Deploy CI/CD Infrastructure
 
@@ -127,7 +126,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     - Move to the `iac/cicd` directory where the Terraform files for setting up CI/CD infrastructure are located.
 
     ```bash
-    cd ../../iac/cicd
+    cd ../cicd
     ```
 
 2. **Initialize Terraform**:
@@ -151,21 +150,24 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform plan
     ```
 
-    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+    ![Screenshot of Terraform plan output](assets/terminal-terraform-plan.png)
 
 5. **Apply the CI/CD Infrastructure**:
-    - Apply the Terraform configuration to provision the CI/CD infrastructure. Confirm when prompted.
+    - Apply the Terraform configuration to provision the CI/CD infrastructure. Confirm with `yes` when prompted.
 
     ```bash
     terraform apply
     ```
-
-    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+    ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
+6. **Enable GitHub codestar connection**:
+   ##### This will allow aws to communicate with GitHub.
+   - [Login to aws Console](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)
+   - [Follow this tutorial](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
 #### 4.3 Deploy ETL Infrastructure
 
 1. **Navigate to the ETL Terraform Directory**:
-    - Now, move to the `iac_etl` directory to deploy the ETL infrastructure.
+    - Now, move to the `iac/etl` directory to deploy the ETL infrastructure.
 
     ```bash
     cd ../etl
@@ -192,7 +194,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform plan
     ```
 
-    ![Screenshot of Terraform plan output](path/to/screenshot-terraform-plan.png)
+    ![Screenshot of Terraform plan output](assets/terminal-terraform-etl-plan.png)
 
 5. **Apply the ETL Infrastructure**:
     - Apply the Terraform configuration to provision the ETL infrastructure. Confirm when prompted.
