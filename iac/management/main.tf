@@ -54,7 +54,8 @@ resource "aws_iam_role_policy" "lambda_iam_policy" {
           "s3:GetObject",
           "s3:ListBucket",
           "iam:*",
-          "tag:*"
+          "tag:*",
+          "resource-groups:*"
         ],
         Resource = "*"
       },

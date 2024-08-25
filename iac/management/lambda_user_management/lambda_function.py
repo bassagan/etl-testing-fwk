@@ -3,9 +3,11 @@ import os
 import secrets
 import string
 import json
+import urllib.parse
 
 # Initialize AWS clients
 iam_client = boto3.client('iam')
+resource_groups_client = boto3.client('resource-groups')
 
 # Get account ID from environment variable
 ACCOUNT_ID = os.environ.get('AWS_ACCOUNT_ID', '087559609246')
@@ -14,12 +16,16 @@ def lambda_handler(event, context):
     # Check if it's a GET request
     if event['requestContext']['http']['method'] == 'GET':
         try:
-            # Create user
-            user_info = create_user()
+            # Create user and get information
+            user_info, resource_group_url = create_user()
+
 
             return {
                 'statusCode': 200,
-                'body': json.dumps(user_info),
+                'body': json.dumps({
+                    'user_info': user_info,
+                    'resource_group_url': resource_group_url
+                }),
                 'headers': {
                     'Content-Type': 'application/json'
                 }
@@ -52,7 +58,11 @@ def create_user():
 
     user = create_console_user(console_user_name, account_id)
     user.update(create_service_user(service_user_name))
-    return user
+    # Create a resource group for the console user
+    resource_group_url = create_resource_group_for_user(console_user_name)
+
+    return user, resource_group_url
+
 
 def user_exists(user_name):
     """Checks if a user already exists."""
@@ -214,3 +224,37 @@ def attach_password_change_policy(user_name):
         PolicyName='AllowChangePassword',
         PolicyDocument=json.dumps(password_change_policy)
     )
+
+def create_resource_group_for_user(user_name):
+    """Creates a resource group for the user based on the Owner tag and returns the console URL."""
+    group_name = f"{user_name}-resources"
+    resource_query = {
+        'ResourceTypeFilters': [
+            'AWS::AllSupported'
+        ],
+        'TagFilters': [
+            {
+                'Key': 'Owner',
+                'Values': [user_name]
+            }
+        ]
+    }
+
+    try:
+        response = resource_groups_client.create_group(
+            Name=group_name,
+            Description=f"Resources owned by {user_name}",
+            ResourceQuery={
+                'Type': 'TAG_FILTERS_1_0',
+                'Query': json.dumps(resource_query)
+            }
+        )
+        print(f"Created resource group: {group_name}")
+
+        # Generate the console URL for the resource group
+        encoded_group_name = urllib.parse.quote(group_name)
+        console_url = f"https://console.aws.amazon.com/resource-groups/group/{encoded_group_name}?region={resource_groups_client.meta.region_name}"
+        return console_url
+    except resource_groups_client.exceptions.BadRequestException as e:
+        print(f"Error creating resource group: {str(e)}")
+        return None
