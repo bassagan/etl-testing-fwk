@@ -126,7 +126,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     - Move to the `iac/cicd` directory where the Terraform files for setting up CI/CD infrastructure are located.
 
     ```bash
-    cd ../../iac/cicd
+    cd ../cicd
     ```
 
 2. **Initialize Terraform**:
