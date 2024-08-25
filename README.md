@@ -168,7 +168,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 #### 4.3 Deploy ETL Infrastructure
 
 1. **Navigate to the ETL Terraform Directory**:
-    - Now, move to the `iac_etl` directory to deploy the ETL infrastructure.
+    - Now, move to the `iac/etl` directory to deploy the ETL infrastructure.
 
     ```bash
     cd ../etl
