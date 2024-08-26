@@ -107,3 +107,34 @@ module "athena" {
   depends_on           = [module.s3]
   tags = local.common_tags
 }
+
+module "user-policy" {
+  source = "./modules/user-policy"
+
+  owner  = var.owner
+  resource_arns = [
+    module.athena.athena_workgroup_arn,
+    module.eventbridge.raw_clean_eventbridge_target_arn,
+    module.eventbridge.clean_curated_eventbridge_target_arn,
+    module.eventbridge.eventbridge_rule_arn,
+    module.eventbridge.clean_curated_eventbridge_rule_arn,
+    module.lambda.data_generator_lambda_function_arn,
+    module.lambda.raw_clean_lambda_function_arn,
+    module.lambda.clean_curated_lambda_function_arn,  
+    module.s3.bucket_arn,
+    module.s3.clean_bucket_arn,
+    module.s3.raw_bucket_arn,
+    module.s3.curated_bucket_arn
+
+  ]
+  tags = local.common_tags
+
+  depends_on = [
+    module.iam,
+    module.athena,
+    module.s3,
+    module.lambda,
+    module.eventbridge,
+    module.sns
+  ]
+}
