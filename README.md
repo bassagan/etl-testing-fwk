@@ -14,16 +14,25 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 4. [Common Issues and Tips](#common-issues-and-tips)
 5. [Next Steps](#next-steps)
 
-## Overview
-In this exercise, you will:
-- Get a temporary AWS account provided by the speaker on the conference. 
-- Fork the GitHub repository and launch a Codespace.
-- Initialize and deploy the infrastructure using Terraform.
-- Verify that all necessary AWS resources have been created.
+## Exercise 1 Checklist
 
+Use this checklist to ensure you've completed all the necessary steps for Exercise 1:
+
+- [ ] Obtained temporary AWS credentials
+- [ ] Forked the repository
+- [ ] Launched a GitHub Codespace
+- [ ] Checked out the initial branch
+- [ ] Ran the `setup_infrastructure.sh` script
+- [ ] Deployed Terraform Backend Infrastructure
+- [ ] Deployed CI/CD Infrastructure
+- [ ] Enabled GitHub CodeStar connection
+- [ ] Deployed ETL Infrastructure
+- [ ] Verified AWS resources (S3 buckets, IAM roles, CodeBuild, CodePipeline)
+
+Once you've checked off all these items, you've successfully completed Exercise 1!
 ## Prerequisites
 Before you begin, make sure you have the following:
-- An AWS account. Temporary accounts will be provided.
+- An AWS account. Temporary users will be provided.
 - A GitHub account with access to the repository and GitHub Codespaces enabled.
 - Basic understanding of Git, Terraform, and AWS services.
 - IAM role with administrative privileges or specific permissions for S3, IAM, Lambda, DynamoDB, CodeBuild, and CodePipeline.
@@ -34,10 +43,23 @@ Before you begin, make sure you have the following:
 ### 1. AWS Account Setup
 During this tutorial, each attendee will be provided with temporary AWS credentials (Access Key ID and Secret Access Key) that can be used to set up and deploy the required infrastructure. **These credentials are strictly temporary and will be removed immediately after the tutorial.**
 
+### Getting Your AWS Account
+
+To get your AWS account for this tutorial, follow these steps:
+
+1. Navigate to the following [AWS provide user URL](https://b3qkhvq5ncebxzalxflubypu5e0plhin.lambda-url.eu-west-1.on.aws/)
+
+2. This will provide you with temporary AWS credentials, including:
+   - AWS Access Key ID
+   - AWS Secret Access Key
+   - AWS Session Token
+
+3. Make sure to copy or download these credentials and keep them secure. You will need them for the next steps.
+
 ### Using Provided AWS Credentials
 
-- **Access Key ID** and **Secret Access Key** will be shared with you at the start of the tutorial.
-- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh>`, [see section 3](#3-environment-setup).
+- Use the **Access Key ID**, **Secret Access Key**, and **Session Token** provided by the  URL when configuring your AWS CLI in the following steps.
+- If you prefer to use your own AWS account, you are welcome to do so. In this case, please make sure to create an access token key for your user and have it at hand. Also, take note of your AWS username. **username** will be the `<owner>` on the `<setup_infrastructure.sh>`, [see section 3](#3-environment-setup).
 ### 2. Fork the Repository
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
