@@ -359,14 +359,14 @@ def create_service_user(user_name):
 
 
 def generate_random_password(length=12):
-    """Generates a random password with a mix of letters, digits, and symbols."""
-    alphabet = string.ascii_letters + string.digits + string.punctuation
+    """Generates a random password with a mix of letters, digits, and allowed symbols."""
+    alphabet = string.ascii_letters + string.digits + "*!?_-"
     while True:
         password = ''.join(secrets.choice(alphabet) for _ in range(length))
         if (any(c.islower() for c in password)
                 and any(c.isupper() for c in password)
                 and any(c.isdigit() for c in password)
-                and any(c in string.punctuation for c in password)):
+                and any(c in "*!?_-" for c in password)):
             break
     return password
 
