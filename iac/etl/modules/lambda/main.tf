@@ -22,6 +22,7 @@ resource "aws_lambda_function" "raw_clean_function" {
       S3_BUCKET = var.s3_bucket
     }
   }
+  layers = ["arn:aws:lambda:eu-west-1:336392948345:layer:AWSSDKPandas-Python39:24"]
   tags       = var.tags
   depends_on = [var.lambda_bucket]
 }
@@ -41,6 +42,7 @@ resource "aws_lambda_function" "clean_curated_function" {
       S3_BUCKET = var.s3_bucket
     }
   }
+  layers = ["arn:aws:lambda:eu-west-1:336392948345:layer:AWSSDKPandas-Python39:24"]
   tags       = var.tags
   depends_on = [var.lambda_bucket]
 }

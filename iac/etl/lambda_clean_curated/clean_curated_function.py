@@ -13,8 +13,8 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
     s3_client = boto3.client('s3')
 
-    clean_bucket = event.get('clean_bucket', 'clean-etl-bucket-dev')
-    curated_bucket = event.get('curated_bucket', 'curated-etl-bucket-dev')
+    clean_bucket = event.get('source_bucket', 'clean-etl-bucket-dev')
+    curated_bucket = event.get('destination_bucket', 'curated-etl-bucket-dev')
 
     # Load visits data
     df_visits = load_parquet_from_s3(s3_client, clean_bucket, 'cleaned/visits/latest/visits_latest.parquet')
