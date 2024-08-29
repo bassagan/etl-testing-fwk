@@ -68,6 +68,7 @@ module "lambda" {
   lambda_bucket                 = module.s3.lambda_code_bucket_name
   lambda_role_arn               = module.iam.lambda_role_arn
   lambda_package_data_generator = var.lambda_package_data_generator
+  lambda_role_name              = module.iam.lambda_role_name
   depends_on                    = [module.s3]
 
   tags = local.common_tags

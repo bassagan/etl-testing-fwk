@@ -29,7 +29,6 @@ variable "tags" {
   default     = {}
 }
 
-
 variable "lambda_package_data_generator" {
   description = "Path to the zip package for the data generator lambda function"
   type        = string
@@ -48,5 +47,10 @@ variable "clean_curated_function_name" {
 
 variable "cloudwatch_event_rule_name" {
   description = "Name of the cloudwatch event rule"
+  type        = string
+}
+
+variable "lambda_role_name" {
+  description = "Name of the IAM role for Lambda functions"
   type        = string
 }
