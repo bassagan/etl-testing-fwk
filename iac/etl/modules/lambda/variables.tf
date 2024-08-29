@@ -1,10 +1,5 @@
-variable "function_name" {
+variable "raw_clean_function_name" {
   description = "Name of the Lambda function"
-  type        = string
-}
-
-variable "env" {
-  description = "Deployment environment"
   type        = string
 }
 
@@ -51,7 +46,7 @@ variable "clean_curated_function_name" {
   type        = string
 }
 
-variable "owner" {
-  description = "The owner of the resources"
+variable "cloudwatch_event_rule_name" {
+  description = "Name of the cloudwatch event rule"
   type        = string
 }

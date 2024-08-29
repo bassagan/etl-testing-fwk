@@ -55,7 +55,7 @@ variable "owner" {
 variable "env" {
   description = "Environment (e.g., dev, staging, prod)"
   type        = string
-  default = "dev"
+  default     = "dev"
 }
 variable "etl_codepipeline_bucket" {
   description = "Codepipeline bucket"
@@ -70,7 +70,7 @@ variable "tags" {
 
 locals {
   common_tags = merge({
-    Owner = var.owner,
+    Owner       = var.owner,
     Environment = var.env
   }, var.tags)
 }
@@ -78,31 +78,31 @@ locals {
 
 variable "codebuild_role_name" {
   description = "Code build role name"
-  type = string
-  default = "codebuild-service-role"
+  type        = string
+  default     = "codebuild-service-role"
 }
 
 variable "codebuild_report_permissions_name" {
   description = "Code build permissions"
-  type = string
-  default = "CodeBuildReportPermissions"
+  type        = string
+  default     = "CodeBuildReportPermissions"
 }
 
 variable "codepipeline_role_name" {
-    description = "Code pipeline role name"
-  type = string
-  default = "codepipeline-service-role"
+  description = "Code pipeline role name"
+  type        = string
+  default     = "codepipeline-service-role"
 }
 variable "codepipeline_report_permissions_name" {
   description = "Code pipeline permissions"
-  type = string
-  default = "CodePipelineStartBuild"
+  type        = string
+  default     = "CodePipelineStartBuild"
 }
 
 variable "codebuild_name" {
   description = "Code Build Name"
-  type = string
-  default = "etl-build"
+  type        = string
+  default     = "e2e-testing-etl-cb"
 }
 variable "codestar_name" {
   description = "Codestar name, connection to GitHub"

@@ -7,9 +7,10 @@ variable "region" {
 variable "env" {
   description = "The environment (e.g., dev, prod)"
   type        = string
+  default     = "dev"
 }
 
-variable "bucket_name" {
+variable "lambda_code_bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
 }
@@ -17,18 +18,13 @@ variable "raw_bucket_name" {
   description = "The name of the S3 bucket for raw source ingestion"
   type        = string
 }
-variable "lambda_name" {
+variable "raw_clean_function_name" {
   description = "The name of the Lambda function"
   type        = string
 }
 
 variable "sns_topic_name" {
   description = "The name of the SNS topic"
-  type        = string
-}
-
-variable "event_rule_name" {
-  description = "The name of the EventBridge rule"
   type        = string
 }
 
@@ -77,7 +73,7 @@ variable "data_generator_function_name" {
 
 variable "etl_workgorup_name" {
   description = "Athena workgroup"
-  default = "etl-workgroup"
+  default     = "etl-workgroup"
 }
 
 variable "clean_curated_function_name" {
@@ -101,4 +97,18 @@ locals {
   common_tags = merge({
     Owner = var.owner
   }, var.tags)
+}
+variable "cloudwatch_event_rule_name" {
+  description = "Name of the cloudwatch event rule"
+  type        = string
+}
+
+variable "raw_clean_event_rule_name" {
+  description = "Name for the raw to clean EventBridge rule"
+  type        = string
+}
+
+variable "clean_curated_event_rule_name" {
+  description = "Name for the clean to curated EventBridge rule"
+  type        = string
 }

@@ -7,11 +7,11 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 5.64.0"  # Update to the version you need
+      version = ">= 5.64.0" # Update to the version you need
     }
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.6.2"  # Update to the version you need
+      version = ">= 3.6.2" # Update to the version you need
     }
   }
 }
@@ -26,10 +26,10 @@ module "s3" {
   providers = {
     aws = aws
   }
-  bucket_name         = "${var.owner}-${var.bucket_name}"
-  raw_bucket_name     = "${var.owner}-${var.raw_bucket_name}-${random_string.bucket_suffix.result}"
-  clean_bucket_name     = "${var.owner}-${var.clean_bucket_name}-${random_string.bucket_suffix.result}"
-  curated_bucket_name     = "${var.owner}-${var.curated_bucket_name}-${random_string.bucket_suffix.result}"
+  lambda_code_bucket_name = "${var.lambda_code_bucket_name}-${var.owner}-${random_string.bucket_suffix.result}"
+  raw_bucket_name         = "${var.raw_bucket_name}-${var.owner}-${random_string.bucket_suffix.result}"
+  clean_bucket_name       = "${var.clean_bucket_name}-${var.owner}-${random_string.bucket_suffix.result}"
+  curated_bucket_name     = "${var.curated_bucket_name}-${var.owner}-${random_string.bucket_suffix.result}"
 
   tags = local.common_tags
 }
@@ -41,58 +41,59 @@ module "iam" {
   }
   source = "./modules/iam"
 
-  env                      = var.env
-  lambda_bucket            = module.s3.bucket_name
-  clean_bucket_name        = module.s3.clean_bucket_name
-  curated_bucket_name      = module.s3.curated_bucket_name
-  raw_bucket_name          = module.s3.raw_bucket_name
+  env                       = var.env
+  lambda_bucket             = module.s3.lambda_code_bucket_name
+  clean_bucket_name         = module.s3.clean_bucket_name
+  curated_bucket_name       = module.s3.curated_bucket_name
+  raw_bucket_name           = module.s3.raw_bucket_name
   athena_result_bucket_name = module.s3.clean_bucket_name
-  query_input_bucket_name  = module.s3.clean_bucket_name
-  region                   = var.region
-  depends_on               = [module.s3]
-  owner = var.owner
-  tags = local.common_tags
+  query_input_bucket_name   = module.s3.clean_bucket_name
+  region                    = var.region
+  depends_on                = [module.s3]
+  owner                     = var.owner
+  tags                      = local.common_tags
 }
 
 # Include Lambda module for ETL processing
 module "lambda" {
   source = "./modules/lambda"
 
-  function_name                  = var.lambda_name
-  s3_bucket                      = module.s3.bucket_name
-  lambda_package                 = var.lambda_package
-  lambda_bucket                  = module.s3.bucket_name
-  clean_curated_function_name    = var.clean_curated_function_name
-  data_generator_function_name   = var.data_generator_function_name
-  lambda_role_arn                = module.iam.lambda_role_arn
-  env                            = var.env
-  lambda_package_data_generator  = var.lambda_package_data_generator
-  owner = var.owner
-  depends_on                     = [module.s3]
+  raw_clean_function_name      = "${var.raw_clean_function_name}-${var.owner}"
+  clean_curated_function_name  = "${var.clean_curated_function_name}-${var.owner}"
+  data_generator_function_name = "${var.data_generator_function_name}-${var.owner}"
+  cloudwatch_event_rule_name   = "${var.cloudwatch_event_rule_name}-${var.owner}"
+
+  s3_bucket                     = module.s3.lambda_code_bucket_name
+  lambda_package                = var.lambda_package
+  lambda_bucket                 = module.s3.lambda_code_bucket_name
+  lambda_role_arn               = module.iam.lambda_role_arn
+  lambda_package_data_generator = var.lambda_package_data_generator
+  depends_on                    = [module.s3]
 
   tags = local.common_tags
 }
 
 # Include SNS module for notifications
 module "sns" {
-  source               = "./modules/sns"
-  notification_email   = var.notification_mail
-  env                  = var.env
-  owner = var.owner
-  tags = local.common_tags
+  source             = "./modules/sns"
+  notification_email = var.notification_mail
+  sns_topic_name     = "${var.sns_topic_name}-${var.owner}"
+  tags               = local.common_tags
+  depends_on         = [module.s3]
 }
 
 # Include EventBridge module for scheduling
 module "eventbridge" {
-  source = "./modules/eventbridge"
-
-  raw_clean_function_arn      = module.lambda.raw_clean_lambda_function_arn
-  clean_curated_function_arn  = module.lambda.clean_curated_lambda_function_arn
-  raw_clean_function_name     = module.lambda.raw_clean_lambda_function_name
-  clean_curated_function_name = module.lambda.clean_curated_lambda_function_name
-  schedule_expression         = var.schedule_expression
-  env                         = var.env
-  depends_on                  = [module.lambda]
+  source                        = "./modules/eventbridge"
+  raw_clean_event_rule_name     = "${var.raw_clean_event_rule_name}-${var.owner}"
+  clean_curated_event_rule_name = "${var.clean_curated_event_rule_name}-${var.owner}"
+  raw_clean_function_arn        = module.lambda.raw_clean_lambda_function_arn
+  clean_curated_function_arn    = module.lambda.clean_curated_lambda_function_arn
+  raw_clean_function_name       = module.lambda.raw_clean_lambda_function_name
+  clean_curated_function_name   = module.lambda.clean_curated_lambda_function_name
+  schedule_expression           = var.schedule_expression
+  env                           = var.env
+  depends_on                    = [module.lambda]
 
   tags = local.common_tags
 }
@@ -100,18 +101,18 @@ module "eventbridge" {
 module "athena" {
   source = "./modules/athena"
 
-  athena_db_name       = replace("${var.owner}-${var.athena_db_name}", "-", "_")
-  clean_bucket_name    = module.s3.clean_bucket_name
-  curated_bucket_name  = module.s3.curated_bucket_name
-  etl_workgorup_name   = "${var.owner}-${var.etl_workgorup_name}"
-  depends_on           = [module.s3]
-  tags = local.common_tags
+  athena_db_name      = replace("${var.athena_db_name}-${var.owner}", "-", "_")
+  clean_bucket_name   = module.s3.clean_bucket_name
+  curated_bucket_name = module.s3.curated_bucket_name
+  etl_workgorup_name  = "${var.owner}-${var.etl_workgorup_name}"
+  depends_on          = [module.s3]
+  tags                = local.common_tags
 }
 
 module "user-policy" {
   source = "./modules/user-policy"
 
-  owner  = var.owner
+  owner = var.owner
   resource_arns = [
     module.athena.athena_workgroup_arn,
     module.eventbridge.raw_clean_eventbridge_target_arn,
@@ -120,8 +121,8 @@ module "user-policy" {
     module.eventbridge.clean_curated_eventbridge_rule_arn,
     module.lambda.data_generator_lambda_function_arn,
     module.lambda.raw_clean_lambda_function_arn,
-    module.lambda.clean_curated_lambda_function_arn,  
-    module.s3.bucket_arn,
+    module.lambda.clean_curated_lambda_function_arn,
+    module.s3.lambda_code_bucket_arn,
     module.s3.clean_bucket_arn,
     module.s3.raw_bucket_arn,
     module.s3.curated_bucket_arn

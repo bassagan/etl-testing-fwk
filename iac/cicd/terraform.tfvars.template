@@ -9,9 +9,10 @@ branch       = "{branch}"
 codestar_name   = "github"
 
 codepipeline_name = "codepipeline"
-etl_codepipeline_bucket = "etl-codepipeline-bucket"
+etl_codepipeline_bucket = "github-s3"
 
 codebuild_role_name = "codebuild-service-role"
 codebuild_report_permissions_name = "CodeBuildReportPermissions"
 codepipeline_role_name = "codepipeline-service-role"
+codebuild_name = "e2e-testing-etl-cb"
 

@@ -1,8 +1,3 @@
-variable "env" {
-  description = "Deployment environment"
-  type        = string
-}
-
 variable "notification_email" {
   description = "Email address for receiving notifications"
   type        = string
@@ -12,7 +7,7 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "owner" {
-  description = "The owner of the resources"
+variable "sns_topic_name" {
+  description = "Name of the SNS topic"
   type        = string
 }
