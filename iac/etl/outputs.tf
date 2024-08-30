@@ -18,3 +18,7 @@ output "lambda_clean_curated_function_name" {
 output "lambda_raw_clean_function_name" {
   value = module.lambda.raw_clean_lambda_function_name
 }
+
+output "data_generator_function_name" {
+  value = module.lambda.data_generator_function_name
+}
