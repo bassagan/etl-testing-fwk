@@ -14,26 +14,16 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 4. [Common Issues and Tips](#common-issues-and-tips)
 5. [Next Steps](#next-steps)
 
-## Exercise 1 Checklist
-
-Use this checklist to ensure you've completed all the necessary steps for Exercise 1:
-
-- ☐ [Obtained temporary AWS credentials](#getting-your-aws-account)
-- ☐ [Forked the repository](#2-fork-the-repository)
-- ☐ [Launched a GitHub Codespace](#2-fork-the-repository)
-- ☐ [Checked out the initial branch](#2-fork-the-repository)
-- ☐ [Ran the `setup_infrastructure.sh` script](#3-environment-setup)
-- ☐ [Deployed Terraform Backend Infrastructure](#41-deploy-terraform-backend-infrastructure)
-- ☐ [Deployed CI/CD Infrastructure](#42-deploy-cicd-infrastructure)
-- ☐ [Enabled GitHub CodeStar connection](#42-deploy-cicd-infrastructure)
-- ☐ [Deployed ETL Infrastructure](#43-deploy-etl-infrastructure)
-- ☐ [Verified AWS resources](#5-aws-resource-verification)
-
-Once you've completed all these items, you've successfully finished Exercise 1!
+## Overview
+In this exercise, you will:
+- Get a temporary AWS account provided by the speaker on the conference. 
+- Fork the GitHub repository and launch a Codespace.
+- Initialize and deploy the infrastructure using Terraform.
+- Verify that all necessary AWS resources have been created.
 
 ## Prerequisites
 Before you begin, make sure you have the following:
-- An AWS account. Temporary users will be provided.
+- An AWS account. Temporary accounts will be provided.
 - A GitHub account with access to the repository and GitHub Codespaces enabled.
 - Basic understanding of Git, Terraform, and AWS services.
 - IAM role with administrative privileges or specific permissions for S3, IAM, Lambda, DynamoDB, CodeBuild, and CodePipeline.
@@ -44,45 +34,30 @@ Before you begin, make sure you have the following:
 ### 1. AWS Account Setup
 During this tutorial, each attendee will be provided with temporary AWS credentials (Access Key ID and Secret Access Key) that can be used to set up and deploy the required infrastructure. **These credentials are strictly temporary and will be removed immediately after the tutorial.**
 
-### Getting Your AWS Account
-
-To get your AWS account for this tutorial, follow these steps:
-
-1. Navigate to the following [AWS provide user URL](https://b3qkhvq5ncebxzalxflubypu5e0plhin.lambda-url.eu-west-1.on.aws/)
-
-2. This will provide you with temporary AWS credentials, including:
-   - AWS Access Key ID
-   - AWS Secret Access Key
-   - AWS Session Token
-
-3. Make sure to copy or download these credentials and keep them secure. You will need them for the next steps.
-
 ### Using Provided AWS Credentials
 
-- Use the **Access Key ID**, **Secret Access Key**, and **Session Token** provided by the  URL when configuring your AWS CLI in the following steps.
-- If you prefer to use your own AWS account, you are welcome to do so. In this case, please make sure to create an access token key for your user and have it at hand. Also, take note of your AWS username. **username** will be the `<owner>` on the `<setup_infrastructure.sh>`, [see section 3](#3-environment-setup).
+- **Access Key ID** and **Secret Access Key** will be shared with you at the start of the tutorial.
+- If you prefer to use your own AWS account, you are welcome to do so. In this case please make sure to create an access token key for your user and have it at hand. And also take note of your aws username. **username** will be the `<owner>` on the `<setup_infrastructure.sh>`, [see section 3](#3-environment-setup).
 ### 2. Fork the Repository
 1. Go to the main repository on GitHub.
 2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
     - ![Screenshot of GitHub Fork Button](assets/github-fork-button.png)
-3. **Launch a Codespace**:
+2. **Launch a Codespace**:
     - Once you have forked the repository, **navigate to your fork**.
-    - Click on the "Code" button, "Codespaces" tab, then select "Create codespace on master" to create a new Codespace.
+    - Click on the "Code" button, then select "Open with Codespaces" and create a new Codespace.
     - ![Screenshot of Codespaces launch](assets/github-codespaces-new.png)
     - The Codespace will automatically set up your environment based on the repository's configuration (e.g., `.devcontainer`).
    **Important, this process can take few minutes, be patient:**
    ![Screenshot of CodeSpace Building](assets/github-codespace-building.png)
     - You will know the CodeSpace is ready when you can see: 
    ![Screenshot of CodeSpace Building](assets/github-codespace-ready.png)
-4. **Checkout the initial branch**:
+2. **Checkout the initial branch**:
    - In order to switch branches you can run git commands in the terminal:
    ```bash
     git checkout master
     ```
    Or you can interact directly with the IDE  ![Screenshot of CodeSpace Branches section](assets/github-codespace-change-branche.png)
    
-[Back to Exercise 1 Checklist](#exercise-1-checklist)
-
 ### 3. Environment Setup
 To set up the necessary AWS infrastructure for the ETL testing framework, use the `setup_infrastructure.sh` script. This script will automate parts of the setup process, including configuring backends, generating necessary Terraform variable files, and packaging Lambda functions.
 
@@ -107,8 +82,6 @@ To set up the necessary AWS infrastructure for the ETL testing framework, use th
      - Default Region Name: The AWS region you wish to use (e.g., eu-west-1).
      - Default Output Format: Use json unless otherwise needed.
 
-[Back to Exercise 1 Checklist](#exercise-1-checklist)
-
 ### 4. Terraform Initialization
 
 In this section, you will initialize and apply Terraform configurations for different purposes:
@@ -122,7 +95,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 #### 4.1 Deploy Terraform Backend Infrastructure
 
 1. **Navigate to the Backend Terraform Configuration**:
-    - First, navigate to the `backend` folder within `iac` 
+    - First, navigate to the `backend` folder within`iac` 
     - These folder contain the Terraform configuration files necessary to set up the S3 bucket and DynamoDB table that will store your Terraform state.
 
     ```bash
@@ -138,16 +111,14 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ```bash
     terraform init
-    ```
-    ```bash
+      ```
+     ```bash
     terraform apply
-    ```
+      ```
    
     - Confirm the apply action when prompted writting `yes`.
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
-
-[Back to Exercise 1 Checklist](#exercise-1-checklist)
 
 #### 4.2 Deploy CI/CD Infrastructure
 
@@ -155,7 +126,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     - Move to the `iac/cicd` directory where the Terraform files for setting up CI/CD infrastructure are located.
 
     ```bash
-    cd ../cicd
+    cd ../../iac/cicd
     ```
 
 2. **Initialize Terraform**:
@@ -182,23 +153,22 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ![Screenshot of Terraform plan output](assets/terminal-terraform-plan.png)
 
 5. **Apply the CI/CD Infrastructure**:
-    - Apply the Terraform configuration to provision the CI/CD infrastructure. Confirm with `yes` when prompted.
+    - Apply the Terraform configuration to provision the CI/CD infrastructure. Confirm when prompted.
 
     ```bash
     terraform apply
     ```
-    ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
 6. **Enable GitHub codestar connection**:
-   ##### This will allow aws to communicate with GitHub.
-   - [Login to aws Console](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)
-   - [Follow this tutorial](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
+   - This will allow aws to communicate with GitHub.
+   - [Login to aws Console](assets/github-codespace-ready.png)
+   - [Follow this tutorial](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)
 
-[Back to Exercise 1 Checklist](#exercise-1-checklist)
+    ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
 
 #### 4.3 Deploy ETL Infrastructure
 
 1. **Navigate to the ETL Terraform Directory**:
-    - Now, move to the `iac/etl` directory to deploy the ETL infrastructure.
+    - Now, move to the `iac_etl` directory to deploy the ETL infrastructure.
 
     ```bash
     cd ../etl
@@ -236,7 +206,8 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
 
-[Back to Exercise 1 Checklist](#exercise-1-checklist)
+---
+
 
 ### 5. AWS Resource Verification
 1. **Login to AWS Console**: Log in to your AWS account and verify that all resources have been created.
@@ -245,8 +216,6 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 3. **Check Other Resources**: Verify that the IAM roles, CodeBuild, and CodePipeline have been created.
     - ![Screenshot of IAM roles, CodeBuild, and CodePipeline](path/to/screenshot-aws-resources.png)
 
-[Back to Exercise 1 Checklist](#exercise-1-checklist)
-
 ## Common Issues and Tips
 - **Terraform Init Errors**: Ensure your AWS credentials are correctly configured. Use `aws configure` to reset them if necessary.
 - **Python Environment Issues**: If you encounter issues with Python dependencies, ensure you are using the correct Python version and the virtual environment is activated.
@@ -254,20 +223,3 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
 ## Next Steps
 Once you have successfully set up your environment and verified the resources, you are ready to move on to [Exercise 2: Running the Data Generator and ETL Processes](#).
-
-## Exercise 1 Checklist
-
-Use this checklist to ensure you've completed all the necessary steps for Exercise 1:
-
-- ☐ [Obtained temporary AWS credentials](#getting-your-aws-account)
-- ☐ [Forked the repository](#2-fork-the-repository)
-- ☐ [Launched a GitHub Codespace](#2-fork-the-repository)
-- ☐ [Checked out the initial branch](#2-fork-the-repository)
-- ☐ [Ran the `setup_infrastructure.sh` script](#3-environment-setup)
-- ☐ [Deployed Terraform Backend Infrastructure](#41-deploy-terraform-backend-infrastructure)
-- ☐ [Deployed CI/CD Infrastructure](#42-deploy-cicd-infrastructure)
-- ☐ [Enabled GitHub CodeStar connection](#42-deploy-cicd-infrastructure)
-- ☐ [Deployed ETL Infrastructure](#43-deploy-etl-infrastructure)
-- ☐ [Verified AWS resources](#5-aws-resource-verification)
-
-Once you've completed all these items, you've successfully finished Exercise 1!

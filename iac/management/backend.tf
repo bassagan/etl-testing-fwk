@@ -1,26 +1,8 @@
 terraform {
   backend "s3" {
-
-    bucket = "your_bucket_name"
+    bucket         = "paula-bassaganas-manage-users-bucket"
     key            = "etl-testing-fwk/dev/terraform.tfstate"
     region         = "eu-west-1"
-    dynamodb_table = "your_dynamo_db_name"
-
+    dynamodb_table = "paula-bassaganas-manage-users-dynamodb"
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
