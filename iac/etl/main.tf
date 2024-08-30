@@ -64,11 +64,15 @@ module "lambda" {
   cloudwatch_event_rule_name   = "${var.cloudwatch_event_rule_name}-${var.owner}"
 
   s3_bucket                     = module.s3.lambda_code_bucket_name
+  raw_bucket                    = module.s3.raw_bucket_name
+  clean_bucket                  = module.s3.clean_bucket_name
+  curated_bucket                = module.s3.curated_bucket_name
   lambda_package                = var.lambda_package
   lambda_bucket                 = module.s3.lambda_code_bucket_name
   lambda_role_arn               = module.iam.lambda_role_arn
   lambda_package_data_generator = var.lambda_package_data_generator
   lambda_role_name              = module.iam.lambda_role_name
+  notification_email            = var.notification_mail
   depends_on                    = [module.s3]
 
   tags = local.common_tags

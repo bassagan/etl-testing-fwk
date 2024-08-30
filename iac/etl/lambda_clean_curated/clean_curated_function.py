@@ -6,15 +6,25 @@ import io
 from curated_patient_transform import CuratedPatientTransform
 from curated_visit_transform import CuratedVisitTransform
 from data_writer import DataWriter
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
+    # Check if the raw-clean function was successful
+    if event.get('status') != 'success':
+        logger.info("Raw-clean function was not successful. Skipping curated data processing.")
+        return {
+            'statusCode': 200,
+            'body': json.dumps({"message": "Skipped curated data processing due to unsuccessful raw-clean function."})
+        }
+
     s3_client = boto3.client('s3')
 
-    clean_bucket = event.get('source_bucket', 'clean-etl-bucket-dev')
-    curated_bucket = event.get('destination_bucket', 'curated-etl-bucket-dev')
+    # Retrieve bucket names from environment variables
+    clean_bucket = os.environ['SOURCE_BUCKET']
+    curated_bucket = os.environ['TARGET_BUCKET']
 
     # Load visits data
     df_visits = load_parquet_from_s3(s3_client, clean_bucket, 'cleaned/visits/latest/visits_latest.parquet')

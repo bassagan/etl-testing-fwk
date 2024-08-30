@@ -1,7 +1,7 @@
 pytest==8.3.2
 pytest-timeout==2.1.0
-boto3==1.34.150
-great_expectations==1.0.0
-great_expectations[s3]
-great_expectations[spark]
-great_expectations[pandas]
+boto3==1.35.8
+# great_expectations==1.0.0
+# great_expectations[s3]
+# great_expectations[spark]
+# great_expectations[pandas]

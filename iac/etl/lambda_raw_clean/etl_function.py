@@ -7,6 +7,7 @@ from data_reader import DataReader
 from data_cleaner import DataCleaner
 from scd_historization import SCDHistorization
 from data_writer import DataWriter
+import os
 
 def normalize_month(month):
     """Ensure month is always in MM format."""
@@ -125,14 +126,49 @@ def lambda_handler(event, context):
         latest_timestamp = max(re.search(r'(\d{14})', file).group(1) for file in visit_files)
         data_reader.update_last_processed_timestamp(latest_timestamp)
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps({
-            "message": "Data processing complete.",
-            "patients_count": len(df_patients) if patients_data_frames else 0,
-            "visits_count": len(df_visits) if visits_data_frames else 0
-        })
-    }
+    # Send message to SNS to trigger clean-curated function
+    sns_client = boto3.client('sns')
+    sns_topic_arn = os.environ.get('SNS_TOPIC_ARN')
+    
+    try:
+        # Success message (as previously added)
+        if sns_topic_arn:
+            success_message = {
+                "status": "success",
+                "message": "Raw to Clean ETL complete. Start Clean to Curated ETL.",
+                "patients_count": len(df_patients) if patients_data_frames else 0,
+                "visits_count": len(df_visits) if visits_data_frames else 0
+            }
+            
+            sns_client.publish(
+                TopicArn=sns_topic_arn,
+                Message=json.dumps(success_message)
+            )
+        else:
+            print("SNS_TOPIC_ARN not set. Skipping SNS notification.")
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps(success_message)
+        }
+
+    except Exception as e:
+        error_message = {
+            "status": "error",
+            "message": f"Raw to Clean ETL failed: {str(e)}",
+            "error_details": str(e)
+        }
+        
+        if sns_topic_arn:
+            sns_client.publish(
+                TopicArn=sns_topic_arn,
+                Message=json.dumps(error_message)
+            )
+        else:
+            print("SNS_TOPIC_ARN not set. Skipping error notification.")
+        
+        # Re-raise the exception after sending the notification
+        raise
 
 if __name__ == "__main__":
     lambda_handler(None, None)

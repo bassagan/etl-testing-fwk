@@ -20,12 +20,28 @@ resource "aws_lambda_function" "raw_clean_function" {
   environment {
     variables = {
       S3_BUCKET     = var.s3_bucket
+      SOURCE_BUCKET = var.raw_bucket
+      TARGET_BUCKET = var.clean_bucket
       SNS_TOPIC_ARN = aws_sns_topic.pipeline_notification.arn
     }
   }
   layers     = ["arn:aws:lambda:eu-west-1:336392948345:layer:AWSSDKPandas-Python39:24"]
   tags       = var.tags
   depends_on = [var.lambda_bucket, aws_iam_role_policy.lambda_sns_publish]
+}
+
+resource "aws_lambda_function_event_invoke_config" "raw-clean-notifications" {
+  function_name = var.raw_clean_function_name
+
+  destination_config {
+    on_failure {
+      destination = aws_sns_topic.pipeline_notification.arn
+    }
+
+    on_success {
+      destination = aws_sns_topic.pipeline_notification.arn
+    }
+  }
 }
 
 resource "aws_lambda_function" "clean_curated_function" {
@@ -40,7 +56,9 @@ resource "aws_lambda_function" "clean_curated_function" {
   timeout     = 60
   environment {
     variables = {
-      S3_BUCKET = var.s3_bucket
+      S3_BUCKET     = var.s3_bucket
+      SOURCE_BUCKET = var.clean_bucket
+      TARGET_BUCKET = var.curated_bucket
     }
   }
   layers     = ["arn:aws:lambda:eu-west-1:336392948345:layer:AWSSDKPandas-Python39:24"]
@@ -65,37 +83,42 @@ resource "aws_lambda_function" "data_generator_function" {
   tags       = var.tags
   depends_on = [var.lambda_bucket]
 }
-# CloudWatch EventBridge rule for success of raw_clean_function
-resource "aws_cloudwatch_event_rule" "raw_clean_success_rule" {
-  name = var.cloudwatch_event_rule_name
-  event_pattern = jsonencode({
-    "source" : ["aws.lambda"],
-    "detail-type" : ["Lambda Function Invocation Result - Success"],
-    "detail" : {
-      "responseElements" : {
-        "functionArn" : [aws_lambda_function.raw_clean_function.arn]
+
+// Remove the aws_cloudwatch_event_rule, aws_cloudwatch_event_target, and aws_lambda_permission resources
+
+// Add SNS trigger for clean_curated_function
+resource "aws_sns_topic_subscription" "clean_curated_sns_subscription" {
+  topic_arn = aws_sns_topic.notifications.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.clean_curated.function_arn
+}
+
+// Update SNS Topic Policy to allow Lambda to subscribe
+resource "aws_sns_topic_policy" "default" {
+  arn = aws_sns_topic.pipeline_notification.arn
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowLambdaToPublishAndSubscribe"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Action   = ["SNS:Publish", "SNS:Subscribe"]
+        Resource = aws_sns_topic.pipeline_notification.arn
       }
-    }
+    ]
   })
-  tags = var.tags
 }
 
-# EventBridge target to trigger the clean_curated_function
-resource "aws_cloudwatch_event_target" "clean_curated_target" {
-  rule      = aws_cloudwatch_event_rule.raw_clean_success_rule.name
-  target_id = "clean-curated-target"
-  arn       = aws_lambda_function.clean_curated_function.arn
-
-}
-
-# Grant permission for EventBridge to invoke clean_curated_function
-resource "aws_lambda_permission" "allow_eventbridge_invoke_clean_curated" {
-  statement_id  = "AllowExecutionFromEventBridge"
+// Add permission for SNS to invoke clean_curated_function
+resource "aws_lambda_permission" "allow_sns_invoke_clean_curated" {
+  statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.clean_curated_function.function_name
-  principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.raw_clean_success_rule.arn
-
+  function_name = aws_lambda_function.clean_curated.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.pipeline_notification.arn
 }
 
 # IAM policy for Lambda to publish to SNS
@@ -121,23 +144,4 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
 resource "aws_sns_topic" "pipeline_notification" {
   name = "${var.raw_clean_function_name}-notifications"
   tags = var.tags
-}
-
-# SNS Topic Policy
-resource "aws_sns_topic_policy" "default" {
-  arn = aws_sns_topic.pipeline_notification.arn
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "AllowLambdaToPublish"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Action   = "SNS:Publish"
-        Resource = aws_sns_topic.pipeline_notification.arn
-      }
-    ]
-  })
 }

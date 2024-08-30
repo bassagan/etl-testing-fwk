@@ -40,7 +40,7 @@ variable "lambda_package" {
 
 # Include SNS module for notifications
 variable "notification_mail" {
-  default = "paula.odena@gmail.com"
+  default = ""
 }
 
 variable "athena_db_name" {
