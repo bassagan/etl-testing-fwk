@@ -1,16 +1,21 @@
 #!/bin/bash
 
-# Set environment variables
-export RAW_BUCKET=$(terraform output -raw raw_bucket_name)
-export CURATED_BUCKET=$(terraform output -raw curated_bucket_name)
-export CLEAN_BUCKET=$(terraform output -raw clean_bucket_name)
-export SNS_TOPIC_ARN=$(terraform output -raw sns_topic_arn)
+# Change to the directory containing Terraform state
+cd "$(dirname "$0")/../iac/etl" || {
+    echo "Failed to change directory to ../iac/etl"
+    exit 1  # Exit if directory change fails
+}
 
-# Add any other environment variables you need
+# Capture Terraform outputs and write them to a .env file
+env_file="$(dirname "$0")/../../tests/.env"
 
-# Print the variables (optional, for verification)
-echo "Environment variables set:"
-echo "RAW_BUCKET: $RAW_BUCKET"
-echo "CURATED_BUCKET: $CURATED_BUCKET"
-echo "CLEAN_BUCKET: $CLEAN_BUCKET"
-echo "SNS_TOPIC_ARN: $SNS_TOPIC_ARN"
+# Write variables to .env file
+{
+    echo "RAW_BUCKET=$(terraform output -raw raw_bucket_name)"
+    echo "CURATED_BUCKET=$(terraform output -raw curated_bucket_name)"
+    echo "CLEAN_BUCKET=$(terraform output -raw clean_bucket_name)"
+    echo "SNS_TOPIC_ARN=$(terraform output -raw sns_topic_arn)"
+    echo "LAMBDA_CLEAN_CURATED_FUNCTION_NAME=$(terraform output -raw lambda_clean_curated_function_name)"
+    echo "LAMBDA_RAW_CLEAN_FUNCTION_NAME=$(terraform output -raw lambda_raw_clean_function_name)"
+} > "$env_file"
+
