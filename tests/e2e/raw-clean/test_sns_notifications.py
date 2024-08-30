@@ -2,11 +2,13 @@ import pytest
 import json
 import boto3
 import time
+import os
 
 # Add these lines at the beginning of the file
 REGION_NAME = os.environ.get('AWS_REGION', 'eu-west-1')
-SOURCE_BUCKET = os.environ['SOURCE_BUCKET']
-DESTINATION_BUCKET = os.environ['DESTINATION_BUCKET']
+RAW_BUCKET = os.environ['RAW_BUCKET']
+CURATED_BUCKET = os.environ['CURATED_BUCKET']
+CLEAN_BUCKET = os.environ['CLEAN_BUCKET']
 LAMBDA_FUNCTION_NAME = os.environ['LAMBDA_FUNCTION_NAME']
 
 @pytest.fixture
@@ -20,8 +22,8 @@ def sns_client():
 @pytest.fixture
 def lambda_event():
     return {
-        'source_bucket': SOURCE_BUCKET,
-        'destination_bucket': DESTINATION_BUCKET
+        'source_bucket': RAW_BUCKET,
+        'destination_bucket': CLEAN_BUCKET
     }
 
 @pytest.fixture
