@@ -81,16 +81,15 @@ resource "aws_lambda_function" "data_generator_function" {
   }
 
   tags       = var.tags
-  depends_on = [var.lambda_bucket]
+  depends_on = [var.lambda_bucket, aws_iam_role_policy.lambda_s3_read]
 }
 
-// Remove the aws_cloudwatch_event_rule, aws_cloudwatch_event_target, and aws_lambda_permission resources
 
 // Add SNS trigger for clean_curated_function
 resource "aws_sns_topic_subscription" "clean_curated_sns_subscription" {
-  topic_arn = aws_sns_topic.notifications.arn
+  topic_arn = aws_sns_topic.pipeline_notification.arn
   protocol  = "lambda"
-  endpoint  = aws_lambda_function.clean_curated.function_arn
+  endpoint  = aws_lambda_function.clean_curated_function.arn
 }
 
 // Update SNS Topic Policy to allow Lambda to subscribe
@@ -116,7 +115,7 @@ resource "aws_sns_topic_policy" "default" {
 resource "aws_lambda_permission" "allow_sns_invoke_clean_curated" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.clean_curated.function_name
+  function_name = aws_lambda_function.clean_curated_function.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = aws_sns_topic.pipeline_notification.arn
 }
@@ -144,4 +143,27 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
 resource "aws_sns_topic" "pipeline_notification" {
   name = "${var.raw_clean_function_name}-notifications"
   tags = var.tags
+}
+
+// Add this resource to grant S3 read permissions to the Lambda function
+resource "aws_iam_role_policy" "lambda_s3_read" {
+  name = "lambda_s3_read"
+  role = var.lambda_role_name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket",
+          "s3:GetObject"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.lambda_bucket}",
+          "arn:aws:s3:::${var.lambda_bucket}/*"
+        ]
+      }
+    ]
+  })
 }

@@ -17,9 +17,10 @@ def lambda_handler(event, context):
     s3_client = boto3.client('s3')
 
     # Define the source and destination buckets and the key to store the last processed timestamp
-    source_bucket = event.get('source_bucket', 'raw-etl-bucket-dev')
-    destination_bucket = event.get('destination_bucket', 'clean-etl-bucket-dev')
+    source_bucket = os.environ.get('SOURCE_BUCKET') or event.get('source_bucket') or 'raw-etl-bucket-dev'
+    destination_bucket = os.environ.get('TARGET_BUCKET') or event.get('destination_bucket') or 'clean-etl-bucket-dev'
     last_processed_timestamp_key = 'last-processed-timestamp.txt'
+
 
     # Define schema and keys for patients and visits
     patients_schema = {
