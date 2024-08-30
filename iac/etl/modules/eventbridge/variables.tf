@@ -31,3 +31,12 @@ variable "tags" {
   description = "Tags to apply to the S3 bucket"
   type        = map(string)
 }
+variable "raw_clean_event_rule_name" {
+  description = "Name for the raw to clean EventBridge rule"
+  type        = string
+}
+
+variable "clean_curated_event_rule_name" {
+  description = "Name for the clean to curated EventBridge rule"
+  type        = string
+}

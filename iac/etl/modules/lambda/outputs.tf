@@ -18,6 +18,6 @@ output "data_generator_lambda_function_arn" {
   value = aws_lambda_function.data_generator_function.arn
 }
 
-output "data_generator_lambda_function_name" {
+output "data_generator_function_name" {
   value = aws_lambda_function.data_generator_function.function_name
 }

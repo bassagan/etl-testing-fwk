@@ -6,15 +6,60 @@ import io
 from curated_patient_transform import CuratedPatientTransform
 from curated_visit_transform import CuratedVisitTransform
 from data_writer import DataWriter
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
+ # Check if the event matches the expected SNS format
+    if 'Records' in event and 'Sns' in event['Records'][0]:
+        try:
+            print("Received SNS event: " + json.dumps(event, indent=2))
+            sns_message = event['Records'][0]['Sns']['Message']
+            sns_message = json.loads(sns_message)
+        except (KeyError, IndexError, json.JSONDecodeError):
+            logger.error("Invalid SNS event structure")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({"message": "Invalid SNS event structure"})
+            }
+    else:
+        # Assuming the event is directly passed in HTTP format
+        try:
+            print("Received HTTP event: " + json.dumps(event, indent=2))
+            if 'body' in event:
+                sns_message = json.loads(event['body'])
+            else:
+                raise KeyError("Missing 'body' in HTTP event")
+        except (KeyError, json.JSONDecodeError):
+            logger.error("Invalid HTTP event structure")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({"message": "Invalid HTTP event structure"})
+            }
+
+    # Check if the raw-clean function was successful
+    if sns_message.get('status') != 'success':
+        logger.info("Raw-clean function was not successful. Skipping curated data processing.")
+        return {
+            'statusCode': 200,
+            'body': json.dumps({"message": "Skipped curated data processing due to unsuccessful raw-clean function."})
+        }
+
+    # Extract additional information from the sns_message (corrected)
+    patients_count = sns_message.get('patients_count', 0)
+    visits_count = sns_message.get('visits_count', 0)
+
+    logger.info(f"Processing curated data for {patients_count} patients and {visits_count} visits")
+
     s3_client = boto3.client('s3')
 
-    clean_bucket = event.get('clean_bucket', 'clean-etl-bucket-dev')
-    curated_bucket = event.get('curated_bucket', 'curated-etl-bucket-dev')
+    s3_client = boto3.client('s3')
+
+    # Retrieve bucket names from environment variables
+    clean_bucket = os.environ['SOURCE_BUCKET']
+    curated_bucket = os.environ['TARGET_BUCKET']
 
     # Load visits data
     df_visits = load_parquet_from_s3(s3_client, clean_bucket, 'cleaned/visits/latest/visits_latest.parquet')

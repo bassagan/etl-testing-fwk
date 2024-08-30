@@ -8,14 +8,14 @@ terraform {
 }
 
 
-resource "aws_s3_bucket" "etl_bucket" {
-  bucket        = var.bucket_name
+resource "aws_s3_bucket" "lambda_code_bucket" {
+  bucket        = var.lambda_code_bucket_name
   tags          = var.tags
   force_destroy = true
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
-  bucket = aws_s3_bucket.etl_bucket.id
+  bucket = aws_s3_bucket.lambda_code_bucket.id
   versioning_configuration {
     status = "Enabled"
   }
@@ -23,7 +23,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "lifecycle" {
-  bucket = aws_s3_bucket.etl_bucket.id
+  bucket = aws_s3_bucket.lambda_code_bucket.id
 
   rule {
     id     = "expire-versions"
@@ -106,21 +106,21 @@ resource "aws_s3_bucket_policy" "curated_bucket_policy" {
 
 # Upload ZIP Files to S3
 resource "aws_s3_object" "upload_lambda_generator" {
-  bucket = aws_s3_bucket.etl_bucket.bucket
+  bucket = aws_s3_bucket.lambda_code_bucket.bucket
   key    = "lambda_generator_package.zip"
   source = "${path.root}/../../lambda_packages/lambda_generator_package.zip" # Adjust path to your ZIP file
   acl    = "private"
 }
 
 resource "aws_s3_object" "upload_lambda_raw_clean" {
-  bucket = aws_s3_bucket.etl_bucket.bucket
+  bucket = aws_s3_bucket.lambda_code_bucket.bucket
   key    = "lambda_raw_clean.zip"
   source = "${path.root}/../../lambda_packages/lambda_raw_clean.zip" # Adjust path to your ZIP file
   acl    = "private"
 }
 
 resource "aws_s3_object" "upload_lambda_clean_curated" {
-  bucket = aws_s3_bucket.etl_bucket.bucket
+  bucket = aws_s3_bucket.lambda_code_bucket.bucket
   key    = "lambda_clean_curated.zip"
   source = "${path.root}/../../lambda_packages/lambda_clean_curated.zip" # Adjust path to your ZIP file
   acl    = "private"

@@ -1,10 +1,5 @@
-variable "function_name" {
+variable "raw_clean_function_name" {
   description = "Name of the Lambda function"
-  type        = string
-}
-
-variable "env" {
-  description = "Deployment environment"
   type        = string
 }
 
@@ -34,7 +29,6 @@ variable "tags" {
   default     = {}
 }
 
-
 variable "lambda_package_data_generator" {
   description = "Path to the zip package for the data generator lambda function"
   type        = string
@@ -51,7 +45,28 @@ variable "clean_curated_function_name" {
   type        = string
 }
 
-variable "owner" {
-  description = "The owner of the resources"
+variable "cloudwatch_event_rule_name" {
+  description = "Name of the cloudwatch event rule"
+  type        = string
+}
+
+variable "lambda_role_name" {
+  description = "Name of the IAM role for Lambda functions"
+  type        = string
+}
+variable "notification_mail" {
+  description = "Email address to send notifications to"
+  type        = string
+}
+variable "raw_bucket" {
+  description = "Name of the raw bucket"
+  type        = string
+}
+variable "clean_bucket" {
+  description = "Name of the clean bucket"
+  type        = string
+}
+variable "curated_bucket" {
+  description = "Name of the curated bucket"
   type        = string
 }

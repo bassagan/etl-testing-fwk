@@ -1,34 +1,33 @@
-region       = "eu-west-1"
-env          = "dev" # Could be "dev", "staging", "prod", etc.
-tags = {
-  Environment = "dev"
-  Project     = "etl-testing-framework"
-}
-
 # AWS Owner:
 owner = "{owner}"
 
 # S3 Bucket
-bucket_name = "etl-tutorial-bucket-dev"
-raw_bucket_name = "raw-etl-bucket-dev"
-clean_bucket_name = "clean-etl-bucket-dev"
-curated_bucket_name = "curated-etl-bucket-dev"
+lambda_code_bucket_name = "lambda-code-s3"
+raw_bucket_name = "raw-s3"
+clean_bucket_name = "clean-s3"
+curated_bucket_name = "curated-s3"
 
 # Lambda Function
-lambda_name    = "raw-clean-lambda-dev-function"
+
 lambda_package = "lambda_raw_clean.zip" # This is the location of your Lambda package
 lambda_package_data_generator = "lambda_generator_package.zip"
-data_generator_function_name = "lambda_generator_source"
-clean_curated_function_name = "clean_curated_function"
+
+data_generator_function_name = "data_generator"
+clean_curated_function_name = "clean_curated_lmb"
+raw_clean_function_name    = "raw_clean_lmb"
+cloudwatch_event_rule_name = "etl-trigger-rule"
 
 # SNS Topic
-sns_topic_name = "USER_MAIL"
+sns_topic_name = "etl-notifications"
+notification_mail = "USER_MAIL"
 
 # EventBridge Rule
-event_rule_name     = "etl-schedule-rule"
+raw_clean_event_rule_name = "raw-clean-event-rule"
+clean_curated_event_rule_name = "clean-curated-event-rule"
 schedule_expression = "rate(60 minutes)" # Adjust the schedule expression as needed
 
 # Athena
-athena_db_name = "etl_clean_athena_dev"
+athena_db_name = "etl_athena"
+etl_workgorup_name = "etl-workgroup"
 
 
