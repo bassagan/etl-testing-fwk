@@ -42,6 +42,7 @@ resource "aws_lambda_function_event_invoke_config" "raw-clean-notifications" {
       destination = aws_sns_topic.pipeline_notification.arn
     }
   }
+  depends_on = [aws_lambda_function.raw_clean_function  ]
 }
 
 resource "aws_lambda_function" "clean_curated_function" {

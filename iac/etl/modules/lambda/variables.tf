@@ -54,7 +54,7 @@ variable "lambda_role_name" {
   description = "Name of the IAM role for Lambda functions"
   type        = string
 }
-variable "notification_email" {
+variable "notification_mail" {
   description = "Email address to send notifications to"
   type        = string
 }

@@ -19,7 +19,7 @@ cloudwatch_event_rule_name = "etl-trigger-rule"
 
 # SNS Topic
 sns_topic_name = "etl-notifications"
-notification_email = "USER_MAIL"
+notification_mail = "USER_MAIL"
 
 # EventBridge Rule
 raw_clean_event_rule_name = "raw-clean-event-rule"

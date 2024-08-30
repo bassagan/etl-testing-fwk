@@ -1,4 +1,4 @@
-variable "notification_email" {
+variable "notification_mail" {
   description = "Email address for receiving notifications"
   type        = string
 }
