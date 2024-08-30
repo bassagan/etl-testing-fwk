@@ -64,12 +64,10 @@ pytest -v
 
 2. To run a specific test file, use:
 ```
-pytest tests/e2e/raw-clean/test_sns_notifications.py
+pytest e2e/raw-clean/test_sns_notifications.py
 ```
 
 3. For debugging, you can use the Test Explorer in the lateral menu of your CodeSpace. It's represented by a flask icon.
-
-4. To use the Python debugger (pdb) for interactive debugging, run:
 
 ![Test Explorer in CodeSpace](../assets/tests-debugger.png)
 
