@@ -12,13 +12,48 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
+ # Check if the event matches the expected SNS format
+    if 'Records' in event and 'Sns' in event['Records'][0]:
+        try:
+            print("Received SNS event: " + json.dumps(event, indent=2))
+            sns_message = event['Records'][0]['Sns']['Message']
+            sns_message = json.loads(sns_message)
+        except (KeyError, IndexError, json.JSONDecodeError):
+            logger.error("Invalid SNS event structure")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({"message": "Invalid SNS event structure"})
+            }
+    else:
+        # Assuming the event is directly passed in HTTP format
+        try:
+            print("Received HTTP event: " + json.dumps(event, indent=2))
+            if 'body' in event:
+                sns_message = json.loads(event['body'])
+            else:
+                raise KeyError("Missing 'body' in HTTP event")
+        except (KeyError, json.JSONDecodeError):
+            logger.error("Invalid HTTP event structure")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({"message": "Invalid HTTP event structure"})
+            }
+
     # Check if the raw-clean function was successful
-    if event.get('status') != 'success':
+    if sns_message.get('status') != 'success':
         logger.info("Raw-clean function was not successful. Skipping curated data processing.")
         return {
             'statusCode': 200,
             'body': json.dumps({"message": "Skipped curated data processing due to unsuccessful raw-clean function."})
         }
+
+    # Extract additional information from the sns_message (corrected)
+    patients_count = sns_message.get('patients_count', 0)
+    visits_count = sns_message.get('visits_count', 0)
+
+    logger.info(f"Processing curated data for {patients_count} patients and {visits_count} visits")
+
+    s3_client = boto3.client('s3')
 
     s3_client = boto3.client('s3')
 
