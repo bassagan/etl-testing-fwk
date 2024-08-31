@@ -9,3 +9,7 @@ terraform.tfvars
 *.tfstate.backup
 terraform.tfvars
 .terraform.lock.hcl
+tests/e2e/raw-clean/__pycache__/conftest.cpython-39-pytest-8.3.2.pyc
+tests/e2e/raw-clean/__pycache__/test_sns_notifications.cpython-39-pytest-8.3.2.pyc
+tests/.env
+iac/etl/backend.tf
