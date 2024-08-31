@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - echo "Installing dependencies..."
-      - pip install -r requirements.txt
+      - pip install -r tests/requirements.txt
       - apt-get install -y jq
 
   pre_build:
