@@ -10,11 +10,11 @@ resource "aws_s3_bucket" "allure_bucket" {
   tags          = var.tags
 }
 
-resource "aws_s3_bucket_website_configuration" "allure_bucket_website" {
+resource "aws_s3_bucket_ownership_controls" "allure_bucket_ownership" {
   bucket = aws_s3_bucket.allure_bucket.id
 
-  index_document {
-    suffix = "index.html"
+  rule {
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 
@@ -27,7 +27,27 @@ resource "aws_s3_bucket_public_access_block" "allure_bucket_public_access" {
   restrict_public_buckets = false
 }
 
+resource "aws_s3_bucket_acl" "allure_bucket_acl" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.allure_bucket_ownership,
+    aws_s3_bucket_public_access_block.allure_bucket_public_access,
+  ]
+
+  bucket = aws_s3_bucket.allure_bucket.id
+  acl    = "public-read"
+}
+
+resource "aws_s3_bucket_website_configuration" "allure_bucket_website" {
+  bucket = aws_s3_bucket.allure_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+}
+
 resource "aws_s3_bucket_policy" "allure_bucket_policy" {
+  depends_on = [aws_s3_bucket_public_access_block.allure_bucket_public_access]
+
   bucket = aws_s3_bucket.allure_bucket.id
 
   policy = jsonencode({

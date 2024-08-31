@@ -111,4 +111,4 @@ variable "codestar_name" {
 variable "codebuild_test_name" {
   description = "CodeBuild project name for tests"
   type        = string
-} 
+}

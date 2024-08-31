@@ -21,6 +21,7 @@ phases:
 
   pre_build:
     commands:
+      - cat buildspec.yml
       - echo "Setting up the environment..."
       - export PYTHONPATH=$PYTHONPATH:$(pwd)  # Set PYTHONPATH to include the current directory
       - echo "Environment setup complete."
