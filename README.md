@@ -18,18 +18,19 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 
 Use this checklist to ensure you've completed all the necessary steps for Exercise 1:
 
-- [ ] Obtained temporary AWS credentials
-- [ ] Forked the repository
-- [ ] Launched a GitHub Codespace
-- [ ] Checked out the initial branch
-- [ ] Ran the `setup_infrastructure.sh` script
-- [ ] Deployed Terraform Backend Infrastructure
-- [ ] Deployed CI/CD Infrastructure
-- [ ] Enabled GitHub CodeStar connection
-- [ ] Deployed ETL Infrastructure
-- [ ] Verified AWS resources (S3 buckets, IAM roles, CodeBuild, CodePipeline)
+- ☐ [Obtained temporary AWS credentials](#getting-your-aws-account)
+- ☐ [Forked the repository](#2-fork-the-repository)
+- ☐ [Launched a GitHub Codespace](#2-fork-the-repository)
+- ☐ [Checked out the initial branch](#2-fork-the-repository)
+- ☐ [Ran the `setup_infrastructure.sh` script](#3-environment-setup)
+- ☐ [Deployed Terraform Backend Infrastructure](#41-deploy-terraform-backend-infrastructure)
+- ☐ [Deployed CI/CD Infrastructure](#42-deploy-cicd-infrastructure)
+- ☐ [Enabled GitHub CodeStar connection](#42-deploy-cicd-infrastructure)
+- ☐ [Deployed ETL Infrastructure](#43-deploy-etl-infrastructure)
+- ☐ [Verified AWS resources](#5-aws-resource-verification)
 
-Once you've checked off all these items, you've successfully completed Exercise 1!
+Once you've completed all these items, you've successfully finished Exercise 1!
+
 ## Prerequisites
 Before you begin, make sure you have the following:
 - An AWS account. Temporary users will be provided.
@@ -80,6 +81,8 @@ To get your AWS account for this tutorial, follow these steps:
     ```
    Or you can interact directly with the IDE  ![Screenshot of CodeSpace Branches section](assets/github-codespace-change-branche.png)
    
+[Back to Exercise 1 Checklist](#exercise-1-checklist)
+
 ### 3. Environment Setup
 To set up the necessary AWS infrastructure for the ETL testing framework, use the `setup_infrastructure.sh` script. This script will automate parts of the setup process, including configuring backends, generating necessary Terraform variable files, and packaging Lambda functions.
 
@@ -103,6 +106,8 @@ To set up the necessary AWS infrastructure for the ETL testing framework, use th
      - AWS Secret Access Key: Your AWS secret access key.
      - Default Region Name: The AWS region you wish to use (e.g., eu-west-1).
      - Default Output Format: Use json unless otherwise needed.
+
+[Back to Exercise 1 Checklist](#exercise-1-checklist)
 
 ### 4. Terraform Initialization
 
@@ -141,6 +146,8 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     - Confirm the apply action when prompted writting `yes`.
 
     ![Screenshot of Terraform apply output](assets/terminal-terraform-be-apply.png)
+
+[Back to Exercise 1 Checklist](#exercise-1-checklist)
 
 #### 4.2 Deploy CI/CD Infrastructure
 
@@ -186,6 +193,8 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
    - [Login to aws Console](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)
    - [Follow this tutorial](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
+[Back to Exercise 1 Checklist](#exercise-1-checklist)
+
 #### 4.3 Deploy ETL Infrastructure
 
 1. **Navigate to the ETL Terraform Directory**:
@@ -227,8 +236,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
     ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
 
----
-
+[Back to Exercise 1 Checklist](#exercise-1-checklist)
 
 ### 5. AWS Resource Verification
 1. **Login to AWS Console**: Log in to your AWS account and verify that all resources have been created.
@@ -236,6 +244,8 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     - ![Screenshot of S3 buckets](path/to/screenshot-s3-buckets.png)
 3. **Check Other Resources**: Verify that the IAM roles, CodeBuild, and CodePipeline have been created.
     - ![Screenshot of IAM roles, CodeBuild, and CodePipeline](path/to/screenshot-aws-resources.png)
+
+[Back to Exercise 1 Checklist](#exercise-1-checklist)
 
 ## Common Issues and Tips
 - **Terraform Init Errors**: Ensure your AWS credentials are correctly configured. Use `aws configure` to reset them if necessary.
@@ -245,4 +255,21 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 ## Next Steps
 Once you have successfully set up your environment and verified the resources, you are ready to move on to [Exercise 2: Discovering pytest and boto3](tests/README.md). In Exercise 2, you'll learn about pytest and boto3, and implement a fixture to generate test data for your E2E tests.
 
-After completing Exercise 2, you'll be prepared for Exercise 3, where you'll explore more advanced testing scenarios and AWS service interactions.
+After completing Exercise 2, you'll be prepared for Exercise 3, where you'll explore how to build Test Reports in Allure
+
+## Exercise 1 Checklist
+
+Use this checklist to ensure you've completed all the necessary steps for Exercise 1:
+
+- ☐ [Obtained temporary AWS credentials](#getting-your-aws-account)
+- ☐ [Forked the repository](#2-fork-the-repository)
+- ☐ [Launched a GitHub Codespace](#2-fork-the-repository)
+- ☐ [Checked out the initial branch](#2-fork-the-repository)
+- ☐ [Ran the `setup_infrastructure.sh` script](#3-environment-setup)
+- ☐ [Deployed Terraform Backend Infrastructure](#41-deploy-terraform-backend-infrastructure)
+- ☐ [Deployed CI/CD Infrastructure](#42-deploy-cicd-infrastructure)
+- ☐ [Enabled GitHub CodeStar connection](#42-deploy-cicd-infrastructure)
+- ☐ [Deployed ETL Infrastructure](#43-deploy-etl-infrastructure)
+- ☐ [Verified AWS resources](#5-aws-resource-verification)
+
+Once you've completed all these items, you've successfully finished Exercise 1!
