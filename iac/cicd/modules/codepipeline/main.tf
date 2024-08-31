@@ -13,14 +13,13 @@ resource "aws_codepipeline" "etl_pipeline" {
       name             = "Source"
       category         = "Source"
       owner            = "AWS"
-      provider         = "CodeStarSourceConnection"
+      provider         = "S3"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = var.codestar_arn
-        FullRepositoryId = var.full_repository
-        BranchName       = var.branch
+        S3Bucket    = var.artifact_bucket
+        S3ObjectKey = "${var.branch}/repo.zip"
       }
     }
   }
