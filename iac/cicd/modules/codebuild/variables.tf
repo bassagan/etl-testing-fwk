@@ -32,7 +32,7 @@ variable "tags" {
   default     = {}
 }
 
-variable "codebuild_name" {
-  description = "Code Build Name"
-  default = "etl-build"
+variable "codebuild_test_name" {
+  description = "Code Build Name for tests"
+  default     = "etl-test"
 }

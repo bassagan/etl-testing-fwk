@@ -27,30 +27,29 @@ module "iam" {
 }
 
 module "codebuild" {
-  source         = "./modules/codebuild"
-  codebuild_role = module.iam.codebuild_role_arn
-  codebuild_name = "${var.codebuild_name}-${var.owner}"
-  github_repo    = var.github_repo
-  github_owner   = var.github_owner
-  branch         = "" # Will be set by CodePipeline
-  commit         = "" # Will be set by CodePipeline
-
-  tags = local.common_tags
+  source              = "./modules/codebuild"
+  codebuild_role      = module.iam.codebuild_role_arn
+  github_repo         = var.github_repo
+  github_owner        = var.github_owner
+  branch              = "" # Will be set by CodePipeline
+  commit              = "" # Will be set by CodePipeline
+  codebuild_test_name = "${var.codebuild_test_name}-${var.owner}"
+  tags                = local.common_tags
 }
 
 module "codepipeline" {
-  source            = "./modules/codepipeline"
-  codepipeline_name = "cicd-${var.owner}-cp-${var.branch}"
-  codepipeline_role = module.iam.codepipeline_role_arn
-  codebuild_project = module.codebuild.codebuild_project_name
-  artifact_bucket   = module.s3.codepipeline_bucket
-  full_repository   = "${var.github_owner}/${var.github_repo}"
-  branch            = var.branch
-  codestar_arn      = module.codestar.codestar_arn
-  depends_on        = [module.codestar]
-  tags              = local.common_tags
+  source                 = "./modules/codepipeline"
+  codepipeline_name      = "cicd-${var.owner}-cp-${var.branch}"
+  codepipeline_role      = module.iam.codepipeline_role_arn
+  codebuild_project      = module.codebuild.codebuild_project_name
+  artifact_bucket        = module.s3.codepipeline_bucket
+  full_repository        = "${var.github_owner}/${var.github_repo}"
+  branch                 = var.branch
+  codestar_arn           = module.codestar.codestar_arn
+  depends_on             = [module.codestar]
+  tags                   = local.common_tags
+  codebuild_test_project = module.codebuild.codebuild_test_project_name
 }
-
 
 module "s3" {
   source                  = "./modules/s3"

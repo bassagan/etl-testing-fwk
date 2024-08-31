@@ -1,7 +1,7 @@
 resource "aws_codepipeline" "etl_pipeline" {
   name     = var.codepipeline_name
   role_arn = var.codepipeline_role
-  tags = var.tags
+  tags     = var.tags
   artifact_store {
     location = var.artifact_bucket
     type     = "S3"
@@ -40,6 +40,24 @@ resource "aws_codepipeline" "etl_pipeline" {
 
       configuration = {
         ProjectName = var.codebuild_project
+      }
+    }
+  }
+
+  stage {
+    name = "Test"
+
+    action {
+      name             = "Test"
+      category         = "Test"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_output"]
+      output_artifacts = ["test_output"]
+      version          = "1"
+
+      configuration = {
+        ProjectName = var.codebuild_test_project
       }
     }
   }

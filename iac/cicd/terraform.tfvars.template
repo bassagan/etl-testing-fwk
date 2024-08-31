@@ -16,3 +16,6 @@ codebuild_report_permissions_name = "CodeBuildReportPermissions"
 codepipeline_role_name = "codepipeline-service-role"
 codebuild_name = "e2e-testing-etl-cb"
 
+codebuild_test_name = "e2e-testing-etl-cb-test"
+codepipeline_test_name = "e2e-testing-etl-cb-test"
+

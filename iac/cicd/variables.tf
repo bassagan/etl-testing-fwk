@@ -108,3 +108,7 @@ variable "codestar_name" {
   description = "Codestar name, connection to GitHub"
   type        = string
 }
+variable "codebuild_test_name" {
+  description = "CodeBuild project name for tests"
+  type        = string
+} 
