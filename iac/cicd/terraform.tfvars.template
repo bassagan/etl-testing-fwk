@@ -10,6 +10,7 @@ codestar_name   = "github"
 
 codepipeline_name = "codepipeline"
 etl_codepipeline_bucket = "github-s3"
+allure_bucket = "allure-reports"
 
 codebuild_role_name = "codebuild-service-role"
 codebuild_report_permissions_name = "CodeBuildReportPermissions"

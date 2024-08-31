@@ -54,6 +54,7 @@ module "codepipeline" {
 module "s3" {
   source                  = "./modules/s3"
   etl_codepipeline_bucket = "${var.etl_codepipeline_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
+  allure_bucket           = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
   tags                    = local.common_tags
   owner                   = var.owner
 }
@@ -78,7 +79,8 @@ module "user-policy" {
     module.codestar.codestar_arn,
     module.s3.codepipeline_bucket_arn,
     "${module.s3.codepipeline_bucket_arn}/*",
-    module.codepipeline.codepipeline_arn
+    module.codepipeline.codepipeline_arn,
+    module.s3.allure_bucket_arn
   ]
   tags = local.common_tags
 
