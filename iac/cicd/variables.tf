@@ -112,3 +112,7 @@ variable "codebuild_test_name" {
   description = "CodeBuild project name for tests"
   type        = string
 }
+variable "allure_bucket" {
+  description = "Allure bucket name"
+  type        = string
+}
