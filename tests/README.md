@@ -66,8 +66,13 @@ pytest -v
 ```
 pytest e2e/raw-clean/test_sns_notifications.py
 ```
+3. To check for errors in test collection without actually running the tests, use:
+```
+pytest --collect-only
+```
 
-3. For debugging, you can use the Test Explorer in the lateral menu of your CodeSpace. It's represented by a flask icon.
+
+4. For debugging, you can use the Test Explorer in the lateral menu of your CodeSpace. It's represented by a flask icon.
 
 ![Test Explorer in CodeSpace](../assets/tests-debugger.png)
 

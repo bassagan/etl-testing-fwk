@@ -4,7 +4,7 @@ import os
 import boto3
 from dotenv import load_dotenv
 
-# Exercise 2.1: Implement a fixture to generate test data.
+# Exercise 2.2: Implement a fixture to generate test data.
 # 
 # Notes:
 # 1. In pytest, fixtures are typically defined at the module level, outside of test classes.
