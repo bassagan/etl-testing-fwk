@@ -48,7 +48,8 @@ resource "aws_iam_role_policy" "codebuild_report_permissions" {
       {
         Effect = "Allow",
         Action = [
-          "codebuild:*"
+          "codebuild:*",
+          "codestar-connections:*"
         ],
         Resource = "*"
       }
@@ -92,12 +93,10 @@ resource "aws_iam_policy" "codepipeline_codebuild_startbuild" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
-          "codestar-connections:UseConnection",
-          "codebuild:BatchGetBuilds",
-          "codebuild:StartBuild",
-          "codebuild:StopBuild",
+        Effect = "Allow",
+        Action = [
+          "codestar-connections:*",
+          "codebuild:*",
         ],
         Resource = "*"
       }
