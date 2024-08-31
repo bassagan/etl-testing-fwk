@@ -10,6 +10,7 @@ resource "aws_codepipeline" "etl_pipeline" {
   stage {
     name = "Source"
 
+
     action {
       name             = "Source"
       category         = "Source"
