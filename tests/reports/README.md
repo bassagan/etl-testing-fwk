@@ -1,6 +1,6 @@
 # Exercise 3: Integrating Allure Reports
 
-In this exercise, you'll learn how to integrate Allure reports into your pytest-based test automation framework. Allure provides rich and detailed test reports that can help you better understand and analyze your test results.
+In this exercise, you'll learn how to integrate Allure reports into your pytest-based test automation framework. Allure provides rich and detailed test reports that can help you better understand and analyze your test results. For more information about Allure, you can refer to the [official Allure documentation](https://docs.qameta.io/allure/).
 
 ## Objectives:
 * Install Allure and its pytest plugin
@@ -12,14 +12,15 @@ In this exercise, you'll learn how to integrate Allure reports into your pytest-
 
 ## Exercise 3 Checklist
 Use this checklist to ensure you've completed all the necessary steps:
-[ ] Installed Allure command-line tool
-[ ] Added allure-pytest to requirements.txt
-[ ] Installed updated requirements
-[ ] Added Allure decorators to test class and method
-[ ] Added Allure steps to test method
-[ ] Generated and viewed Allure report
-[ ] Set up Allure history
-[ ] Generated and viewed report with history
+- [ ] Install Allure command-line tool
+- [ ] Add allure-pytest to requirements.txt
+- [ ] Install updated requirements
+- [ ] Add Allure decorators to test class and method
+- [ ] Add Allure steps to test method
+- [ ] Generate and view Allure report locally
+- [ ] Set up Allure history
+- [ ] Generate and view report with history locally
+- [ ] Configure buildspec.yml for Allure report generation and publication in AWS
 
 ## Prerequisites
 Before you begin, make sure you have completed Exercise 2 and have the following:
@@ -81,7 +82,14 @@ with allure.step(f"Invoke Lambda function '{raw_clean_lambda_function_name}' wit
             Payload=payload
         )
 ```
-
+e. add test evidence to allure report:
+``` python
+    allure.attach(
+        json.dumps(serializable_response, indent=2),
+        name="Lambda Response",
+        attachment_type=allure.attachment_type.JSON
+    )
+```
 
 ### 3.3. Generate and View Allure Report
 Now that we've added Allure to our tests, let's generate and view the reports.
@@ -95,10 +103,19 @@ b. Generate and view the Allure report:
 ```bash
     allure serve allure-results
 ```
-This will open your default web browser and display the Allure report.
+This command will generate a report from the results and open it in your default web browser. The report will include:
+- An overview of test execution
+- Detailed test cases with steps and attachments
+- Graphs and charts showing test statistics
+
+c. Explore the Allure report:
+- Check the "Suites" tab to see test cases grouped by features and stories
+- Click on individual test cases to see detailed steps and any attached evidence
+- Use the "Graphs" tab to view test execution trends and statistics
 
 ### 3.4. Add History to Allure Reports
 To track test results over time, we can add history to our Allure reports.
+
 a. Create a directory for Allure history:
 ```bash
     mkdir allure-history
@@ -107,24 +124,72 @@ b. After running tests and before generating a new report, copy the history:
 ```bash
     cp -R allure-report/history allure-results/history
 ```
+This step ensures that the history from previous test runs is included in the new report.
+
 c. Generate the report with history:
 ```bash
     allure generate allure-results -o allure-report --clean
 ```
+This command generates a new report in the `allure-report` directory, including the history data.
+
 d. View the report with history:
 ```bash
     allure open allure-report
 ```
+This opens the generated report in your browser. You can now see:
+- Trend charts showing test results over time
+- Retries and flaky tests across multiple runs
+- Historical data for each test case
 
-### Steps:
+e. For subsequent test runs, repeat steps b-d to maintain and update the history.
 
-1. Open the [`conftest.py`](e2e/raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory.
-2. Move all existing fixtures from [`test_sns_notifications.py`](e2e/raw-clean/test_sns_notifications.py) to [`conftest.py`](e2e/raw-clean/conftest.py).
-3. Create a new fixture named `generate_test_data` in `conftest.py`.
-4. Use the `@pytest.fixture(autouse=True)` decorator for the new fixture.
-5. Implement the fixture to call the data generator lambda function using boto3.
-6. Assert that the data generator lambda function was called successfully.
-7. Update `test_sns_notifications.py` to remove moved fixtures and use the new `generate_test_data` fixture.
+By following these steps, you'll have a comprehensive Allure report setup that includes detailed test information, evidence, and historical data to track your test suite's performance over time.
+
+### 3.5. Configure AWS CodeBuild for Allure Reports
+
+These changes will configure AWS CodeBuild to generate Allure reports and publish them to an S3 bucket after each build. Make sure to update the ALLURE_REPORT_BUCKET variable with your actual S3 bucket name for storing Allure reports.
+
+
+a. Open your [buildspec.yml](../../buildspec.yml) file.
+b. Add the following environment variable to the buildspec.yml file:
+```yaml
+    ALLURE_REPORT_BUCKET: "allure-reports-conference-user-9fe23ed6-xdrnxgxz"
+    ALLURE_RESULTS_DIR: "/tmp/allure-results"
+```
+c. In the `install` section, add the following command:
+```bash
+          # ... existing commands ...
+      - npm install -g allure-commandline --save-dev
+      - allure --version
+```
+d. In the build phase, add the command to run tests with Allure:
+```bash
+  build:
+    commands:
+      - echo "Running pytest tests..."
+      - pytest tests --alluredir=$ALLURE_RESULTS_DIR
+```
+e. Add a post_build phase to generate and upload the Allure report:
+```bash
+  post_build:
+    commands:
+      - echo "Downloading existing Allure history"
+      - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/ $ALLURE_RESULTS_DIR/history/ || true
+      - echo "Generating Allure report"
+      - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
+      - echo "Uploading Allure report to S3"
+      - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/ --delete
+      - echo "Updating Allure history"
+      - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
+```
+f. Add an artifacts section to include the Allure report:
+```bash
+  artifacts:
+    files:
+      - '**/*'
+    name: test-output
+    base-directory: allure-report
+```
 
 ## Common Issues and Tips
 - If you encounter issues with Allure installation, make sure you have the necessary permissions and that your package manager is up to date.

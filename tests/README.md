@@ -110,7 +110,9 @@ Detailed instructions and code comments for this exercise are provided in the [`
 - If tests fail, review the error messages and use debugging techniques to identify the issue.
 
 ## Next Steps
-Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore Great Expectations for testing data transformations.
+Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll integrate Allure reports into your pytest-based test automation framework. This will help you generate rich and detailed test reports for better analysis of your test results.
+
+For more details on Exercise 3, please refer to the [Exercise 3 README](reports/README.md).
 
 ## Reference Solution
 
