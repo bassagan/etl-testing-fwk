@@ -49,7 +49,8 @@ phases:
       - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/latest/ --delete
       - echo "Updating Allure history"
       - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
-
+    environment:
+      ALLURE_REPORT_BUCKET: "allure-reports-conference-user-9fe23ed6"
 artifacts:
   files:
     - '**/*'
