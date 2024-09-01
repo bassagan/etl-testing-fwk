@@ -2,6 +2,7 @@ pytest==8.3.2
 python-dotenv
 pytest-timeout==2.1.0
 boto3==1.35.8
+allure-pytest==2.13.5
 # great_expectations==1.0.0
 # great_expectations[s3]
 # great_expectations[spark]

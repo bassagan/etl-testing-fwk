@@ -13,3 +13,7 @@ variable "owner" {
   description = "The owner of the resources"
   type        = string
 }
+variable "allure_bucket" {
+  description = "The bucket for the allure reports"
+  type        = string
+}

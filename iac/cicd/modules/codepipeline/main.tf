@@ -1,7 +1,7 @@
 resource "aws_codepipeline" "etl_pipeline" {
   name     = var.codepipeline_name
   role_arn = var.codepipeline_role
-  tags = var.tags
+  tags     = var.tags
   artifact_store {
     location = var.artifact_bucket
     type     = "S3"
@@ -9,19 +9,17 @@ resource "aws_codepipeline" "etl_pipeline" {
 
   stage {
     name = "Source"
-
     action {
       name             = "Source"
       category         = "Source"
       owner            = "AWS"
-      provider         = "CodeStarSourceConnection"
+      provider         = "S3"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = var.codestar_arn
-        FullRepositoryId = var.full_repository
-        BranchName       = var.branch
+        S3Bucket    = var.artifact_bucket
+        S3ObjectKey = "${var.branch}/repo.zip"
       }
     }
   }
@@ -40,6 +38,24 @@ resource "aws_codepipeline" "etl_pipeline" {
 
       configuration = {
         ProjectName = var.codebuild_project
+      }
+    }
+  }
+
+  stage {
+    name = "Test"
+
+    action {
+      name             = "Test"
+      category         = "Test"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_output"]
+      output_artifacts = ["test_output"]
+      version          = "1"
+
+      configuration = {
+        ProjectName = var.codebuild_test_project
       }
     }
   }

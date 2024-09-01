@@ -91,3 +91,26 @@ jobs:
       - name: Terraform Plan for ETL
         working-directory: ./iac/etl
         run: terraform plan
+
+      - name: Get branch name
+        id: branch-name
+        run: |
+          branch=${GITHUB_REF#refs/heads/}
+          echo "::set-output name=branch::$branch"
+          echo "::set-output name=branch_path::${branch//\//-}"
+
+      - name: Zip repository
+        run: git archive -v -o repo.zip --format=zip HEAD
+
+      - name: Upload to S3
+        run: |
+          if [ -z "${{ secrets.ARTIFACT_BUCKET }}" ]; then
+            echo "Error: ARTIFACT_BUCKET secret is not set or empty"
+            exit 1
+          fi
+          echo "Uploading to bucket: ${{ secrets.ARTIFACT_BUCKET }}"
+          aws s3 cp repo.zip "s3://${{ secrets.ARTIFACT_BUCKET }}/${{ steps.branch-name.outputs.branch_path }}/repo.zip"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-west-1

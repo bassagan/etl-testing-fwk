@@ -1,11 +1,29 @@
 version: 0.2
+env:
+  variables:
+  # Add all environment variables here: 
+    ALLURE_RESULTS_DIR: "" # somthing like: /tmp/allure-results
+    RAW_BUCKET: "" # something like: raw-s3-conference-user-9fe23ed6-7re1fbmf
+    CURATED_BUCKET: "" # something like: curated-s3-conference-user-9fe23ed6-7re1fbmf
+    CLEAN_BUCKET: "" # something like: clean-s3-conference-user-9fe23ed6-7re1fbmf
+    SNS_TOPIC_ARN: "" # something like: arn:aws:sns:eu-west-1:087559609246:etl-notifications-conference-user-9fe23ed6
+    LAMBDA_CLEAN_CURATED_FUNCTION_NAME: "" # something like: clean_curated_lmb-conference-user-9fe23ed6
+    LAMBDA_RAW_CLEAN_FUNCTION_NAME: "" # something like: raw_clean_lmb-conference-user-9fe23ed6
+    LAMBDA_DATA_GENERATOR_FUNCTION_NAME: "" # something like: data_generator_lmb-conference-user-9fe23ed6
+    DATA_GENERATOR_FUNCTION_NAME: "" # something like: data_generator-conference-user-9fe23ed6
+    ALLURE_REPORT_BUCKET: "" # something like: allure-reports-conference-user-9fe23ed6-xdrnxgxz
 
 phases:
   install:
+    runtime-versions:
+      python: 3.9
+
     commands:
       - echo "Installing dependencies..."
-      - pip install -r requirements.txt
+      - pip install -r tests/requirements.txt
       - apt-get install -y jq
+      - npm install -g allure-commandline --save-dev
+      - allure --version
 
   pre_build:
     commands:
@@ -20,11 +38,29 @@ phases:
   build:
     commands:
       - echo "Running pytest tests..."
-      - pytest --junitxml=reports/results.xml
+      - pytest tests 
+      # Exercise 3: Add allure report generation and upload to S3
+      # comment previous line and uncomment the following line to run allure report generation and upload to S3
+      # - pytest tests --alluredir=$ALLURE_RESULTS_DIR
 
   post_build:
     commands:
-      - echo "Build phase complete."
+    # Exercise 3: Add allure report generation and upload to S3
+    # uncomment the following line to run allure report generation and upload to S3
+      # - echo "Downloading existing Allure history"
+      # - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/ $ALLURE_RESULTS_DIR/history/ || true
+      # - echo "Generating Allure report"
+      # - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
+      # - echo "Uploading Allure report to S3"
+      # - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/ --delete
+      # - echo "Updating Allure history"
+      # - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
+
+artifacts:
+  files:
+    - '**/*'
+  name: test-output
+  base-directory: allure-report
 
 reports:
   pytest_report:

@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "etl_build" {
-  name         = var.codebuild_name
+  name         = "${var.codebuild_test_name}-build"
   service_role = var.codebuild_role
 
   artifacts {
@@ -24,6 +24,10 @@ resource "aws_codebuild_project" "etl_build" {
       name  = "GIT_COMMIT"
       value = var.commit
     }
+    environment_variable {
+      name  = "ALLURE_RESULTS_DIR"
+      value = "/tmp/allure-results"
+    }
   }
 
   source {
@@ -31,6 +35,9 @@ resource "aws_codebuild_project" "etl_build" {
     location        = "https://github.com/${var.github_owner}/${var.github_repo}.git"
     buildspec       = "buildspec.yml"
     git_clone_depth = 1
+    git_submodules_config {
+      fetch_submodules = true
+    }
   }
 
   logs_config {
