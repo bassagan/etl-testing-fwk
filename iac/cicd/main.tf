@@ -48,7 +48,7 @@ module "codepipeline" {
   codestar_arn           = module.codestar.codestar_arn
   depends_on             = [module.codestar]
   tags                   = local.common_tags
-  codebuild_test_project = module.codebuild.codebuild_test_project_name
+  codebuild_test_project = module.codebuild.codebuild_project_name
 }
 
 module "s3" {
