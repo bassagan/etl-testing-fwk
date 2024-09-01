@@ -42,10 +42,11 @@ phases:
 
   post_build:
     commands:
+      - echo "Downloading existing Allure history"
+      - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/ $ALLURE_RESULTS_DIR/history/ || true
       - echo "Generating Allure report"
       - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
-      - echo "Checking ALLURE_REPORT_BUCKET environment variable"
-      - echo "Uploading Allure report to S3 root"
+      - echo "Uploading Allure report to S3"
       - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/ --delete
       - echo "Updating Allure history"
       - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
