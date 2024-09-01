@@ -4,6 +4,13 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
   tags          = var.tags
 }
 
+resource "aws_s3_bucket_versioning" "codepipeline_bucket_versioning" {
+  bucket = aws_s3_bucket.codepipeline_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket" "allure_bucket" {
   bucket        = var.allure_bucket
   force_destroy = true

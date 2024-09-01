@@ -36,7 +36,7 @@ phases:
       - pytest tests --alluredir=$ALLURE_RESULTS_DIR
 
   post_build:
-  commands:
+    commands:
       - echo "Generating Allure report"
       - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
       - echo "Downloading previous history"
