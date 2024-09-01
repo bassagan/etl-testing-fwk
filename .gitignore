@@ -1,4 +1,5 @@
 /venv/
+/lambda_packages/*
 .terraform/
 *.tfstate
 *.tfstate.backup
@@ -9,3 +10,6 @@ terraform.tfvars
 *.tfstate.backup
 terraform.tfvars
 .terraform.lock.hcl
+tests/e2e/raw-clean/__pycache__/*
+tests/.env
+iac/etl/backend.tf
