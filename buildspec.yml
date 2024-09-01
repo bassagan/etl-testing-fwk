@@ -41,11 +41,11 @@ phases:
       - pytest tests --alluredir=$ALLURE_RESULTS_DIR
 
   post_build:
-    commands:
+  commands:
       - echo "Generating Allure report"
       - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
       - echo "Downloading previous history"
-      - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/ allure-report/history/ || true
+      - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/allure-report/history/ || true
       - echo "Uploading Allure report to S3"
       - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/latest/ --delete
       - echo "Updating Allure history"
