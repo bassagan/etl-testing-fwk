@@ -45,10 +45,11 @@ phases:
       - echo "Generating Allure report"
       - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
       - echo "Checking ALLURE_REPORT_BUCKET environment variable"
-      - echo "Uploading Allure report to S3"
-      - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/latest/ --delete
+      - echo "Uploading Allure report to S3 root"
+      - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/ --delete
       - echo "Updating Allure history"
       - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
+      - echo "Allure report URL: https://$ALLURE_REPORT_BUCKET.s3.amazonaws.com/index.html"
     environment:
       ALLURE_REPORT_BUCKET: "allure-reports-conference-user-9fe23ed6-xdrnxgxz"
 artifacts:
