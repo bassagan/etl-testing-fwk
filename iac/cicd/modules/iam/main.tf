@@ -37,7 +37,7 @@ resource "aws_iam_role_policy_attachment" "codebuild_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
 }
 
-# Custom policy for CodeBuild to manage report groups and test cases
+# Custom policy for CodeBuild to manage report groups, test cases, and invoke Lambda functions
 resource "aws_iam_role_policy" "codebuild_report_permissions" {
   name = var.codebuild_report_permissions_name
   role = aws_iam_role.codebuild_role.id
@@ -49,7 +49,8 @@ resource "aws_iam_role_policy" "codebuild_report_permissions" {
         Effect = "Allow",
         Action = [
           "codebuild:*",
-          "codestar-connections:*"
+          "codestar-connections:*",
+          "lambda:*"
         ],
         Resource = "*"
       }

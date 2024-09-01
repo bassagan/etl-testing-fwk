@@ -14,10 +14,16 @@ env:
 
 phases:
   install:
+    runtime-versions:
+      java: corretto11  # Add this line to install Java runtime
     commands:
       - echo "Installing dependencies..."
       - pip install -r tests/requirements.txt
       - apt-get install -y jq
+      - wget https://github.com/allure-framework/allure2/releases/download/2.20.1/allure-2.20.1.tgz
+      - tar -zxvf allure-2.20.1.tgz -C /opt/
+      - export PATH=$PATH:/opt/allure-2.20.1/bin
+      - allure --version
 
   pre_build:
     commands:
