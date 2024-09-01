@@ -10,7 +10,7 @@ env:
     LAMBDA_RAW_CLEAN_FUNCTION_NAME: "raw_clean_lmb-conference-user-9fe23ed6"
     LAMBDA_DATA_GENERATOR_FUNCTION_NAME: "data_generator_lmb-conference-user-9fe23ed6"
     DATA_GENERATOR_FUNCTION_NAME: "data_generator-conference-user-9fe23ed6"
-    ALLURE_REPORT_BUCKET: "allure-reports-conference-user-9fe23ed6"
+    ALLURE_REPORT_BUCKET: "allure-reports-conference-user-9fe23ed6-xdrnxgxz"
 
 phases:
   install:
@@ -50,7 +50,7 @@ phases:
       - echo "Updating Allure history"
       - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
     environment:
-      ALLURE_REPORT_BUCKET: "allure-reports-conference-user-9fe23ed6"
+      ALLURE_REPORT_BUCKET: "allure-reports-conference-user-9fe23ed6-xdrnxgxz"
 artifacts:
   files:
     - '**/*'
