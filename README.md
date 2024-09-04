@@ -48,7 +48,7 @@ During this tutorial, each attendee will be provided with temporary AWS credenti
 
 To get your AWS account for this tutorial, follow these steps:
 
-1. Navigate to the following [AWS provide user URL](https://b3qkhvq5ncebxzalxflubypu5e0plhin.lambda-url.eu-west-1.on.aws/)
+1. Navigate to the following [AWS provide user URL](https://bomqc5ryf5e3b4mauckcfb6zmi0rdrmm.lambda-url.eu-west-1.on.aws/)
 
 2. This will provide you with temporary AWS credentials, including:
    - AWS Access Key ID
@@ -188,6 +188,14 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     terraform apply
     ```
     ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
+
+6. **Setup Github Connection**:
+a. Copy s3 name and save it as a Github variable ![see: ](assets/github-s3-secret.png):
+b. Go to AWS Resource group, navigate to your codestar Pending connection and follow instructions to make it available.  
+c. Run GitHub Action Terraform Plan Check
+d. Ensure your AWS pipeline is triggered. 
+
+
 6. **Enable GitHub codestar connection**:
    ##### This will allow aws to communicate with GitHub.
    - [Login to aws Console](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)

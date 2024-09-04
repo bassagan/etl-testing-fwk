@@ -14,7 +14,7 @@ configure_aws_cli() {
     if ! aws sts get-caller-identity >/dev/null 2>&1; then
         echo "AWS CLI not configured. Running 'aws configure' for access key and secret access key..."
         read -p "Enter AWS Access Key ID: " aws_access_key_id
-        read -s -p "Enter AWS Secret Access Key: " aws_secret_access_key
+        read -p "Enter AWS Secret Access Key: " aws_secret_access_key
         echo
 
         aws configure set aws_access_key_id "$aws_access_key_id"

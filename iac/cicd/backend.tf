@@ -1,13 +1,14 @@
 terraform {
   backend "s3" {
 
-    bucket         = "your_bucket_name"
+    bucket = "conference-user-4550cc71-tf-backend-bucket"
     key            = "cicd/terraform.tfstate"
     region         = "eu-west-1"
-    dynamodb_table = "your_dynamo_db_name"
+    dynamodb_table = "conference-user-4550cc71-tf-backend-dynamodb"
 
   }
 }
+
 
 
 
