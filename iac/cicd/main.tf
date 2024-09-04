@@ -80,6 +80,7 @@ module "user-policy" {
     module.s3.codepipeline_bucket_arn,
     "${module.s3.codepipeline_bucket_arn}/*",
     module.codepipeline.codepipeline_arn,
+    "arn:aws:codeconnections:eu-west-1:087559609246:*",
     module.s3.allure_bucket_arn
   ]
   tags = local.common_tags
