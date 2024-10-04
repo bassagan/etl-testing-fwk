@@ -46,6 +46,8 @@ phases:
     commands:
     # Exercise 3: Add allure report generation and upload to S3
     # uncomment the following line to run allure report generation and upload to S3
+      - echo "Ensuring S3 bucket structure exists"
+      - aws s3api head-object --bucket $ALLURE_REPORT_BUCKET --key allure-report/ || aws s3api put-object --bucket $ALLURE_REPORT_BUCKET --key allure-report/ 
       - echo "Downloading existing Allure history"
       - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/ $ALLURE_RESULTS_DIR/history/ || true
       - echo "Generating Allure report"
