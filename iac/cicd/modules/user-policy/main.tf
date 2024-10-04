@@ -12,19 +12,19 @@ resource "aws_iam_policy" "owner_full_access" {
           "codebuild:*",
           "codepipeline:*",
           "codestar-connections:*",
-          "s3:*"
+          "s3:*",
         ]
         Resource = var.resource_arns
       },
-        {
-            "Action": [
-                "resource-groups:*",
-                "tag:*",
-                "cloudformation:*"
-            ],
-            "Effect": "Allow",
-            "Resource": "*"
-        }
+      {
+        "Action" : [
+          "resource-groups:*",
+          "tag:*",
+          "cloudformation:*"
+        ],
+        "Effect" : "Allow",
+        "Resource" : "*"
+      }
     ]
   })
 

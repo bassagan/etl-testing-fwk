@@ -72,7 +72,7 @@ module "lambda" {
   lambda_role_arn               = module.iam.lambda_role_arn
   lambda_package_data_generator = var.lambda_package_data_generator
   lambda_role_name              = module.iam.lambda_role_name
-  notification_mail            = var.notification_mail
+  notification_mail             = var.notification_mail
   depends_on                    = [module.s3]
 
   tags = local.common_tags
@@ -80,11 +80,11 @@ module "lambda" {
 
 # Include SNS module for notifications
 module "sns" {
-  source             = "./modules/sns"
+  source            = "./modules/sns"
   notification_mail = var.notification_mail
-  sns_topic_name     = "${var.sns_topic_name}-${var.owner}"
-  tags               = local.common_tags
-  depends_on         = [module.s3]
+  sns_topic_name    = "${var.sns_topic_name}-${var.owner}"
+  tags              = local.common_tags
+  depends_on        = [module.s3]
 }
 
 # Include EventBridge module for scheduling
@@ -130,7 +130,10 @@ module "user-policy" {
     module.s3.lambda_code_bucket_arn,
     module.s3.clean_bucket_arn,
     module.s3.raw_bucket_arn,
-    module.s3.curated_bucket_arn
+    module.s3.curated_bucket_arn,
+    module.athena.athena_database_arn,
+    module.athena.athena_table_patients_arn,
+    module.athena.athena_table_visits_arn
 
   ]
   tags = local.common_tags

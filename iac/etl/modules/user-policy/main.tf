@@ -21,17 +21,24 @@ resource "aws_iam_policy" "owner_full_access" {
           "cloudwatch:*",
           "logs:*",
         ]
-        Resource = var.resource_arns
+        Resource = concat(
+          var.resource_arns,
+          ["arn:aws:athena:*:${data.aws_caller_identity.current.account_id}:workgroup/${var.owner}-*"]
+        )
       },
-        {
-            "Action": [
-                "resource-groups:*",
-                "tag:*",
-                "cloudformation:*"
-            ],
-            "Effect": "Allow",
-            "Resource": "*"
-        }
+      {
+        "Action" : [
+          "resource-groups:*",
+          "tag:*",
+          "cloudformation:*",
+          "athena:GetWorkGroup",
+          "glue:GetDatabases",
+          "glue:GetTables",
+          "glue:GetPartitions"
+        ],
+        "Effect" : "Allow",
+        "Resource" : "*"
+      }
     ]
   })
 
