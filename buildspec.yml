@@ -37,10 +37,19 @@ phases:
   build:
     commands:
       - echo "Running pytest tests..."
+      - env
       # - pytest tests 
       # Exercise 3: Add allure report generation and upload to S3
       # comment previous line and uncomment the following line to run allure report generation and upload to S3
-      - pytest tests --alluredir=$ALLURE_RESULTS_DIR
+      - |
+        pytest tests --alluredir=$ALLURE_RESULTS_DIR \
+        --env LAMBDA_CLEAN_CURATED_FUNCTION_NAME=$LAMBDA_CLEAN_CURATED_FUNCTION_NAME \
+        --env LAMBDA_RAW_CLEAN_FUNCTION_NAME=$LAMBDA_RAW_CLEAN_FUNCTION_NAME \
+        --env DATA_GENERATOR_FUNCTION_NAME=$DATA_GENERATOR_FUNCTION_NAME \
+        --env RAW_BUCKET=$RAW_BUCKET \
+        --env CURATED_BUCKET=$CURATED_BUCKET \
+        --env CLEAN_BUCKET=$CLEAN_BUCKET \
+        --env SNS_TOPIC_ARN=$SNS_TOPIC_ARN
 
   post_build:
     commands:
