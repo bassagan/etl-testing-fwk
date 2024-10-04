@@ -6,6 +6,7 @@ on:
       - master
       - feature/*
   pull_request:  # To ensure that pull requests are also checked
+  workflow_dispatch:
 
 permissions:
   contents: read
