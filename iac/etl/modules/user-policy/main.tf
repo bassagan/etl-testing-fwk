@@ -1,3 +1,6 @@
+# Add this at the top of the file
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_policy" "owner_full_access" {
   name        = "owner-full-access-etl-${var.owner}"
   description = "Full access policy for the owner user to manage generated resources"
