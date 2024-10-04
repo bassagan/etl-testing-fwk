@@ -130,8 +130,7 @@ module "user-policy" {
     module.s3.lambda_code_bucket_arn,
     module.s3.clean_bucket_arn,
     module.s3.raw_bucket_arn,
-    module.s3.curated_bucket_arn,
-    module.athena.athena_database_arn,
+    module.athena.athena_workgroup_arn,
     module.athena.athena_table_patients_arn,
     module.athena.athena_table_visits_arn
 
