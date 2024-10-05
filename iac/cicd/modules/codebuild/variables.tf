@@ -46,28 +46,9 @@ variable "artifact_bucket" {
   type        = string
 }
 
-variable "raw_bucket" {
-  description = "S3 bucket name for raw data"
-  type        = string
-}
-
-variable "curated_bucket" {
-  description = "S3 bucket name for curated data"
-  type        = string
-}
-
-variable "clean_bucket" {
-  description = "S3 bucket name for clean data"
-  type        = string
-}
 
 variable "allure_report_bucket" {
   description = "S3 bucket name for Allure reports"
-  type        = string
-}
-
-variable "sns_topic_arn" {
-  description = "ARN of the SNS topic for notifications"
   type        = string
 }
 

@@ -10,21 +10,9 @@ output "allure_bucket_website_endpoint" {
   description = "The website endpoint URL for the Allure reports bucket"
 }
 
+output "allure_bucket" {
+  value = aws_s3_bucket.allure_bucket.bucket
+}
 output "allure_bucket_arn" {
   value = aws_s3_bucket.allure_bucket.arn
-}
-output "raw_bucket" {
-  value = aws_s3_bucket.raw_bucket.id
-}
-
-output "curated_bucket" {
-  value = aws_s3_bucket.curated_bucket.id
-}
-
-output "clean_bucket" {
-  value = aws_s3_bucket.clean_bucket.id
-}
-
-output "allure_report_bucket" {
-  value = aws_s3_bucket.allure_report_bucket.id
 }

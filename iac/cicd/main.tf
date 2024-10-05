@@ -38,11 +38,7 @@ module "codebuild" {
   tags                = local.common_tags
   
   # Add these new variables
-  raw_bucket           = module.s3.raw_bucket
-  curated_bucket       = module.s3.curated_bucket
-  clean_bucket         = module.s3.clean_bucket
-  allure_report_bucket = module.s3.allure_report_bucket
-  sns_topic_arn        = module.sns.topic_arn # You'll need to create an SNS module or use an existing one
+  allure_report_bucket = module.s3.allure_bucket
   owner                = var.owner
 }
 

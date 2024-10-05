@@ -21,26 +21,6 @@ resource "aws_codebuild_project" "etl_build" {
       value = "/tmp/allure-results"
     }
 
-    # Add these new environment variables
-    environment_variable {
-      name  = "RAW_BUCKET"
-      value = var.raw_bucket
-    }
-
-    environment_variable {
-      name  = "CURATED_BUCKET"
-      value = var.curated_bucket
-    }
-
-    environment_variable {
-      name  = "CLEAN_BUCKET"
-      value = var.clean_bucket
-    }
-
-    environment_variable {
-      name  = "SNS_TOPIC_ARN"
-      value = var.sns_topic_arn
-    }
 
     environment_variable {
       name  = "LAMBDA_CLEAN_CURATED_FUNCTION_NAME"
