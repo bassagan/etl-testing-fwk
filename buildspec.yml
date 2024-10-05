@@ -6,7 +6,7 @@ env:
     CURATED_BUCKET: "curated-s3-conference-user-df720b8a-ohmm6c2l" # something like: curated-s3-conference-user-9fe23ed6-7re1fbmf
     CLEAN_BUCKET: "clean-s3-conference-user-df720b8a-ohmm6c2l" # something like: clean-s3-conference-user-9fe23ed6-7re1fbmf
     SNS_TOPIC_ARN: "arn:aws:sns:eu-west-1:087559609246:etl-notifications-conference-user-df720b8a" # something like: arn:aws:sns:eu-west-1:087559609246:etl-notifications-conference-user-9fe23ed6
-    
+    CI: "true" 
 phases:
   install:
     runtime-versions:
@@ -38,6 +38,9 @@ phases:
       # comment previous line and uncomment the following line to run allure report generation and upload to S3
       - pytest tests --alluredir=$ALLURE_RESULTS_DIR 
       
+      - echo "Running Great Expectations tests..."
+      - python main.py  # Execute the Great Expectations tests
+
   post_build:
     commands:
     # Exercise 3: Add allure report generation and upload to S3
