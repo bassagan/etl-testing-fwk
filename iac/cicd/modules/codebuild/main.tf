@@ -24,7 +24,7 @@ resource "aws_codebuild_project" "etl_build" {
 
   source {
     type      = "S3"
-    location  = "${var.artifact_bucket}/${var.branch}/repo.zip"
+    location  = "${var.artifact_bucket}/${replace(var.branch, "/", "-")}/repo.zip"
     buildspec = "buildspec.yml"
   }
 
