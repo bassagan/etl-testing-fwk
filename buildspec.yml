@@ -53,11 +53,11 @@ phases:
       - echo "Updating Allure history"
       - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
 
-artifacts:
-  files:
-    - '**/*'
-  name: test-output
-  base-directory: allure-report
+# artifacts:
+#   files:
+#     - '**/*'
+#   name: test-output
+#   base-directory: allure-report
 
 reports:
   pytest_report:
