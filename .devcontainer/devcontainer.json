@@ -7,11 +7,13 @@
     "extensions": [
         "ms-python.python",
         "ms-azuretools.vscode-docker",
-        "hashicorp.terraform"
+        "hashicorp.terraform",
+        "pjmiravalle.allure-test-reports"
     ],
     "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
-        "python.pythonPath": "/opt/venv/bin/python"
+        "python.pythonPath": "/opt/venv/bin/python",
+        "allure.outputFolder": "allure-results"
     },
     "remoteUser": "vscode",
     "postCreateCommand": "chmod +x /workspaces/etl-testing-fwk/scripts/*.sh && bash -c 'source /opt/venv/bin/activate'"

@@ -41,11 +41,11 @@ def lambda_client(region_name):
 
 @pytest.fixture
 def raw_clean_lambda_function_name():
-    return os.environ.get('LAMBDA_RAW_CLEAN_FUNCTION_NAME')
+    return os.environ.get('LAMBDA_RAW_CLEAN_FUNCTION_NAME', "data_generator-conference-user-df720b8a")
 
 @pytest.fixture
 def data_generator_function_name():
-    return os.environ.get('DATA_GENERATOR_FUNCTION_NAME')
+    return os.environ.get('DATA_GENERATOR_FUNCTION_NAME', "raw_clean_lmb-conference-user-df720b8a")
 
 
 @pytest.fixture
@@ -58,15 +58,15 @@ def region_name():
 
 @pytest.fixture
 def raw_bucket():
-    return os.environ.get('RAW_BUCKET')
+    return os.environ.get('RAW_BUCKET', "raw-s3-conference-user-df720b8a-ohmm6c2l")
 
 @pytest.fixture
 def curated_bucket():
-    return os.environ.get('CURATED_BUCKET')
+    return os.environ.get('CURATED_BUCKET', "curated-s3-conference-user-df720b8a-ohmm6c2l")
 
 @pytest.fixture
 def clean_bucket():
-    return os.environ.get('CLEAN_BUCKET')
+    return os.environ.get('CLEAN_BUCKET', "clean-s3-conference-user-df720b8a-ohmm6c2l")
 
 @pytest.fixture
 def lambda_client(region_name):

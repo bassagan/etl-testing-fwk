@@ -24,13 +24,13 @@ Use this checklist to ensure you've completed all the necessary steps:
 
 ## Prerequisites
 Before you begin, make sure you have completed Exercise 2 and have the following:
-- Two different test cases and its fixtures
+- At least one test case and its fixtures
 
 ## Setting up the testing environment
 
 ### 3.1. Install Allure
 First, we need to install the Allure command-line tool and the Allure-pytest plugin.
-a. Install Allure command-line tool:
+a. Install Allure command-line.  You don't need to do this on the codespace
     * For Mac:
     ```bash
    brew install allure
@@ -101,7 +101,8 @@ a. Run the tests with Allure:
 
 b. Generate and view the Allure report:
 ```bash
-    allure serve allure-results
+    allure generate allure-results -o allure-report --clean
+    allure open allure-report
 ```
 This command will generate a report from the results and open it in your default web browser. The report will include:
 - An overview of test execution
@@ -116,17 +117,13 @@ c. Explore the Allure report:
 ### 3.4. Add History to Allure Reports
 To track test results over time, we can add history to our Allure reports.
 
-a. Create a directory for Allure history:
-```bash
-    mkdir allure-history
-```
-b. After running tests and before generating a new report, copy the history:
+a. After running tests and before generating a new report, copy the history:
 ```bash
     cp -R allure-report/history allure-results/history
 ```
 This step ensures that the history from previous test runs is included in the new report.
 
-c. Generate the report with history:
+b. Generate the report with history:
 ```bash
     allure generate allure-results -o allure-report --clean
 ```
