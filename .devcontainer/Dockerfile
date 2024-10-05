@@ -16,6 +16,14 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf awscliv2.zip aws
 
+# Install Allure
+RUN apt-get update && \
+    apt-get install -y default-jdk && \
+    curl -o allure-2.22.1.tgz -Ls https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.22.1/allure-commandline-2.22.1.tgz && \
+    tar -zxvf allure-2.22.1.tgz -C /opt/ && \
+    ln -s /opt/allure-2.22.1/bin/allure /usr/bin/allure && \
+    rm allure-2.22.1.tgz
+
 # Create and activate a virtual environment
 ENV VIRTUAL_ENV=/opt/venv
 RUN python -m venv $VIRTUAL_ENV

@@ -24,13 +24,13 @@ Use this checklist to ensure you've completed all the necessary steps:
 
 ## Prerequisites
 Before you begin, make sure you have completed Exercise 2 and have the following:
-- Two different test cases and its fixtures
+- At least one test case and its fixtures
 
 ## Setting up the testing environment
 
 ### 3.1. Install Allure
 First, we need to install the Allure command-line tool and the Allure-pytest plugin.
-a. Install Allure command-line tool:
+a. Install Allure command-line tool for linux:
     * For Mac:
     ```bash
    brew install allure
