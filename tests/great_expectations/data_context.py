@@ -21,19 +21,18 @@ class DataContextManager:
                 "boto3_options": boto3_options,
             },
         }
-        if os.getenv('CI'):
-            print("Running in CI/CD environment. Setting Data Docs upload to S3..")
-            self.context.add_data_docs_site(site_name="data_docs_paula", site_config=site_config)
-        else:
-            print("Not in CI/CD environment. Skipping Data Docs upload to S3.")
         
         try:
             data_source = self.context.get_datasource(data_source_name)
             print(f"Using existing data source: {data_source_name}")
         except ValueError:
             print(f"Creating new data source: {data_source_name}")
+            if os.getenv('CI'):
+                print("Running in CI/CD environment. Setting Data Docs upload to S3..")
+                self.context.add_data_docs_site(site_name="data_docs_paula", site_config=site_config)
+
             data_source = self.context.data_sources.add_pandas_s3(
-                name=data_source_name, bucket=bucket_name, boto3_options=boto3_options
+                    name=data_source_name, bucket=bucket_name, boto3_options=boto3_options
             )
 
         return data_source
