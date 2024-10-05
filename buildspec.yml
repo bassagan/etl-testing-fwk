@@ -33,25 +33,25 @@ phases:
     commands:
       - echo "Running pytest tests..."
       - env
-      # - pytest tests 
+      - pytest tests 
       # Exercise 3: Add allure report generation and upload to S3
       # comment previous line and uncomment the following line to run allure report generation and upload to S3
-      - pytest tests --alluredir=$ALLURE_RESULTS_DIR 
+      # - pytest tests --alluredir=$ALLURE_RESULTS_DIR 
       
   post_build:
     commands:
     # Exercise 3: Add allure report generation and upload to S3
     # uncomment the following line to run allure report generation and upload to S3
-      - echo "Ensuring S3 bucket structure exists"
-      - aws s3api head-object --bucket $ALLURE_REPORT_BUCKET --key allure-report/ || aws s3api put-object --bucket $ALLURE_REPORT_BUCKET --key allure-report/ 
-      - echo "Downloading existing Allure history"
-      - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/ $ALLURE_RESULTS_DIR/history/ || true
-      - echo "Generating Allure report"
-      - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
-      - echo "Uploading Allure report to S3"
-      - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/ --delete
-      - echo "Updating Allure history"
-      - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
+      # - echo "Ensuring S3 bucket structure exists"
+      # - aws s3api head-object --bucket $ALLURE_REPORT_BUCKET --key allure-report/ || aws s3api put-object --bucket $ALLURE_REPORT_BUCKET --key allure-report/ 
+      # - echo "Downloading existing Allure history"
+      # - aws s3 sync s3://$ALLURE_REPORT_BUCKET/history/ $ALLURE_RESULTS_DIR/history/ || true
+      # - echo "Generating Allure report"
+      # - allure generate $ALLURE_RESULTS_DIR -o allure-report --clean
+      # - echo "Uploading Allure report to S3"
+      # - aws s3 sync allure-report s3://$ALLURE_REPORT_BUCKET/ --delete
+      # - echo "Updating Allure history"
+      # - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
 
 artifacts:
   files:
