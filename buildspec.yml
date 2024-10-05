@@ -39,7 +39,7 @@ phases:
       - pytest tests --alluredir=$ALLURE_RESULTS_DIR 
       
       - echo "Running Great Expectations tests..."
-      - python main.py  # Execute the Great Expectations tests
+      - python tests/great_expectations/main.py  # Execute the Great Expectations tests
 
   post_build:
     commands:
