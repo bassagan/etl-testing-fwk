@@ -24,17 +24,17 @@ resource "aws_codebuild_project" "etl_build" {
 
     environment_variable {
       name  = "LAMBDA_CLEAN_CURATED_FUNCTION_NAME"
-      value = "clean_curated_lmb-conference-user-${var.owner}"
+      value = "clean_curated_lmb-${var.owner}"
     }
 
     environment_variable {
       name  = "LAMBDA_RAW_CLEAN_FUNCTION_NAME"
-      value = "raw_clean_lmb-conference-user-${var.owner}"
+      value = "raw_clean_lmb-${var.owner}"
     }
 
     environment_variable {
       name  = "DATA_GENERATOR_FUNCTION_NAME"
-      value = "data_generator-conference-user-${var.owner}"
+      value = "data_generator-${var.owner}"
     }
 
     environment_variable {
