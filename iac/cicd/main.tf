@@ -32,10 +32,18 @@ module "codebuild" {
   artifact_bucket     = module.s3.codepipeline_bucket
   github_repo         = var.github_repo
   github_owner        = var.github_owner
-  branch              = var.branch # Will be set by CodePipeline
+  branch              = var.branch 
   commit              = "" # Will be set by CodePipeline
   codebuild_test_name = "${var.codebuild_test_name}-${var.owner}"
   tags                = local.common_tags
+  
+  # Add these new variables
+  raw_bucket           = module.s3.raw_bucket
+  curated_bucket       = module.s3.curated_bucket
+  clean_bucket         = module.s3.clean_bucket
+  allure_report_bucket = module.s3.allure_report_bucket
+  sns_topic_arn        = module.sns.topic_arn # You'll need to create an SNS module or use an existing one
+  owner                = var.owner
 }
 
 module "codepipeline" {

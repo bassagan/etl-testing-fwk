@@ -13,3 +13,18 @@ output "allure_bucket_website_endpoint" {
 output "allure_bucket_arn" {
   value = aws_s3_bucket.allure_bucket.arn
 }
+output "raw_bucket" {
+  value = aws_s3_bucket.raw_bucket.id
+}
+
+output "curated_bucket" {
+  value = aws_s3_bucket.curated_bucket.id
+}
+
+output "clean_bucket" {
+  value = aws_s3_bucket.clean_bucket.id
+}
+
+output "allure_report_bucket" {
+  value = aws_s3_bucket.allure_report_bucket.id
+}
