@@ -10,6 +10,9 @@ output "allure_bucket_website_endpoint" {
   description = "The website endpoint URL for the Allure reports bucket"
 }
 
+output "allure_bucket" {
+  value = aws_s3_bucket.allure_bucket.bucket
+}
 output "allure_bucket_arn" {
   value = aws_s3_bucket.allure_bucket.arn
 }

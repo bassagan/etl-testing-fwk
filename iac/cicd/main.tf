@@ -29,22 +29,27 @@ module "iam" {
 module "codebuild" {
   source              = "./modules/codebuild"
   codebuild_role      = module.iam.codebuild_role_arn
+  artifact_bucket     = module.s3.codepipeline_bucket
   github_repo         = var.github_repo
   github_owner        = var.github_owner
-  branch              = "" # Will be set by CodePipeline
+  branch              = var.branch
   commit              = "" # Will be set by CodePipeline
   codebuild_test_name = "${var.codebuild_test_name}-${var.owner}"
   tags                = local.common_tags
+
+  # Add these new variables
+  allure_report_bucket = module.s3.allure_bucket
+  owner                = var.owner
 }
 
 module "codepipeline" {
   source                 = "./modules/codepipeline"
-  codepipeline_name      = "cicd-${var.owner}-cp-${var.branch}"
+  codepipeline_name      = "cicd-${var.owner}-cp-${replace(var.branch, "/", "-")}"
   codepipeline_role      = module.iam.codepipeline_role_arn
   codebuild_project      = module.codebuild.codebuild_project_name
   artifact_bucket        = module.s3.codepipeline_bucket
   full_repository        = "${var.github_owner}/${var.github_repo}"
-  branch                 = var.branch
+  branch                 = replace(var.branch, "/", "-")
   codestar_arn           = module.codestar.codestar_arn
   depends_on             = [module.codestar]
   tags                   = local.common_tags
@@ -55,7 +60,6 @@ module "s3" {
   source                  = "./modules/s3"
   etl_codepipeline_bucket = "${var.etl_codepipeline_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
   allure_bucket           = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
-  tags                    = local.common_tags
   owner                   = var.owner
 }
 
@@ -80,7 +84,6 @@ module "user-policy" {
     module.s3.codepipeline_bucket_arn,
     "${module.s3.codepipeline_bucket_arn}/*",
     module.codepipeline.codepipeline_arn,
-    "arn:aws:codeconnections:eu-west-1:087559609246:*",
     module.s3.allure_bucket_arn
   ]
   tags = local.common_tags

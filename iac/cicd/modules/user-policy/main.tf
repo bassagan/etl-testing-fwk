@@ -8,32 +8,23 @@ resource "aws_iam_policy" "owner_full_access" {
       {
         Effect = "Allow"
         Action = [
-            "iam:*",
-            "codebuild:*",
-            "codepipeline:*",
-            "codestar-connections:*",
-            "codeconnections:*",
-            "codeconnections:StartOAuthHandshake",
-            "codeconnections:CreateConnection",
-            "codeconnections:DeleteConnection",
-            "codeconnections:GetConnection",
-            "codeconnections:ListConnections",
-            "codeconnections:TagResource",
-            "codeconnections:UntagResource",
-            "codeconnections:GetIndividualAccessToken",
-            "s3:*"
+          "iam:*",
+          "codebuild:*",
+          "codepipeline:*",
+          "codestar-connections:*",
+          "s3:*",
         ]
         Resource = var.resource_arns
       },
-        {
-            "Action": [
-                "resource-groups:*",
-                "tag:*",
-                "cloudformation:*"
-            ],
-            "Effect": "Allow",
-            "Resource": "*"
-        }
+      {
+        "Action" : [
+          "resource-groups:*",
+          "tag:*",
+          "cloudformation:*"
+        ],
+        "Effect" : "Allow",
+        "Resource" : "*"
+      }
     ]
   })
 
