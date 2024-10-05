@@ -36,3 +36,8 @@ variable "codebuild_test_name" {
   description = "Code Build Name for tests"
   default     = "etl-test"
 }
+
+variable "artifact_bucket" {
+  description = "S3 bucket for CodeBuild buildspec"
+  type        = string
+}

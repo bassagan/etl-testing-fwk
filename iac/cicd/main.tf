@@ -29,6 +29,7 @@ module "iam" {
 module "codebuild" {
   source              = "./modules/codebuild"
   codebuild_role      = module.iam.codebuild_role_arn
+  artifact_bucket     = module.s3.codepipeline_bucket
   github_repo         = var.github_repo
   github_owner        = var.github_owner
   branch              = "" # Will be set by CodePipeline

@@ -15,15 +15,7 @@ resource "aws_codebuild_project" "etl_build" {
       name  = "AWS_DEFAULT_REGION"
       value = var.region
     }
-    environment_variable {
-      name  = "GIT_BRANCH"
-      value = var.branch
-    }
 
-    environment_variable {
-      name  = "GIT_COMMIT"
-      value = var.commit
-    }
     environment_variable {
       name  = "ALLURE_RESULTS_DIR"
       value = "/tmp/allure-results"
@@ -31,13 +23,9 @@ resource "aws_codebuild_project" "etl_build" {
   }
 
   source {
-    type            = "GITHUB"
-    location        = "https://github.com/${var.github_owner}/${var.github_repo}.git"
-    buildspec       = "buildspec.yml"
-    git_clone_depth = 1
-    git_submodules_config {
-      fetch_submodules = true
-    }
+    type      = "S3"
+    location  = "${var.artifact_bucket}/${var.branch}/repo.zip"
+    buildspec = "buildspec.yml"
   }
 
   logs_config {
