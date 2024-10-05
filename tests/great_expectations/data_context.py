@@ -22,8 +22,7 @@ class DataContextManager:
             },
         }
         # Check if the Data Docs site already exists
-        if "data_docs_paula" not in self.context.data_docs_sites and os.getenv("CI"):
-            
+        if os.getenv("CI"):
             self.context.add_data_docs_site(site_name="data_docs_paula", site_config=site_config)
 
         try:
