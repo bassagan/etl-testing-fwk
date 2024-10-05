@@ -60,6 +60,7 @@ module "s3" {
   source                  = "./modules/s3"
   etl_codepipeline_bucket = "${var.etl_codepipeline_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
   allure_bucket           = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
+  allure_bucket           = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
   tags                    = local.common_tags
   owner                   = var.owner
 }
