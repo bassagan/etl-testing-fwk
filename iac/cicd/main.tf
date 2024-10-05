@@ -32,11 +32,11 @@ module "codebuild" {
   artifact_bucket     = module.s3.codepipeline_bucket
   github_repo         = var.github_repo
   github_owner        = var.github_owner
-  branch              = var.branch 
+  branch              = var.branch
   commit              = "" # Will be set by CodePipeline
   codebuild_test_name = "${var.codebuild_test_name}-${var.owner}"
   tags                = local.common_tags
-  
+
   # Add these new variables
   allure_report_bucket = module.s3.allure_bucket
   owner                = var.owner
@@ -60,8 +60,6 @@ module "s3" {
   source                  = "./modules/s3"
   etl_codepipeline_bucket = "${var.etl_codepipeline_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
   allure_bucket           = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
-  allure_bucket           = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
-  tags                    = local.common_tags
   owner                   = var.owner
 }
 
