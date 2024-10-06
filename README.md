@@ -3,16 +3,26 @@
 Welcome to the first exercise of our ETL Testing Framework tutorial! In this exercise, you'll set up the necessary AWS infrastructure and local environment to begin working with the ETL testing framework.
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Step-by-Step Instructions](#step-by-step-instructions)
+
+1. [Prerequisites](#prerequisites)
+2. [Exercise 1](#step-by-step-instructions)
     - [1. AWS Account Setup](#1-aws-account-setup)
     - [2. Fork the Repository](#2-fork-the-repository)
     - [3. Environment Setup](#3-environment-setup)
     - [4. Terraform Initialization](#4-terraform-initialization)
     - [5. AWS Resource Verification](#5-aws-resource-verification)
-4. [Common Issues and Tips](#common-issues-and-tips)
-5. [Next Steps](#next-steps)
+3. [Common Issues and Tips](#common-issues-and-tips)
+4. [Next Steps](#next-steps)
+
+## Prerequisites
+Before you begin, make sure you have the following:
+- A GitHub account with access to the repository and GitHub Codespaces enabled.
+- Basic understanding of Git, Terraform, and AWS services.
+
+[Skipp if you are in the tutorial!]
+- An AWS account. Temporary users will be provided for the Tutorial.
+- IAM role with administrative privileges or specific permissions for S3, IAM, Lambda, DynamoDB, CodeBuild, and CodePipeline.
+
 
 ## Exercise 1 Checklist
 
@@ -31,12 +41,6 @@ Use this checklist to ensure you've completed all the necessary steps for Exerci
 
 Once you've completed all these items, you've successfully finished Exercise 1!
 
-## Prerequisites
-Before you begin, make sure you have the following:
-- An AWS account. Temporary users will be provided.
-- A GitHub account with access to the repository and GitHub Codespaces enabled.
-- Basic understanding of Git, Terraform, and AWS services.
-- IAM role with administrative privileges or specific permissions for S3, IAM, Lambda, DynamoDB, CodeBuild, and CodePipeline.
 
 
 ## Step-by-Step Instructions
@@ -93,7 +97,7 @@ To set up the necessary AWS infrastructure for the ETL testing framework, use th
 
 #### Running the `setup_infrastructure.sh` Script
 
-1. **Navigate to the `scripts` Directory**:
+1. **Navigate to the `scripts` Directory and Execute Setup**:
    - First, ensure you are in the root directory of your repository:
    Replace `<owner>` with your provided aws user account (i.e. conference-user-x).
    ```bash
@@ -190,18 +194,19 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
 
 6. **Setup Github Connection**:
-a. Copy s3 name and save it as a Github variable ![see: ](assets/github-s3-secret.png):
+- 6.1. Go to your GitHub repository, navigate to the `Settings` tab, and select `Security`. Unfold `Secrets and variables` and select `Actions`.
+- 6.2. Create the following secrets by clicking on `New repository secret`:
+    - `ARTIFACT_BUCKET`: The name of the S3 bucket where the artifacts will be stored. Go to your resource group in AWS and copy the s3 bucket name that starts by 'github-actions-artifact-'
+    - `AWS_ACCESS_KEY_ID`: Your AWS access key ID.m From AutomationSTAR page (see [Getting Your AWS Account](#getting-your-aws-account)
+    - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key.
+
+- a. Copy s3 name and save it as a Github variable ![see: ](assets/github-s3-secret.png):
 b. Go to AWS Resource group, navigate to your codestar Pending connection and follow instructions to make it available.  
 c. Run GitHub Action Terraform Plan Check
 d. Ensure your AWS pipeline is triggered. 
 
 
-6. **Enable GitHub codestar connection**:
-   ##### This will allow aws to communicate with GitHub.
-   - [Login to aws Console](https://087559609246.signin.aws.amazon.com/console?region=eu-west-1)
-   - [Follow this tutorial](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
-[Back to Exercise 1 Checklist](#exercise-1-checklist)
 
 #### 4.3 Deploy ETL Infrastructure
 

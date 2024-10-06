@@ -33,11 +33,9 @@ phases:
   build:
     commands:
       - echo "Running pytest tests..."
-      - env
-      - pytest tests
       # Exercise 3: Add allure report generation and upload to S3
-      # comment previous line and uncomment the following line to run allure report generation and upload to S3
-#      - pytest tests --alluredir=$ALLURE_RESULTS_DIR
+      # uncomment alluredir to generate allure reports i.e:  pytest tests --alluredir=$ALLURE_RESULTS_DIR
+      - pytest tests #--alluredir=$ALLURE_RESULTS_DIR
 
 #      # Exercise 4: Execute Great Expectations tests
 #      - echo "Running Great Expectations tests..."
@@ -60,6 +58,7 @@ phases:
 #      - echo "Updating Allure history"
 #      - aws s3 sync allure-report/history s3://$ALLURE_REPORT_BUCKET/history/ --delete
 
+# Exercise 3: Optional Upload allure artifacts to CodeBuild
 # artifacts:
 #   files:
 #     - '**/*'

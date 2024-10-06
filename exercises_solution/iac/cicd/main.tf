@@ -52,7 +52,6 @@ module "codepipeline" {
   codestar_arn           = module.codestar.codestar_arn
   depends_on             = [module.codestar]
   tags                   = local.common_tags
-  codebuild_test_project = module.codebuild.codebuild_project_name
 }
 
 module "s3" {
@@ -60,6 +59,7 @@ module "s3" {
   etl_codepipeline_bucket   = "${var.etl_codepipeline_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
   allure_bucket             = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
   great_expectations_bucket = "${var.great_expectations_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
+  tags                      = local.common_tags
   owner                     = var.owner
 }
 

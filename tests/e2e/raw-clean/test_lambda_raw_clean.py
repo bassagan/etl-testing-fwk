@@ -19,7 +19,9 @@ def lambda_client(region_name):
 @pytest.fixture
 def raw_clean_lambda_function_name():
     return os.environ.get('LAMBDA_RAW_CLEAN_FUNCTION_NAME')
-
+@pytest.fixture
+def data_generator_function_name():
+    return os.environ.get('DATA_GENERATOR_FUNCTION_NAME')
 
 @pytest.fixture
 def sqs_client(region_name):
@@ -64,14 +66,11 @@ class TestSNSNotifications:
 
 
     # TODO: Exercise 3 - Add Allure decorators to the test class
+    @pytest.mark.skip(reason="Remove this line on exercise 3")
     # @allure.feature("Lambda Function")
     # @allure.title("New title for the test case")
     # @allure.story("Raw Clean Lambda Execution")
-    # @allure.severity(allure.severity_level.CRITICAL)
-    # @allure.description("Here a detailed description for the test case")
-    # @pytest.mark.parametrize("invocation_type", [
-    #     pytest.param("RequestResponse", id="Synchronous Invocation")
-    # ])
+    @pytest.mark.parametrize("invocation_type", ["RequestResponse"])
     def test_lambda_execution_exercise3(self, lambda_client, raw_clean_lambda_function_name, invocation_type):
         """
         Test the execution of the Raw Clean Lambda function.
@@ -114,8 +113,8 @@ class TestSNSNotifications:
         # Add more assertions here if needed to verify the response payload
 
 # TODO: Exercise 3 - Additional Allure features to consider:
-# 1. Use @allure.title() to provide a more descriptive title for the test
-# 2. Use allure.description() to add a detailed description of the test
-# 3. Consider using allure.link() to add relevant links to the test (e.g., documentation, JIRA tickets)
-# 4. If applicable, use allure.issue() to link to specific issues related to this test
-# 5. Explore using allure.step() as a decorator for helper methods to create more granular steps
+# 1. Use @allure.severity() to indicate the severity level of the test
+# 2. Use @allure.description() to add a detailed description of the test
+# 3. Consider using @allure.link() to add relevant links to the test (e.g., documentation, JIRA tickets)
+# 4. If applicable, use @allure.issue() to link to specific issues related to this test
+# 5. Explore using @allure.step() as a decorator for helper methods to create more granular steps

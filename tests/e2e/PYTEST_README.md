@@ -34,21 +34,21 @@ Before you begin, make sure you have completed Exercise 1 and have the following
 1. Set up the testing environment by running the provided script:
 
 ```bash
-   cd scripts  
-   ```
-    
+cd scripts  
+```
+
 ```bash
-   eval $(./setup_environment_tests.sh) 
-   ```
+eval $(./setup_environment_tests.sh) 
+```
 
 2. Navigate to the `tests` directory:
 ```bash
-   cd ../tests/
-   ```
+cd ../tests/
+```
 
 2. Install requirements:
 ```bash
-   pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 
@@ -74,7 +74,7 @@ pytest --collect-only
 
 4. For debugging, you can use the Test Explorer in the lateral menu of your CodeSpace. It's represented by a flask icon.
 
-![Test Explorer in CodeSpace](../assets/tests-debugger.png)
+![Test Explorer in CodeSpace](..%2F..%2Fassets%2Ftests-debugger.png)
 
 Expand the test tree to see all available tests. You should see a structure similar to:
    - etl-testing-fwk
@@ -96,13 +96,8 @@ Detailed instructions and code comments for this exercise are provided in the [`
 
 ### Steps:
 
-1. Open the [`conftest.py`](e2e/raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory.
-   2. Move all existing fixtures from [`test_lambda_raw_clean.py`](raw-clean/test_lambda_raw_clean.py) to [`conftest.py`](raw-clean/conftest.py).
-3. Create a new fixture named `generate_test_data` in `conftest.py`.
-4. Use the `@pytest.fixture(autouse=True)` decorator for the new fixture.
-5. Implement the fixture to call the data generator lambda function using boto3.
-6. Assert that the data generator lambda function was called successfully.
-7. Update `test_lambda_raw_clean.py` to remove moved fixtures and use the new `generate_test_data` fixture.
+1. Open the [`conftest.py`](e2e/raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory. And follow steps described in the file.
+
 
 ## Common Issues and Tips
 - Ensure your AWS credentials are correctly configured and have the necessary permissions.
@@ -110,7 +105,7 @@ Detailed instructions and code comments for this exercise are provided in the [`
 - If tests fail, review the error messages and use debugging techniques to identify the issue.
 
 ## Next Steps
-Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore how to generate Test Reports using Allure. Refer to the [ALLURE_README.md](/tests/e2e/ALLURE_README.md) for detailed instructions.
+Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore how to generate Test Reports using Allure. Refer to the  [Exercise 3: Integrating Allure Reports](ALLURE_README.md) for detailed instructions.
 
 ## Reference Solution
 

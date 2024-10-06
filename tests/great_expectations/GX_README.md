@@ -1,4 +1,4 @@
-# Exercise 4: Implementing a New Data Source and Expectations for the Clean Bucket
+# Exercise 4: Playing with Great Expectations
 
 Welcome to the fifth exercise of our ETL Testing Framework tutorial! In this exercise, you'll learn how to implement a new data source for the clean bucket, add expectations for the data sources, and build and run checkpoints to ensure data quality.
 

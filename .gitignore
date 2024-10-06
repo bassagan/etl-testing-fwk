@@ -10,3 +10,5 @@ tests/e2e/raw-clean/__pycache__/*
 tests/.env
 iac/etl/backend.tf
 .vscode/
+allure-report/
+allure-results/
