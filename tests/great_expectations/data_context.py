@@ -8,7 +8,7 @@ class DataContextManager:
 
     def _setup_data_source(self):
         data_source_name = "s3_raw_data_source"
-        bucket_name = "raw-s3-conference-user-df720b8a-ohmm6c2l"
+        bucket_name = os.environ.get("S3_BUCKET_NAME", "default-bucket-name")  # Updated to use environment variable
         boto_endpoint = os.environ.get("S3_ENDPOINT", "https://s3.eu-west-1.amazonaws.com")
         boto3_options = {"region_name": "eu-west-1", "endpoint_url": boto_endpoint}
         site_config = {
@@ -16,7 +16,7 @@ class DataContextManager:
             "site_index_builder": {"class_name": "DefaultSiteIndexBuilder"},
             "store_backend": {
                 "class_name": "TupleS3StoreBackend",
-                "bucket": "allure-reports-conference-user-df720b8a-xfppikv8",
+                "bucket": os.environ.get("GX_REPORT_BUCKET", "default-store-bucket"),  # Updated to use environment variable
                 "prefix": "great_expectations",
                 "boto3_options": boto3_options,
             },

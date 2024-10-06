@@ -27,18 +27,17 @@ module "iam" {
 }
 
 module "codebuild" {
-  source              = "./modules/codebuild"
-  codebuild_role      = module.iam.codebuild_role_arn
-  artifact_bucket     = module.s3.codepipeline_bucket
-  github_repo         = var.github_repo
-  github_owner        = var.github_owner
-  branch              = var.branch
-  commit              = "" # Will be set by CodePipeline
-  codebuild_test_name = "${var.codebuild_test_name}-${var.owner}"
-  tags                = local.common_tags
-
-  # Add these new variables
+  source               = "./modules/codebuild"
+  codebuild_role       = module.iam.codebuild_role_arn
+  artifact_bucket      = module.s3.codepipeline_bucket
   allure_report_bucket = module.s3.allure_bucket
+  gx_report_bucket     = module.s3.gx_bucket
+  github_repo          = var.github_repo
+  github_owner         = var.github_owner
+  branch               = var.branch
+  commit               = "" # Will be set by CodePipeline
+  codebuild_test_name  = "${var.codebuild_test_name}-${var.owner}"
+  tags                 = local.common_tags
   owner                = var.owner
 }
 
@@ -57,10 +56,11 @@ module "codepipeline" {
 }
 
 module "s3" {
-  source                  = "./modules/s3"
-  etl_codepipeline_bucket = "${var.etl_codepipeline_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
-  allure_bucket           = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
-  owner                   = var.owner
+  source                    = "./modules/s3"
+  etl_codepipeline_bucket   = "${var.etl_codepipeline_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
+  allure_bucket             = "${var.allure_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
+  great_expectations_bucket = "${var.great_expectations_bucket}-${var.owner}-${random_string.bucket_suffix.result}"
+  owner                     = var.owner
 }
 
 module "codestar" {

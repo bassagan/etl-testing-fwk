@@ -16,3 +16,15 @@ output "allure_bucket" {
 output "allure_bucket_arn" {
   value = aws_s3_bucket.allure_bucket.arn
 }
+
+output "gx_bucket_website_endpoint" {
+  value       = "http://${aws_s3_bucket.great_expectations_bucket.bucket}.s3-website-eu-west-1.amazonaws.com"
+  description = "The website endpoint URL for the GX reports bucket"
+}
+
+output "gx_bucket" {
+  value = aws_s3_bucket.great_expectations_bucket.bucket
+}
+output "gx_bucket_arn" {
+  value = aws_s3_bucket.great_expectations_bucket.arn
+}

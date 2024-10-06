@@ -17,3 +17,8 @@ variable "allure_bucket" {
   description = "The bucket for the allure reports"
   type        = string
 }
+
+variable "great_expectations_bucket" {
+  description = "The bucket for great expectations reports"
+  type        = string
+}

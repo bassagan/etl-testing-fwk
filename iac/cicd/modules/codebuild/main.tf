@@ -41,6 +41,11 @@ resource "aws_codebuild_project" "etl_build" {
       name  = "ALLURE_REPORT_BUCKET"
       value = var.allure_report_bucket
     }
+
+    environment_variable {
+      name  = "GX_REPORT_BUCKET"
+      value = var.gx_report_bucket
+    }
   }
 
   source {
