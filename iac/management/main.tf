@@ -64,7 +64,7 @@ resource "aws_iam_role_policy" "lambda_iam_policy" {
 # Data source to get the current AWS account ID
 data "aws_caller_identity" "current" {}
 
-# S3 Bucket to store the CSV file
+# S3 Bucket to store the User Management zip
 resource "aws_s3_bucket" "lambda_user_management_bucket" {
   bucket = var.s3_bucket_name  # Bucket name passed via variable
 
@@ -73,7 +73,7 @@ resource "aws_s3_bucket" "lambda_user_management_bucket" {
   }
 }
 
-resource "aws_s3_object" "upload_lambda_clean_curated" {
+resource "aws_s3_object" "upload_lambda_user_management" {
   bucket = aws_s3_bucket.lambda_user_management_bucket.bucket
   key    = "lambda_user_management.zip"
   source = "${path.root}/../../lambda_packages/lambda_user_management.zip"  # Adjust path to your ZIP file

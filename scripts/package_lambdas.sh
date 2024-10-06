@@ -68,8 +68,9 @@ package_lambda() {
 }
 
 # Package Lambda functions in iac/etl directory
-package_lambda "lambda_generator_package" "lambda_generator_package.zip" "$ETL_DIR"
-package_lambda "lambda_raw_clean" "lambda_raw_clean.zip" "$ETL_DIR"
-package_lambda "lambda_clean_curated" "lambda_clean_curated.zip" "$ETL_DIR"
+#package_lambda "lambda_generator_package" "lambda_generator_package.zip" "$ETL_DIR"
+#package_lambda "lambda_raw_clean" "lambda_raw_clean.zip" "$ETL_DIR"
+#package_lambda "lambda_clean_curated" "lambda_clean_curated.zip" "$ETL_DIR"
+package_lambda "lambda_user_management" "lambda_user_management.zip" "$MANAGEMENT_DIR"
 
 echo "All Lambda functions have been packaged and stored in ${ZIP_OUTPUT_DIR}."
