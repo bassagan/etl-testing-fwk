@@ -48,7 +48,7 @@ During this tutorial, each attendee will be provided with temporary AWS credenti
 
 To get your AWS account for this tutorial, follow these steps:
 
-1. Navigate to the following [AWS provide user URL](https://bomqc5ryf5e3b4mauckcfb6zmi0rdrmm.lambda-url.eu-west-1.on.aws/)
+1. Navigate to the following [AWS provide user URL](https://dpf5detxe6y4arsw36ni4antce0ryhpd.lambda-url.eu-west-1.on.aws/)
 
 2. This will provide you with temporary AWS credentials, including:
    - AWS Access Key ID

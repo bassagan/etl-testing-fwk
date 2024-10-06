@@ -6,10 +6,7 @@
 *.tfstate.backup
 terraform.tfvars
 .terraform.lock.hcl
-.terraform/
-*.tfstate.backup
-terraform.tfvars
-.terraform.lock.hcl
 tests/e2e/raw-clean/__pycache__/*
 tests/.env
 iac/etl/backend.tf
+.vscode/
