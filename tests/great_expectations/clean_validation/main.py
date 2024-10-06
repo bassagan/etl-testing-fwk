@@ -3,9 +3,13 @@ from tests.great_expectations.gx_utils.asset_manager import AssetManager
 from tests.great_expectations.clean_validation.clean_expectation_suites import CleanExpectationSuiteManager
 from validation_manager import ValidationManager
 import os
+from dotenv import load_dotenv
 
 def main():
 
+    #Load environment variables in .env file:
+    load_dotenv()
+    
     # Add data sources:
     print("Starting Great Expectations validation...")
     data_source_name = "clean_hospital_data_source"

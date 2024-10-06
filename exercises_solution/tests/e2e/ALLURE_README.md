@@ -194,17 +194,12 @@ f. Add an artifacts section to include the Allure report:
 - If the Allure report doesn't open automatically, check the console output for the URL and open it manually in your browser.
 
 ## Next Steps
-Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 4, where you'll explore Great Expectations for testing data transformations.
+Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 4, where you'll explore Great Expectations for testing data transformations. Refer to the [GX_README.md](/tests/great_expectations/GX_README.md) for detailed instructions.
 
 
 ## Reference Solution
 
-For reference and guidance, you can check the `feature/exercise_3_solved` branch. This branch contains a complete solution for Exercise 3, which may be helpful if you encounter any difficulties or want to compare your implementation.
-
-To check out the reference solution, use the following command:
-```bash
-git checkout feature/exercise_3_solved
-```
+The final solution for all four exercises can be found in the `exercises_solution` folder. To use it, substitute the folders in the root directory with those in the solution folder and reexecute all steps from the first exercise.
 
 Remember, it's best to try solving the exercise on your own first, but don't hesitate to use the reference solution if you need additional clarity or want to verify your approach.
 

@@ -110,16 +110,11 @@ Detailed instructions and code comments for this exercise are provided in the [`
 - If tests fail, review the error messages and use debugging techniques to identify the issue.
 
 ## Next Steps
-Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore Great Expectations for testing data transformations.
+Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore how to generate Test Reports using Allure. Refer to the [ALLURE_README.md](/tests/e2e/ALLURE_README.md) for detailed instructions.
 
 ## Reference Solution
 
-For reference and guidance, you can check the `feature/exercise_2_solved` branch. This branch contains a complete solution for Exercise 2, which may be helpful if you encounter any difficulties or want to compare your implementation.
-
-To check out the reference solution, use the following command:
-```bash
-git checkout feature/exercise_2_solved
-```
+The final solution for all four exercises can be found in the `exercises_solution` folder. To use it, substitute the folders in the root directory with those in the solution folder and reexecute all steps from the first exercise.
 
 Remember, it's best to try solving the exercise on your own first, but don't hesitate to use the reference solution if you need additional clarity or want to verify your approach.
 

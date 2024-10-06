@@ -8,7 +8,6 @@ import allure
 
 # Load environment variables from .env file
 load_dotenv()
-os.environ['no_proxy'] = '*'
 
 class TestSNSNotifications:
     # TODO: Exercise 3 - Add Allure decorators to the test class

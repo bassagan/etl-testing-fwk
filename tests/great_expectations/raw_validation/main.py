@@ -3,8 +3,12 @@ from tests.great_expectations.gx_utils.asset_manager import AssetManager
 from tests.great_expectations.raw_validation.raw_expectation_suites import RawExpectationSuiteManager
 from validation_manager import ValidationManager
 import os
+from dotenv import load_dotenv
 
 def main():
+
+    #Load environment variables in .env file:
+    load_dotenv()
 
     # Add data sources:
     print("Starting Great Expectations validation...")

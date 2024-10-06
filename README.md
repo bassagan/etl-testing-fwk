@@ -261,7 +261,7 @@ d. Ensure your AWS pipeline is triggered.
 - **Resource Verification**: Double-check the AWS region specified in your Terraform configuration; resources may be created in a different region if it's not consistent.
 
 ## Next Steps
-Once you have successfully set up your environment and verified the resources, you are ready to move on to [Exercise 2: Discovering pytest and boto3](tests/README.md). In Exercise 2, you'll learn about pytest and boto3, and implement a fixture to generate test data for your E2E tests.
+Once you have successfully set up your environment and verified the resources, you are ready to move on to [Exercise 2: Discovering pytest and boto3](tests/e2e/PYTEST_README.md). In Exercise 2, you'll learn about pytest and boto3, and implement a fixture to generate test data for your E2E tests.
 
 After completing Exercise 2, you'll be prepared for Exercise 3, where you'll explore how to build Test Reports in Allure
 
