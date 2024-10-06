@@ -1,0 +1,3 @@
+boto3==1.28.0
+Faker==18.4.0    # Library to generate realistic synthetic data
+moto

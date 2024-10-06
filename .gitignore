@@ -2,11 +2,11 @@
 /lambda_packages/*
 .terraform/
 *.tfstate
+*.zip
 *.tfstate.backup
 terraform.tfvars
 .terraform.lock.hcl
 .terraform/
-*.tfstate
 *.tfstate.backup
 terraform.tfvars
 .terraform.lock.hcl

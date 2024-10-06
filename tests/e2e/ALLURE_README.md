@@ -52,9 +52,9 @@ b. Install Allure-pytest plugin to your [requirements.txt](../requirements.txt) 
 ```
 ### 3.2. Add Allure to Test Cases:
 
-Now, let's add Allure decorators to our existing tests in [test_lambda_raw_clean.py](../e2e/raw-clean/test_lambda_raw_clean.py).
+Now, let's add Allure decorators to our existing tests in [test_lambda_raw_clean.py](raw-clean/test_lambda_raw_clean.py).
 
-a. Open [test_lambda_raw_clean.py](../e2e/raw-clean/test_lambda_raw_clean.py) file
+a. Open [test_lambda_raw_clean.py](raw-clean/test_lambda_raw_clean.py) file
 b. Import Allure at the top of the file:
 ``` python
 import allure
@@ -194,7 +194,7 @@ f. Add an artifacts section to include the Allure report:
 - If the Allure report doesn't open automatically, check the console output for the URL and open it manually in your browser.
 
 ## Next Steps
-Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore Great Expectations for testing data transformations.
+Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 4, where you'll explore Great Expectations for testing data transformations.
 
 
 ## Reference Solution

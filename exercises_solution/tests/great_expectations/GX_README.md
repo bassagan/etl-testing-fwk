@@ -153,7 +153,7 @@ Finally, you'll build and run checkpoints to ensure data quality.
 ## Next Steps
 Once you have successfully implemented the new data source, added expectations, and run the checkpoints, you are ready to move on to Exercise 6, where you'll explore advanced data validation techniques and reporting.
 
-For more details on Exercise 6, please refer to the [Exercise 6 README](reports/README.md).
+For more details on Exercise 6, please refer to the [Exercise 6 README](ALLURE_README.md).
 
 ## Reference Solution
 

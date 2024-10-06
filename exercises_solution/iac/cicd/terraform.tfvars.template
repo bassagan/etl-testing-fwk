@@ -1,0 +1,24 @@
+#AWS Info:
+region       = "eu-west-1"
+owner         = "{owner}"
+
+#Github info for executing tests on aws cicd
+github_owner = "{github_owner}"
+github_repo  = "{repo_name}"
+branch       = "{branch}"
+codestar_name   = "github"
+
+codepipeline_name = "codepipeline"
+etl_codepipeline_bucket = "github-s3"
+allure_bucket = "allure-reports"
+great_expectations_bucket = "gx-reports"
+
+
+codebuild_role_name = "codebuild-service-role"
+codebuild_report_permissions_name = "CodeBuildReportPermissions"
+codepipeline_role_name = "codepipeline-service-role"
+codebuild_name = "e2e-testing-etl-cb"
+
+codebuild_test_name = "e2e-testing-etl-cb-test"
+codepipeline_test_name = "e2e-testing-etl-cb-test"
+
