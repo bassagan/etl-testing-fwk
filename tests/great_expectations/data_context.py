@@ -21,9 +21,8 @@ class DataContextManager:
                 "boto3_options": boto3_options,
             },
         }
-        # Check if the Data Docs site already exists
-        if os.getenv("CI"):
-            self.context.add_data_docs_site(site_name="data_docs_paula", site_config=site_config)
+        
+        self.context.add_data_docs_site(site_name="data_docs_paula", site_config=site_config)
 
         try:
             data_source = self.context.get_datasource(data_source_name)
