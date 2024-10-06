@@ -7,32 +7,37 @@ class ValidationManager:
     def __init__(self, context):
         self.context = context
         self.checkpoint = None
-        self.checkpoint_name = "patients_and_visits_checkpoint"
+        self.checkpoint_name = "clean_patients_and_visits_checkpoint"
 
-    def setup_validations(self, asset_manager, suite_manager):
-        patients_vd = self._create_validation_definition(
-            "patients_validation_definition",
-            "patients_data",
-            "batch_patients",
-            suite_manager.patients_suite
-        )
-        visits_vd = self._create_validation_definition(
-            "visits_validation_definition",
-            "visits_data",
-            "batch_visits",
-            suite_manager.visits_suite
-        )
+    def setup_validations(self, config, suite_manager, data_source_name):
+        validation_definition_list = []
+        for asset in config["assets"]: 
+            for batch in asset["batches"]: 
+                if "patient" in asset["name"]:
+                    suite = suite_manager.patients_suite
+                else: 
+                    suite = suite_manager.visits_suite
+                    
+                validation_definition_list.append(
+                    self._create_validation_definition(
+                        asset["name"] + "_validation",
+                        asset["name"],
+                        batch["name"],
+                        suite,
+                        data_source_name
+                    )
+                )
 
-        self._create_checkpoint([patients_vd, visits_vd])
+        self._create_checkpoint(validation_definition_list)
 
-    def _create_validation_definition(self, vd_name, asset_name, batch_name, suite):
+    def _create_validation_definition(self, vd_name, asset_name, batch_name, suite, data_source_name):
         try:
             validation_definition = self.context.validation_definitions.get(vd_name)
             print(f"Using existing validation definition: {vd_name}")
         except gx.exceptions.DataContextError:
             print(f"Creating new validation definition: {vd_name}")
             validation_definition = gx.ValidationDefinition(
-                data=self.context.get_datasource("s3_raw_data_source").get_asset(asset_name).get_batch_definition(batch_name),
+                data=self.context.get_datasource(data_source_name).get_asset(asset_name).get_batch_definition(batch_name),
                 suite=suite,
                 name=vd_name
             )
@@ -55,7 +60,7 @@ class ValidationManager:
                 name=self.checkpoint_name,
                 validation_definitions=validation_definitions,
                 actions=action_list,
-                result_format={"result_format": "COMPLETE"},
+                result_format={"result_format": "BASIC"},
             )
             self.context.checkpoints.add(self.checkpoint)
 

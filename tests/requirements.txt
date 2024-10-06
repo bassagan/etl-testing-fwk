@@ -7,3 +7,4 @@ great-expectations==1.1.0
 great-expectations[s3]
 # great_expectations[spark]
 great-expectations[pandas]
+pyarrow

@@ -1,16 +1,15 @@
 import great_expectations as gx
 import great_expectations.expectations as gxe
 
-class ExpectationSuiteManager:
+class RawExpectationSuiteManager:
     def __init__(self, context):
         self.context = context
         self.patients_suite = None
         self.visits_suite = None
 
     def setup_suites(self):
-        self.patients_suite = self._get_or_create_suite("patients_expectation_suite")
-        self.visits_suite = self._get_or_create_suite("visits_expectation_suite")
-
+        self.patients_suite = self._get_or_create_suite("raw_patients_data_suite")
+        self.visits_suite = self._get_or_create_suite("raw_visits_data_suite")
         self._add_patient_expectations()
         self._add_visit_expectations()
 
