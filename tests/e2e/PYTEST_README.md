@@ -97,12 +97,12 @@ Detailed instructions and code comments for this exercise are provided in the [`
 ### Steps:
 
 1. Open the [`conftest.py`](e2e/raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory.
-2. Move all existing fixtures from [`test_sns_notifications.py`](raw-clean/test_sns_notifications.py) to [`conftest.py`](raw-clean/conftest.py).
+   2. Move all existing fixtures from [`test_lambda_raw_clean.py`](raw-clean/test_lambda_raw_clean.py) to [`conftest.py`](raw-clean/conftest.py).
 3. Create a new fixture named `generate_test_data` in `conftest.py`.
 4. Use the `@pytest.fixture(autouse=True)` decorator for the new fixture.
 5. Implement the fixture to call the data generator lambda function using boto3.
 6. Assert that the data generator lambda function was called successfully.
-7. Update `test_sns_notifications.py` to remove moved fixtures and use the new `generate_test_data` fixture.
+7. Update `test_lambda_raw_clean.py` to remove moved fixtures and use the new `generate_test_data` fixture.
 
 ## Common Issues and Tips
 - Ensure your AWS credentials are correctly configured and have the necessary permissions.
