@@ -8,7 +8,7 @@ class DataContextManager:
 
     def _setup_data_source(self):
         data_source_name = "s3_raw_data_source"
-        bucket_name = os.environ.get("S3_BUCKET_NAME", "default-bucket-name")  # Updated to use environment variable
+        bucket_name = os.environ.get("RAW_BUCKET", "default-bucket-name")  # Updated to use environment variable
         boto_endpoint = os.environ.get("S3_ENDPOINT", "https://s3.eu-west-1.amazonaws.com")
         boto3_options = {"region_name": "eu-west-1", "endpoint_url": boto_endpoint}
         site_config = {
