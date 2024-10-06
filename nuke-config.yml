@@ -1,0 +1,20 @@
+regions:
+- eu-west-1
+- global
+
+account-blocklist:
+- "1234567890"
+
+accounts:
+  "087559609246":
+    filters:
+      IAMUser:
+        - "administrator"
+      IAMUserAccessKey:
+        - "administrator -> AKIARIYXVTOPMWOMXDPH"
+      LambdaFunction:
+        - "arn:aws:lambda:eu-west-1:087559609246:function:lambda-user-management-dev"  # replace with your Lambda function name
+      S3Bucket:
+        - "s3-user-management-dev"  # replace with your S3 bucket name
+#        - property : "Bucket"
+#          value : "s3-user-management-dev"  # replace with your S3 bucket name
