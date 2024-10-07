@@ -137,15 +137,35 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```bash
     cd ../cicd
     ```
-2. **Deploy CI/CD Infrastructure**:
+    
+2. **Initialize Terraform**:
+    - Initialize Terraform in this directory to download the necessary providers and prepare the environment.
+    ```bash
+    terraform init
+    ```
+    
+3. **Validate Terraform Configuration**:
+    - Run the following command to ensure that the Terraform configuration files are syntactically correct.
+    ```bash
+    terraform validate
+    ```
+    
+4. **Plan the CI/CD Infrastructure**:
+    - Create an execution plan to see what resources Terraform will create or modify.
+    ```bash
+    terraform plan
+    ```
+    ![Screenshot of Terraform plan output](assets/terminal-terraform-plan.png)
+
+5. **Deploy CI/CD Infrastructure**:
     - You can now instead use a single command to initialize and apply the Terraform configuration for the CI/CD infrastructure. With the `auto-approve` flag, Terraform will not ask for confirmation before applying the changes.
 
     ```bash
-    terraform init && terraform apply --auto-approve
+    terraform apply --auto-approve
     ```
     ![Screenshot of Terraform apply output](assets/terminal-terraform-cicd-apply.png)
 
-3. **Setup GitHub Connection**:
+6. **Setup GitHub Connection**:
     - 3.1. Go to your GitHub repository, navigate to the `Settings` tab, and select `Security`. Unfold `Secrets and variables` and select `Actions`.
     - 3.2. Create the following secrets by clicking on `New repository secret`:
         - `ARTIFACT_BUCKET`: The name of the S3 bucket where the artifacts will be stored. Go to your resource group in AWS and copy the S3 bucket name that starts with 'github-actions-artifact-'
