@@ -10,15 +10,6 @@ Welcome to the forth exercise of our ETL Testing Framework tutorial! In this exe
 4. [Common Issues and Tips](#common-issues-and-tips)
 5. [Next Steps](#next-steps)
 
-## Exercise 4 Checklist
-
-Use this checklist to ensure you've completed all the necessary steps for Exercise 5:
-
-- [ ] Implement a new data source for the clean bucket
-- [ ] Add expectations for the new data source
-- [ ] Build and run checkpoints to validate data quality
-
-Once you've checked off all these items, you've successfully completed Exercise 5!
 
 ## Prerequisites
 Before you begin, make sure you have completed Exercise 4 and have the following:
@@ -95,7 +86,6 @@ Let's prepare the data first:
             self.visits_suite.add_expectation(expectation)
 ```
 
-
 3. **Run the main script for clean validations**:
 ```bash
 python clean_validation/main.py
@@ -106,11 +96,19 @@ python clean_validation/main.py
    - Go to the CodePipeline console and monitor the pipeline execution.
    - Open again the data docs url to see the results of the expectations.
 
-
 ## Common Issues and Tips
 - Ensure that your AWS credentials are correctly configured and have the necessary permissions to access the clean bucket.
 - Double-check the data structure and expectations to ensure they align with your data source.
 
+## Exercise 4 Checklist
+
+Use this checklist to ensure you've completed all the necessary steps for Exercise 4:
+
+- [ ] Implement a new data source for the clean bucket
+- [ ] Add expectations for the new data source
+- [ ] Build and run checkpoints to validate data quality
+
+Once you've checked off all these items, you've successfully completed Exercise 4!
 
 ## Reference Solution
 

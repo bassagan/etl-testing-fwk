@@ -4,23 +4,15 @@ Welcome to the second exercise of our ETL Testing Framework tutorial! In this ex
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
-2. [Setting up the testing environment](#setting-up-the-testing-environment)
-3. [Exercise 2: Implementing a Test Data Generator Fixture](#exercise-2-implementing-a-test-data-generator-fixture)
-4. [Common Issues and Tips](#common-issues-and-tips)
+2. [Exercise 2](#exercise-2-discovering-pytest-and-boto3)
+    - [1. Setting up the testing environment](#1-setting-up-the-testing-environment)
+    - [2. Executing and debugging test cases](#2-executing-and-debugging-test-cases)
+    - [3. Implementing a Test Data Generator Fixture](#3-implementing-a-test-data-generator-fixture)
+3. [Common Issues and Tips](#common-issues-and-tips)
+4. [Exercise 2 Checklist](#exercise-2-checklist)
 5. [Next Steps](#next-steps)
-
-## Exercise 2 Checklist
-
-Use this checklist to ensure you've completed all the necessary steps for Exercise 2:
-
-- [ ] Set up the testing environment
-- [ ] Understand the existing test structure
-- [ ] Move existing fixtures to conftest.py
-- [ ] Implement the generate_test_data fixture
-- [ ] Update test_sns_notifications.py to use the new fixture
-- [ ] Run and verify the updated tests
-
-Once you've checked off all these items, you've successfully completed Exercise 2!
+6. [Reference Solution](#reference-solution)
+7. [Key Takeaways](#key-takeaways)
 
 ## Prerequisites
 Before you begin, make sure you have completed Exercise 1 and have the following:
@@ -28,7 +20,9 @@ Before you begin, make sure you have completed Exercise 1 and have the following
 - Access to the repository and necessary AWS resources
 - Basic understanding of Python, pytest, and boto3
 
-## Setting up the testing environment
+## Exercise 2: Discovering pytest and boto3
+
+### 1. Setting up the testing environment
 
 1. Set up the testing environment by running the provided script:
 
@@ -45,37 +39,40 @@ eval $(./setup_environment_tests.sh)
 cd ../tests/
 ```
 
-2. Install requirements:
+3. Install requirements:
 ```bash
 pip install -r requirements.txt
 ```
 
-
-## Exercise 2.1: Executing and debugging test cases
+### 2. Executing and debugging test cases
 
 In this part of the exercise, you'll learn how to run and debug your test cases using pytest. Follow these steps to execute and debug your tests:
 
 1. To run all tests with verbose output, use the following command:
 
-```
-pytest -v
-```
+   ```bash
+   pytest -v
+   ```
 
 2. To run a specific test file, use:
-```
-pytest e2e/raw-clean/test_sns_notifications.py
-```
-3. To check for errors in test collection without actually running the tests, use:
-```
-pytest --collect-only
-```
 
+   ```bash
+   pytest e2e/raw-clean/test_sns_notifications.py
+   ```
+
+3. To check for errors in test collection without actually running the tests, use:
+
+   ```bash
+   pytest --collect-only
+   ```
 
 4. For debugging, you can use the Test Explorer in the lateral menu of your CodeSpace. It's represented by a flask icon.
 
-![Test Explorer in CodeSpace](..%2F..%2Fassets%2Ftests-debugger.png)
+   ![Test Explorer in CodeSpace](../../assets/tests-debugger.png)
 
-Expand the test tree to see all available tests. You should see a structure similar to:
+   The Test Explorer allows you to view and run individual tests or test suites. You can also set breakpoints and debug your tests interactively.
+
+5. Expand the test tree to see all available tests. You should see a structure similar to:
    - etl-testing-fwk
      - tests
        - e2e
@@ -84,8 +81,7 @@ Expand the test tree to see all available tests. You should see a structure simi
              - TestSNSNotifications
                - test_lambda_execution
 
-
-## Exercise 2.2: Implementing a Test Data Generator Fixture
+### 3. Implementing a Test Data Generator Fixture
 
 In this exercise, you'll implement a fixture to generate test data for your E2E tests using pytest and boto3. This test data is crucial for verifying that data is correctly moved and processed in the clean layer of our ETL pipeline.
 
@@ -93,18 +89,31 @@ The need for generating test data arises from the requirement to have consistent
 
 Detailed instructions and code comments for this exercise are provided in the [`conftest.py`](raw-clean/conftest.py) file. You'll be working primarily with this file to implement the new fixture.
 
-### Steps:
+#### Steps:
 
-1. Open the [`conftest.py`](e2e/raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory. And follow steps described in the file.
-
+1. Open the [`conftest.py`](raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory.
+2. Follow the steps described in the file to implement the test data generator fixture.
 
 ## Common Issues and Tips
 - Ensure your AWS credentials are correctly configured and have the necessary permissions.
 - Double-check that all required environment variables are set correctly.
 - If tests fail, review the error messages and use debugging techniques to identify the issue.
 
+## Exercise 2 Checklist
+
+Use this checklist to ensure you've completed all the necessary steps for Exercise 2:
+
+- [ ] Set up the testing environment
+- [ ] Understand the existing test structure
+- [ ] Move existing fixtures to conftest.py
+- [ ] Implement the generate_test_data fixture
+- [ ] Update test_sns_notifications.py to use the new fixture
+- [ ] Run and verify the updated tests
+
+Once you've checked off all these items, you've successfully completed Exercise 2!
+
 ## Next Steps
-Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore how to generate Test Reports using Allure. Refer to the  [Exercise 3: Integrating Allure Reports](ALLURE_README.md) for detailed instructions.
+Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore how to generate Test Reports using Allure. Refer to the [Exercise 3: Integrating Allure Reports](ALLURE_README.md) for detailed instructions.
 
 ## Reference Solution
 
