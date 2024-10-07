@@ -126,6 +126,10 @@ main() {
     # Run all scripts
     run_scripts "$OWNER"
 
+    # Commit the changes to the forked repository
+    git add -A
+    git commit -m "Setup Fork for $OWNER"
+
     echo "All scripts have been executed successfully."
 }
 
