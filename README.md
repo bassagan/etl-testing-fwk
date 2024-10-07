@@ -7,7 +7,7 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 1. [Prerequisites](#prerequisites)
 2. [Exercise 1](#exercise-1-setting-up-the-environment)
     - [1. AWS Account Setup](#1-aws-account-setup)
-    - [2. Fork the Repository](#2-fork-the-repository)
+    - [2. Setup IDE](#2-setup-ide)
     - [3. Environment Setup](#3-environment-setup)
     - [4. Terraform Initialization](#4-terraform-initialization)
     - [5. AWS Resource Verification](#5-aws-resource-verification)
@@ -47,11 +47,9 @@ To get your AWS account for this tutorial, follow these steps:
 - Use the **Access Key ID**, **Secret Access Key**, and **Session Token** provided by the URL when configuring your AWS CLI in the following steps.
 - If you prefer to use your own AWS account, you are welcome to do so. In this case, please make sure to create an access token key for your user and have it at hand. Also, take note of your AWS username. **username** will be the `<owner>` on the `setup_infrastructure.sh`, [see section 3](#3-environment-setup).
 
-### 2. Fork the Repository
+### 2. Setup IDE
 1. Go to the main repository on GitHub.
-2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
-    ![Screenshot of GitHub Fork Button](assets/github-fork-button.png)
-3. **Launch a Codespace**:
+2. **Launch a Codespace**:
     - Once you have forked the repository, **navigate to your fork**.
     - Click on the "Code" button, "Codespaces" tab, then select "Create codespace on master" to create a new Codespace.
     ![Screenshot of Codespaces launch](assets/github-codespaces-new.png)
@@ -60,13 +58,6 @@ To get your AWS account for this tutorial, follow these steps:
    ![Screenshot of CodeSpace Building](assets/github-codespace-building.png)
     - You will know the CodeSpace is ready when you can see: 
    ![Screenshot of CodeSpace Ready](assets/github-codespace-ready.png)
-4. **Checkout the initial branch**:
-   - In order to switch branches, you can run git commands in the terminal:
-   ```bash
-   git checkout master
-   ```
-   Or you can interact directly with the IDE:
-   ![Screenshot of CodeSpace Branches section](assets/github-codespace-change-branche.png)
    
 ### 3. Environment Setup
 To set up the necessary AWS infrastructure for the ETL testing framework, use the `setup_infrastructure.sh` script. This script will automate parts of the setup process, including configuring backends, generating necessary Terraform variable files, and packaging Lambda functions.
@@ -89,8 +80,6 @@ To set up the necessary AWS infrastructure for the ETL testing framework, use th
    - When prompted, enter:
      - AWS Access Key ID: Your AWS access key ID.
      - AWS Secret Access Key: Your AWS secret access key.
-     - Default Region Name: The AWS region you wish to use (e.g., eu-west-1).
-     - Default Output Format: Use json unless otherwise needed.
 
 ### 4. Terraform Initialization
 
