@@ -1,6 +1,6 @@
-from tests.great_expectations.gx_utils.data_context import DataContextManager
-from tests.great_expectations.gx_utils.asset_manager import AssetManager
-from tests.great_expectations.raw_validation.raw_expectation_suites import RawExpectationSuiteManager
+from gx_utils.data_context import DataContextManager
+from gx_utils.asset_manager import AssetManager
+from raw_expectation_suites import RawExpectationSuiteManager
 from validation_manager import ValidationManager
 import os
 from dotenv import load_dotenv
@@ -56,7 +56,7 @@ def main():
     
     # Build data docs
     context_manager.context.build_data_docs()
-
+    print("Check DataDocs Site at: ", "https://" + os.getenv("GX_REPORT_BUCKET") + ".s3.eu-west-1.amazonaws.com/gx_" + data_source_name + "/index.html")
     print("Validation complete. Check the data docs for detailed results.")
 
 if __name__ == "__main__":

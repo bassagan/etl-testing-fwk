@@ -25,10 +25,10 @@ resource "aws_codepipeline" "etl_pipeline" {
   }
 
   stage {
-    name = "Build"
+    name = "BuildAndTest"
 
     action {
-      name             = "Build"
+      name             = "BuildAndTest"
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
@@ -38,24 +38,6 @@ resource "aws_codepipeline" "etl_pipeline" {
 
       configuration = {
         ProjectName = var.codebuild_project
-      }
-    }
-  }
-
-  stage {
-    name = "Test"
-
-    action {
-      name             = "Test"
-      category         = "Test"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["source_output"]
-      output_artifacts = ["test_output"]
-      version          = "1"
-
-      configuration = {
-        ProjectName = var.codebuild_test_project
       }
     }
   }

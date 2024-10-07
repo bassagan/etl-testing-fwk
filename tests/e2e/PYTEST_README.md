@@ -3,12 +3,11 @@
 Welcome to the second exercise of our ETL Testing Framework tutorial! In this exercise, you'll learn about pytest and boto3, and implement a fixture to generate test data for your E2E tests.
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Setting up the testing environment](#setting-up-the-testing-environment)
-4. [Exercise 2: Implementing a Test Data Generator Fixture](#exercise-2-implementing-a-test-data-generator-fixture)
-5. [Common Issues and Tips](#common-issues-and-tips)
-6. [Next Steps](#next-steps)
+1. [Prerequisites](#prerequisites)
+2. [Setting up the testing environment](#setting-up-the-testing-environment)
+3. [Exercise 2: Implementing a Test Data Generator Fixture](#exercise-2-implementing-a-test-data-generator-fixture)
+4. [Common Issues and Tips](#common-issues-and-tips)
+5. [Next Steps](#next-steps)
 
 ## Exercise 2 Checklist
 

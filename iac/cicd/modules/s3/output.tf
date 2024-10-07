@@ -22,7 +22,7 @@ output "gx_bucket_website_endpoint" {
   description = "The website endpoint URL for the GX reports bucket"
 }
 
-output "gx_bucket" {
+output "gx_bucket_name" {
   value = aws_s3_bucket.great_expectations_bucket.bucket
 }
 output "gx_bucket_arn" {

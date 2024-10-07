@@ -61,16 +61,14 @@ class TestSNSNotifications:
         # Assert: Check if the Lambda execution was successful
         assert response['StatusCode'] == 200, f"Lambda execution failed with status code {response['StatusCode']}"
 
-
-
-
-
     # TODO: Exercise 3 - Add Allure decorators to the test class
     @pytest.mark.skip(reason="Remove this line on exercise 3")
     # @allure.feature("Lambda Function")
     # @allure.title("New title for the test case")
     # @allure.story("Raw Clean Lambda Execution")
-    @pytest.mark.parametrize("invocation_type", ["RequestResponse"])
+    @pytest.mark.parametrize("invocation_type", [
+        pytest.param("RequestResponse", id="Synchronous Invocation")
+    ])
     def test_lambda_execution_exercise3(self, lambda_client, raw_clean_lambda_function_name, invocation_type):
         """
         Test the execution of the Raw Clean Lambda function.

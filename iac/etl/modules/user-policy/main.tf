@@ -31,13 +31,18 @@ resource "aws_iam_policy" "owner_full_access" {
       },
       {
         "Action" : [
-          "resource-groups:*",
-          "tag:*",
-          "cloudformation:*",
-          "athena:GetWorkGroup",
-          "glue:GetDatabases",
-          "glue:GetTables",
-          "glue:GetPartitions"
+          	"resource-groups:*",
+            "tag:*",
+            "cloudformation:*",
+            "athena:GetWorkGroup",
+            "athena:ListWorkGroups",
+            "athena:StartQueryExecution",
+            "athena:GetQueryExecution",
+            "glue:GetDatabases",
+            "glue:GetDatabase",
+            "glue:GetTables",
+            "glue:GetTable",
+            "glue:GetPartitions"
         ],
         "Effect" : "Allow",
         "Resource" : "*"

@@ -20,3 +20,13 @@ env_file="$(dirname "$0")/../../tests/.env"
     echo "LAMBDA_RAW_CLEAN_FUNCTION_NAME=$(terraform output -raw lambda_raw_clean_function_name)"
 } > "$env_file"
 
+cd "$(dirname "$0")/../cicd" || {
+    echo "Failed to change directory to ../cicd"
+    exit 1  # Exit if directory change fails
+}
+
+{
+    echo "GX_REPORT_BUCKET=$(terraform output -raw gx_bucket_name)"
+} >> "$env_file"
+
+

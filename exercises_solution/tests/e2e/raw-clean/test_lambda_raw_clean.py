@@ -8,9 +8,21 @@ import allure
 
 # Load environment variables from .env file
 load_dotenv()
-os.environ['no_proxy'] = '*'
 
 class TestSNSNotifications:
+    # Pytest parametrize decorator to run the test with different invocation types
+    @pytest.mark.parametrize("invocation_type", ["RequestResponse"])
+    def test_lambda_execution(self, lambda_client, raw_clean_lambda_function_name, invocation_type):
+        # Act: Invoke the Lambda function
+        response = lambda_client.invoke(
+            FunctionName=raw_clean_lambda_function_name,
+            InvocationType=invocation_type,
+            Payload=json.dumps({})
+        )
+
+        # Assert: Check if the Lambda execution was successful
+        assert response['StatusCode'] == 200, f"Lambda execution failed with status code {response['StatusCode']}"
+
     # TODO: Exercise 3 - Add Allure decorators to the test class
     @allure.feature("Lambda Function")
     @allure.title("New title for the test case")
@@ -20,7 +32,7 @@ class TestSNSNotifications:
     @pytest.mark.parametrize("invocation_type", [
         pytest.param("RequestResponse", id="Synchronous Invocation")
     ])
-    def test_lambda_execution(self, lambda_client, raw_clean_lambda_function_name, invocation_type):
+    def test_lambda_execution_exercise3(self, lambda_client, raw_clean_lambda_function_name, invocation_type):
         """
         Test the execution of the Raw Clean Lambda function.
 
@@ -62,8 +74,8 @@ class TestSNSNotifications:
         # Add more assertions here if needed to verify the response payload
 
 # TODO: Exercise 3 - Additional Allure features to consider:
-# 1. Use @allure.title() to provide a more descriptive title for the test
-# 2. Use allure.description() to add a detailed description of the test
-# 3. Consider using allure.link() to add relevant links to the test (e.g., documentation, JIRA tickets)
-# 4. If applicable, use allure.issue() to link to specific issues related to this test
-# 5. Explore using allure.step() as a decorator for helper methods to create more granular steps
+# 1. Use @allure.severity() to indicate the severity level of the test
+# 2. Use @allure.description() to add a detailed description of the test
+# 3. Consider using @allure.link() to add relevant links to the test (e.g., documentation, JIRA tickets)
+# 4. If applicable, use @allure.issue() to link to specific issues related to this test
+# 5. Explore using @allure.step() as a decorator for helper methods to create more granular steps

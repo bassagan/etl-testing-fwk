@@ -1,6 +1,6 @@
-from tests.great_expectations.gx_utils.data_context import DataContextManager
-from tests.great_expectations.gx_utils.asset_manager import AssetManager
-from tests.great_expectations.clean_validation.clean_expectation_suites import CleanExpectationSuiteManager
+from gx_utils.data_context import DataContextManager
+from gx_utils.asset_manager import AssetManager
+from clean_expectation_suites import CleanExpectationSuiteManager
 from validation_manager import ValidationManager
 import os
 from dotenv import load_dotenv
@@ -14,25 +14,25 @@ def main():
     print("Starting Great Expectations validation...")
     data_source_name = "clean_hospital_data_source"
     config =  {
-"bucket_name": os.getenv("CLEAN_BUCKET"),
-            "type": "parquet",
-            "assets": [
-                {
-                    "name": "clean_patients_data",
-                    "s3_prefix": "cleaned/patients/latest/",
-                    "batches": [
-                        {"name": "clean_batch_patients", "file_prefix": "cleaned/patients/latest/"}
-                    ]
-                },
-                {
-                    "name": "clean_visits_data",
-                    "s3_prefix": "cleaned/visits/latest/",
-                    "batches": [
-                        {"name": "clean_batch_visits", "file_prefix": "cleaned/visits/latest/"}
-                    ]
-                }
-            ]
-        }
+    "bucket_name": os.getenv("CLEAN_BUCKET"),
+                "type": "parquet",
+                "assets": [
+                    {
+                        "name": "clean_patients_data",
+                        "s3_prefix": "cleaned/patients/latest/",
+                        "batches": [
+                            {"name": "clean_batch_patients", "file_prefix": "cleaned/patients/latest/"}
+                        ]
+                    },
+                    {
+                        "name": "clean_visits_data",
+                        "s3_prefix": "cleaned/visits/latest/",
+                        "batches": [
+                            {"name": "clean_batch_visits", "file_prefix": "cleaned/visits/latest/"}
+                        ]
+                    }
+                ]
+            }
     context_manager = DataContextManager(context_directory="gx_"+data_source_name)
     
     # Loop over each data source and add it
@@ -56,6 +56,8 @@ def main():
     
     # Build data docs
     context_manager.context.build_data_docs()
+    print("Check DataDocs Site at: ", "https://" + os.getenv(
+        "GX_REPORT_BUCKET") + ".s3.eu-west-1.amazonaws.com/gx_" + data_source_name + "/index.html")
 
     print("Validation complete. Check the data docs for detailed results.")
 

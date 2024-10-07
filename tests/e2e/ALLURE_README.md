@@ -161,7 +161,8 @@ These changes will configure AWS CodeBuild to generate Allure reports and publis
 ![Resource Group](..%2F..%2Fassets%2Faws_resource_group_cicd.png)
 ![CodePipeline Execution](..%2F..%2Fassets%2Faws_code_pipeline_execution.png)
 4. Wait for the codepipeline to complete. Once it is successfully executed, you can view the Allure report in the S3 bucket. To do so, go to your AWS resource group and click on `allure-reports-<owner>-<uuid>` bucket. Click on `index.html` file and open the Object URL .
-![aws_allure_bucket.png](..%2F..%2Fassets%2Faws_allure_bucket.png)
+![Resource Group Allure Bucket](..%2F..%2Fassets%2Faws_resource_group_allure_bucket.png)
+![Allure Bucket](..%2F..%2Fassets%2Faws_allure_bucket.png)
 
 
 ## Common Issues and Tips
