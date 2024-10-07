@@ -166,12 +166,12 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```
 
 2. **Deploy ETL Infrastructure**:
-    - Use a single command to initialize, validate, plan, and apply the Terraform configuration for the ETL infrastructure. With the `auto-approve` flag, Terraform will not ask for confirmation before applying the changes.
+    - Initialize and apply the Terraform configuration for the ETL infrastructure. 
 
     ```bash
-    terraform init && terraform validate && terraform plan && terraform apply --auto-approve
+    terraform init && terraform apply --auto-approve
     ```
-    ![Screenshot of Terraform apply output](assets/terminal-terraform-etl-apply.png)
+    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
 
 ### 5. AWS Resource Verification
 1. **Login to AWS Console**: Log in to your AWS account and verify that all resources have been created.
