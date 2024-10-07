@@ -9,20 +9,6 @@ o integrate Allure reports into your pytest-based test automation framework. All
 * Generate and view Allure reports
 * Add history to Allure reports
 
-## Table of Contents
-
-## Exercise 3 Checklist
-Use this checklist to ensure you've completed all the necessary steps:
-- [ ] Install Allure command-line tool
-- [ ] Add allure-pytest to requirements.txt
-- [ ] Install updated requirements
-- [ ] Add Allure decorators to test class and method
-- [ ] Add Allure steps to test method
-- [ ] Generate and view Allure report locally
-- [ ] Set up Allure history
-- [ ] Generate and view report with history locally
-- [ ] Configure buildspec.yml for Allure report generation and publication in AWS
-
 ## Prerequisites
 Before you begin, make sure you have completed Exercise 2 and have the following:
 - At least one test case and its fixtures
@@ -52,7 +38,7 @@ choco install allure
 
 </details>
 
-b) Install Allure-pytest plugin to your [requirements.txt](../requirements.txt) file:
+b) Add Allure-pytest plugin to your [requirements.txt](../requirements.txt) file:
 
 ```
 allure-pytest==2.13.5
@@ -169,6 +155,18 @@ These changes will configure AWS CodeBuild to generate Allure reports and publis
 - If you encounter issues with Allure installation, make sure you have the necessary permissions and that your package manager is up to date.
 - When adding Allure steps, ensure that the content within each step is meaningful and provides valuable information for debugging.
 - If the Allure report doesn't open automatically, check the console output for the URL and open it manually in your browser.
+
+## Exercise 3 Checklist
+Use this checklist to ensure you've completed all the necessary steps:
+- [ ] Install Allure command-line tool
+- [ ] Add allure-pytest to requirements.txt
+- [ ] Install updated requirements
+- [ ] Add Allure decorators to test class and method
+- [ ] Add Allure steps to test method
+- [ ] Generate and view Allure report locally
+- [ ] Set up Allure history
+- [ ] Generate and view report with history locally
+- [ ] Configure buildspec.yml for Allure report generation and publication in AWS
 
 ## Next Steps
 Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 4, where you'll explore Great Expectations for testing data transformations. Refer to the [Exercise 4: Playing with Great Expectations](../great_expectations/GX_README.md) for detailed instructions.
