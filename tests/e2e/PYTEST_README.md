@@ -3,12 +3,11 @@
 Welcome to the second exercise of our ETL Testing Framework tutorial! In this exercise, you'll learn about pytest and boto3, and implement a fixture to generate test data for your E2E tests.
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Setting up the testing environment](#setting-up-the-testing-environment)
-4. [Exercise 2: Implementing a Test Data Generator Fixture](#exercise-2-implementing-a-test-data-generator-fixture)
-5. [Common Issues and Tips](#common-issues-and-tips)
-6. [Next Steps](#next-steps)
+1. [Prerequisites](#prerequisites)
+2. [Setting up the testing environment](#setting-up-the-testing-environment)
+3. [Exercise 2: Implementing a Test Data Generator Fixture](#exercise-2-implementing-a-test-data-generator-fixture)
+4. [Common Issues and Tips](#common-issues-and-tips)
+5. [Next Steps](#next-steps)
 
 ## Exercise 2 Checklist
 
@@ -34,21 +33,21 @@ Before you begin, make sure you have completed Exercise 1 and have the following
 1. Set up the testing environment by running the provided script:
 
 ```bash
-   cd scripts  
-   ```
-    
+cd scripts  
+```
+
 ```bash
-   eval $(./setup_environment_tests.sh) 
-   ```
+eval $(./setup_environment_tests.sh) 
+```
 
 2. Navigate to the `tests` directory:
 ```bash
-   cd ../tests/
-   ```
+cd ../tests/
+```
 
 2. Install requirements:
 ```bash
-   pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 
@@ -74,7 +73,7 @@ pytest --collect-only
 
 4. For debugging, you can use the Test Explorer in the lateral menu of your CodeSpace. It's represented by a flask icon.
 
-![Test Explorer in CodeSpace](../assets/tests-debugger.png)
+![Test Explorer in CodeSpace](..%2F..%2Fassets%2Ftests-debugger.png)
 
 Expand the test tree to see all available tests. You should see a structure similar to:
    - etl-testing-fwk
@@ -92,17 +91,12 @@ In this exercise, you'll implement a fixture to generate test data for your E2E 
 
 The need for generating test data arises from the requirement to have consistent, controlled data sets for our tests. By generating this data programmatically, we can ensure that our tests are repeatable and that they cover various scenarios that might occur in the real data processing pipeline.
 
-Detailed instructions and code comments for this exercise are provided in the [`conftest.py`](e2e/raw-clean/conftest.py) file. You'll be working primarily with this file to implement the new fixture.
+Detailed instructions and code comments for this exercise are provided in the [`conftest.py`](raw-clean/conftest.py) file. You'll be working primarily with this file to implement the new fixture.
 
 ### Steps:
 
-1. Open the [`conftest.py`](e2e/raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory.
-2. Move all existing fixtures from [`test_sns_notifications.py`](e2e/raw-clean/test_sns_notifications.py) to [`conftest.py`](e2e/raw-clean/conftest.py).
-3. Create a new fixture named `generate_test_data` in `conftest.py`.
-4. Use the `@pytest.fixture(autouse=True)` decorator for the new fixture.
-5. Implement the fixture to call the data generator lambda function using boto3.
-6. Assert that the data generator lambda function was called successfully.
-7. Update `test_sns_notifications.py` to remove moved fixtures and use the new `generate_test_data` fixture.
+1. Open the [`conftest.py`](e2e/raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory. And follow steps described in the file.
+
 
 ## Common Issues and Tips
 - Ensure your AWS credentials are correctly configured and have the necessary permissions.
@@ -110,18 +104,11 @@ Detailed instructions and code comments for this exercise are provided in the [`
 - If tests fail, review the error messages and use debugging techniques to identify the issue.
 
 ## Next Steps
-Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll integrate Allure reports into your pytest-based test automation framework. This will help you generate rich and detailed test reports for better analysis of your test results.
-
-For more details on Exercise 3, please refer to the [Exercise 3 README](reports/README.md).
+Once you have successfully implemented and verified the test data generator fixture, you are ready to move on to Exercise 3, where you'll explore how to generate Test Reports using Allure. Refer to the  [Exercise 3: Integrating Allure Reports](ALLURE_README.md) for detailed instructions.
 
 ## Reference Solution
 
-For reference and guidance, you can check the `feature/exercise_2_solved` branch. This branch contains a complete solution for Exercise 2, which may be helpful if you encounter any difficulties or want to compare your implementation.
-
-To check out the reference solution, use the following command:
-```bash
-git checkout feature/exercise_2_solved
-```
+The final solution for all four exercises can be found in the `exercises_solution` folder. To use it, substitute the folders in the root directory with those in the solution folder and reexecute all steps from the first exercise.
 
 Remember, it's best to try solving the exercise on your own first, but don't hesitate to use the reference solution if you need additional clarity or want to verify your approach.
 

@@ -116,3 +116,8 @@ variable "allure_bucket" {
   description = "Allure bucket name"
   type        = string
 }
+
+variable "great_expectations_bucket" {
+  description = "Great Expectation Bucket Name"
+  type        = string
+}

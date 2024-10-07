@@ -52,6 +52,11 @@ variable "allure_report_bucket" {
   type        = string
 }
 
+variable "gx_report_bucket" {
+  description = "S3 bucket name for GX reports"
+  type        = string
+}
+
 variable "owner" {
   description = "Owner or project identifier"
   type        = string

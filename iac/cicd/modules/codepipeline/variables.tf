@@ -37,7 +37,3 @@ variable "full_repository" {
 variable "branch" {
   default = ""
 }
-variable "codebuild_test_project" {
-  description = "CodeBuild project name for tests"
-  type        = string
-} 

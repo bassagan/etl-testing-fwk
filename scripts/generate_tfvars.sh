@@ -19,6 +19,10 @@ REPO_NAME=$(basename -s .git $(git config --get remote.origin.url) | sed 's/[^a-
 # Retrieve GitHub owner (assumes the URL is in the form of https://github.com/owner/repo.git)
 GITHUB_OWNER=$(git config --get remote.origin.url | awk -F'[:/]' '{print $(NF-1)}')
 
+# Retrieve GitHub mail
+GITHUB_OWNER_MAIL=$(git config --get user.email)
+
+
 # Define paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -48,6 +52,7 @@ generate_tfvars() {
     sed -e "s/{branch}/$BRANCH_NAME/" \
         -e "s/{repo_name}/$REPO_NAME/" \
         -e "s/{github_owner}/$GITHUB_OWNER/" \
+        -e "s/{github_owner_mail}/$GITHUB_OWNER_MAIL/" \
         -e "s/{owner}/$OWNER/" \
         -e "s/{region}/$REGION/" \
         -e "s/{env}/$ENV/" \
