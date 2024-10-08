@@ -203,7 +203,7 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 2. **Check S3 Buckets**: Confirm that the S3 buckets for the backend, Lambda functions, raw, clean, and curated data are present.
     - ![Screenshot of S3 buckets](assets/aws-resource-group-check.png)
 3. **Check Other Resources**: Verify that the IAM roles, CodeBuild, and CodePipeline have been created.
-    - ![Screenshot of IAM roles, CodeBuild, and CodePipeline](path/to/screenshot-aws-resources.png)
+
 
 ## Common Issues and Tips
 - **Terraform Init Errors**: Ensure your AWS credentials are correctly configured. Use `aws configure` to reset them if necessary.
