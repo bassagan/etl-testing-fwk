@@ -7,7 +7,7 @@ Welcome to the first exercise of our ETL Testing Framework tutorial! In this exe
 1. [Prerequisites](#prerequisites)
 2. [Exercise 1](#exercise-1-setting-up-the-environment)
     - [1. AWS Account Setup](#1-aws-account-setup)
-    - [2. Fork the Repository](#2-fork-the-repository)
+    - [2. Setup IDE](#2-setup-ide)
     - [3. Environment Setup](#3-environment-setup)
     - [4. Terraform Initialization](#4-terraform-initialization)
     - [5. AWS Resource Verification](#5-aws-resource-verification)
@@ -47,11 +47,9 @@ To get your AWS account for this tutorial, follow these steps:
 - Use the **Access Key ID**, **Secret Access Key**, and **Session Token** provided by the URL when configuring your AWS CLI in the following steps.
 - If you prefer to use your own AWS account, you are welcome to do so. In this case, please make sure to create an access token key for your user and have it at hand. Also, take note of your AWS username. **username** will be the `<owner>` on the `setup_infrastructure.sh`, [see section 3](#3-environment-setup).
 
-### 2. Fork the Repository
+### 2. Setup IDE
 1. Go to the main repository on GitHub.
-2. Click the "Fork" button at the top right to fork the repository into your own GitHub space.
-    ![Screenshot of GitHub Fork Button](assets/github-fork-button.png)
-3. **Launch a Codespace**:
+2. **Launch a Codespace**:
     - Once you have forked the repository, **navigate to your fork**.
     - Click on the "Code" button, "Codespaces" tab, then select "Create codespace on master" to create a new Codespace.
     ![Screenshot of Codespaces launch](assets/github-codespaces-new.png)
@@ -60,13 +58,6 @@ To get your AWS account for this tutorial, follow these steps:
    ![Screenshot of CodeSpace Building](assets/github-codespace-building.png)
     - You will know the CodeSpace is ready when you can see: 
    ![Screenshot of CodeSpace Ready](assets/github-codespace-ready.png)
-4. **Checkout the initial branch**:
-   - In order to switch branches, you can run git commands in the terminal:
-   ```bash
-   git checkout master
-   ```
-   Or you can interact directly with the IDE:
-   ![Screenshot of CodeSpace Branches section](assets/github-codespace-change-branche.png)
    
 ### 3. Environment Setup
 To set up the necessary AWS infrastructure for the ETL testing framework, use the `setup_infrastructure.sh` script. This script will automate parts of the setup process, including configuring backends, generating necessary Terraform variable files, and packaging Lambda functions.
@@ -89,8 +80,6 @@ To set up the necessary AWS infrastructure for the ETL testing framework, use th
    - When prompted, enter:
      - AWS Access Key ID: Your AWS access key ID.
      - AWS Secret Access Key: Your AWS secret access key.
-     - Default Region Name: The AWS region you wish to use (e.g., eu-west-1).
-     - Default Output Format: Use json unless otherwise needed.
 
 ### 4. Terraform Initialization
 
@@ -155,7 +144,6 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```bash
     terraform plan
     ```
-    ![Screenshot of Terraform plan output](assets/terminal-terraform-plan.png)
 
 5. **Deploy CI/CD Infrastructure**:
     - You can now instead use a single command to initialize and apply the Terraform configuration for the CI/CD infrastructure. With the `auto-approve` flag, Terraform will not ask for confirmation before applying the changes.
@@ -167,14 +155,31 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
 6. **Setup GitHub Connection**:
     - 3.1. Go to your GitHub repository, navigate to the `Settings` tab, and select `Security`. Unfold `Secrets and variables` and select `Actions`.
-    - 3.2. Create the following secrets by clicking on `New repository secret`:
-        - `ARTIFACT_BUCKET`: The name of the S3 bucket where the artifacts will be stored. Go to your resource group in AWS and copy the S3 bucket name that starts with 'github-actions-artifact-'
-        - `AWS_ACCESS_KEY_ID`: Your AWS access key ID from AutomationSTAR page (see [Getting Your AWS Account](#getting-your-aws-account))
-        - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
-        ![Screenshot of GitHub Secrets](assets/github-s3-secret.png)
-    - 3.3. Go to AWS Resource Groups, navigate to your CodeStar Pending connection and follow instructions to make it available.  
-    - 3.4. Run GitHub Action Terraform Plan Check
-    - 3.5. Ensure your AWS pipeline is triggered. 
+- 3.2. Create the following secrets by clicking on `New repository secret`:
+    - `ARTIFACT_BUCKET`: The name of the S3 bucket where the artifacts will be stored. Go to your resource group in AWS and copy the S3 bucket name that starts with 'github-actions-artifact-'.
+      
+      - To get it: 
+      
+      > go to the AWS account web and click on login button
+      ![as2024_general_view.png](assets/as2024_general_view.png)
+    
+      > login with the credentials provided
+      ![aws_login.png](assets/aws_login.png)
+    
+      > click on the resource group and find the S3 bucket name that starts with 'github-actions-artifact-'
+      ![aws_resource_groups_github_bucket.png](assets/aws_resource_groups_github_bucket.png)
+  
+  - `AWS_ACCESS_KEY_ID`: Your AWS access key ID from AutomationSTAR page (see [Getting Your AWS Account](#getting-your-aws-account))
+  - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
+  ![Screenshot of GitHub Secrets](assets/github-s3-secret.png)
+  - 3.4. Run GitHub Action Terraform Plan Check
+    - Go to the `Actions` tab in your GitHub repository and click on the `Terraform Plan Check` workflow.
+    - Click on `Run workflow` and select the branch you want to run the workflow on.
+    - If your actions where not allowed, enable them:
+    ![github-actions-allow-fork.png](assets/github-actions-allow-fork.png)
+    ![Run Workflow](assets/github-actions-run-workflow.png)
+  
+  - 3.5. Ensure your AWS pipeline is triggered. 
 
 #### 4.3 Deploy ETL Infrastructure
 
@@ -191,14 +196,14 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```bash
     terraform init && terraform apply --auto-approve
     ```
-    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+    ![Screenshot of Terraform apply output](assets/terminal-terraform-apply-etl.png)
 
 ### 5. AWS Resource Verification
 1. **Login to AWS Console**: Log in to your AWS account and verify that all resources have been created.
 2. **Check S3 Buckets**: Confirm that the S3 buckets for the backend, Lambda functions, raw, clean, and curated data are present.
-    - ![Screenshot of S3 buckets](path/to/screenshot-s3-buckets.png)
+    - ![Screenshot of S3 buckets](assets/aws-resource-group-check.png)
 3. **Check Other Resources**: Verify that the IAM roles, CodeBuild, and CodePipeline have been created.
-    - ![Screenshot of IAM roles, CodeBuild, and CodePipeline](path/to/screenshot-aws-resources.png)
+
 
 ## Common Issues and Tips
 - **Terraform Init Errors**: Ensure your AWS credentials are correctly configured. Use `aws configure` to reset them if necessary.
