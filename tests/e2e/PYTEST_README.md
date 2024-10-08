@@ -57,7 +57,7 @@ In this part of the exercise, you'll learn how to run and debug your test cases 
 2. To run a specific test file, use:
 
    ```bash
-   pytest e2e/raw-clean/test_sns_notifications.py
+   pytest e2e/raw-clean/test_lambda_raw_clean.py
    ```
 
 3. To check for errors in test collection without actually running the tests, use:
@@ -93,6 +93,11 @@ Detailed instructions and code comments for this exercise are provided in the [`
 
 1. Open the [`conftest.py`](raw-clean/conftest.py) file in the `tests/e2e/raw-clean/` directory.
 2. Follow the steps described in the file to implement the test data generator fixture.
+3. Run again the test:
+
+```bash
+pytest e2e/raw-clean/test_lambda_raw_clean.py
+```
 
 ## Common Issues and Tips
 - Ensure your AWS credentials are correctly configured and have the necessary permissions.
