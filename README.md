@@ -72,14 +72,15 @@ To set up the necessary AWS infrastructure for the ETL testing framework, use th
 1. **Navigate to the `scripts` Directory and Execute Setup**:
    - First, ensure you are in the root directory of your repository:
    Replace `<owner>` with your provided AWS user account (i.e. conference-user-x).
-   ```bash
-   cd scripts && ./setup_infrastructure.sh <owner>
-   ```
+```bash
+cd scripts && ./setup_infrastructure.sh <owner>
+```
 2. **AWS Configuration**:
    -  During the script execution, you may be prompted to configure your AWS credentials. If so, enter your AWS access key, secret access key, default region name, and default output format. This is typically handled using the `aws configure` command, but you don't need to execute it because it is already executed in the `setup_infrastructure.sh` script.
    - When prompted, enter:
      - AWS Access Key ID: Your AWS access key ID.
      - AWS Secret Access Key: Your AWS secret access key.
+   - >At the end of the execution, ensure you write **yes** when prompted to continue with the script. This will create a commit that will create a fork of the repository in your GitHub account.
 
 ### 4. Terraform Initialization
 
