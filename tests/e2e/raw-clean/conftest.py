@@ -19,6 +19,41 @@ load_dotenv()
 
 # 1. Move all existing fixtures from test_lambda_raw_clean.py file to the conftest.py file.
 #TODO: Move fixtures here:
+@pytest.fixture
+def lambda_client(region_name):
+    return boto3.client("lambda", region_name=region_name)
+
+
+@pytest.fixture
+def raw_clean_lambda_function_name():
+    return os.environ.get('LAMBDA_RAW_CLEAN_FUNCTION_NAME')
+@pytest.fixture
+def data_generator_function_name():
+    return os.environ.get('DATA_GENERATOR_FUNCTION_NAME')
+
+@pytest.fixture
+def sqs_client(region_name):
+    return boto3.client("sqs", region_name=region_name)
+
+@pytest.fixture
+def region_name():
+    return os.environ.get('AWS_REGION', 'eu-west-1')
+
+@pytest.fixture
+def raw_bucket():
+    return os.environ.get('RAW_BUCKET')
+
+@pytest.fixture
+def curated_bucket():
+    return os.environ.get('CURATED_BUCKET')
+
+@pytest.fixture
+def clean_bucket():
+    return os.environ.get('CLEAN_BUCKET')
+
+@pytest.fixture
+def lambda_client(region_name):
+    return boto3.client("lambda", region_name=region_name)
 
 # 2. In the conftest.py file, create a new fixture named 'generate_test_data'.
 # 3. Use the @pytest.fixture decorator, adding (autouse=True) if you want it to run automatically. So it will run before each test.
@@ -28,23 +63,23 @@ load_dotenv()
 # TODO: Uncomment fixture generate_test_data
 #       i.e. use the boto3 client to invoke the lambda function:
 
-# @pytest.fixture(autouse=True)
-# def generate_test_data(lambda_client, data_generator_function_name, raw_bucket):
-#     """
-#     Fixture to generate test data by invoking the data generator Lambda function.
-#     This fixture runs automatically before each test.
-#     """
-#     # Invoke the data generator Lambda function
-#         response = lambda_client.invoke(
-#             FunctionName=data_generator_function_name,
-#             InvocationType='Event',
-#             Payload=json.dumps({"s3_bucket": raw_bucket})
-#         )
-#     # 5. Assert that the data generator lambda function was called successfully.
-#     #       i.e. assert that the lambda function was called successfully by checking the response from the lambda function.
-#     # TODO: assert lambda response, look at test_lambda_raw_clean.py for reference,
-#           take into account that in this case the function should return a 202 status code
-#     # assert ...
+@pytest.fixture(autouse=True)
+def generate_test_data(lambda_client, data_generator_function_name, raw_bucket):
+    """
+    Fixture to generate test data by invoking the data generator Lambda function.
+    This fixture runs automatically before each test.
+    """
+    # Invoke the data generator Lambda function
+    response = lambda_client.invoke(
+        FunctionName=data_generator_function_name,
+        InvocationType='Event',
+        Payload=json.dumps({"s3_bucket": raw_bucket})
+    )
+    # 5. Assert that the data generator lambda function was called successfully.
+    #       i.e. assert that the lambda function was called successfully by checking the response from the lambda function.
+    # TODO: assert lambda response, look at test_lambda_raw_clean.py for reference,
+    #     take into account that in this case the function should return a 202 status code
+    # assert ...
 
 
 # 6. In test_lambda_raw_clean.py, remove any fixture definitions that were moved to conftest.py.
