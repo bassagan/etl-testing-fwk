@@ -132,7 +132,7 @@ main() {
     # Commit the changes to the forked repository
         git add -A
         git commit -m "Setup Fork for $OWNER"
-        
+
     else
         echo "Remote 'origin' exists. Skipping commit."
     fi
