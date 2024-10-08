@@ -144,7 +144,6 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```bash
     terraform plan
     ```
-    ![Screenshot of Terraform plan output](assets/terminal-terraform-plan.png)
 
 5. **Deploy CI/CD Infrastructure**:
     - You can now instead use a single command to initialize and apply the Terraform configuration for the CI/CD infrastructure. With the `auto-approve` flag, Terraform will not ask for confirmation before applying the changes.
@@ -156,14 +155,31 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
 
 6. **Setup GitHub Connection**:
     - 3.1. Go to your GitHub repository, navigate to the `Settings` tab, and select `Security`. Unfold `Secrets and variables` and select `Actions`.
-    - 3.2. Create the following secrets by clicking on `New repository secret`:
-        - `ARTIFACT_BUCKET`: The name of the S3 bucket where the artifacts will be stored. Go to your resource group in AWS and copy the S3 bucket name that starts with 'github-actions-artifact-'
-        - `AWS_ACCESS_KEY_ID`: Your AWS access key ID from AutomationSTAR page (see [Getting Your AWS Account](#getting-your-aws-account))
-        - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
-        ![Screenshot of GitHub Secrets](assets/github-s3-secret.png)
-    - 3.3. Go to AWS Resource Groups, navigate to your CodeStar Pending connection and follow instructions to make it available.  
-    - 3.4. Run GitHub Action Terraform Plan Check
-    - 3.5. Ensure your AWS pipeline is triggered. 
+- 3.2. Create the following secrets by clicking on `New repository secret`:
+    - `ARTIFACT_BUCKET`: The name of the S3 bucket where the artifacts will be stored. Go to your resource group in AWS and copy the S3 bucket name that starts with 'github-actions-artifact-'.
+      
+      - To get it: 
+      
+      > go to the AWS account web and click on login button
+      ![as2024_general_view.png](assets/as2024_general_view.png)
+    
+      > login with the credentials provided
+      ![aws_login.png](assets/aws_login.png)
+    
+      > click on the resource group and find the S3 bucket name that starts with 'github-actions-artifact-'
+      ![aws_resource_groups_github_bucket.png](assets/aws_resource_groups_github_bucket.png)
+  
+  - `AWS_ACCESS_KEY_ID`: Your AWS access key ID from AutomationSTAR page (see [Getting Your AWS Account](#getting-your-aws-account))
+  - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
+  ![Screenshot of GitHub Secrets](assets/github-s3-secret.png)
+  - 3.4. Run GitHub Action Terraform Plan Check
+    - Go to the `Actions` tab in your GitHub repository and click on the `Terraform Plan Check` workflow.
+    - Click on `Run workflow` and select the branch you want to run the workflow on.
+    - If your actions where not allowed, enable them:
+    ![github-actions-allow-fork.png](assets/github-actions-allow-fork.png)
+    ![Run Workflow](assets/github-actions-run-workflow.png)
+  
+  - 3.5. Ensure your AWS pipeline is triggered. 
 
 #### 4.3 Deploy ETL Infrastructure
 
@@ -180,12 +196,12 @@ Before deploying the CI/CD and ETL infrastructures, you need to set up the backe
     ```bash
     terraform init && terraform apply --auto-approve
     ```
-    ![Screenshot of Terraform apply output](path/to/screenshot-terraform-apply.png)
+    ![Screenshot of Terraform apply output](assets/terminal-terraform-apply-etl.png)
 
 ### 5. AWS Resource Verification
 1. **Login to AWS Console**: Log in to your AWS account and verify that all resources have been created.
 2. **Check S3 Buckets**: Confirm that the S3 buckets for the backend, Lambda functions, raw, clean, and curated data are present.
-    - ![Screenshot of S3 buckets](path/to/screenshot-s3-buckets.png)
+    - ![Screenshot of S3 buckets](assets/aws-resource-group-check.png)
 3. **Check Other Resources**: Verify that the IAM roles, CodeBuild, and CodePipeline have been created.
     - ![Screenshot of IAM roles, CodeBuild, and CodePipeline](path/to/screenshot-aws-resources.png)
 
