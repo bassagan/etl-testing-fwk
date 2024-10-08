@@ -17,8 +17,8 @@ phases:
       - pip install -r tests/requirements.txt
       - apt-get install -y jq
 #      TODO Exercise 3: Install allure:
-     - npm install -g allure-commandline --save-dev
-     - allure --version
+      - npm install -g allure-commandline --save-dev
+      - allure --version
 
   pre_build:
     commands:
