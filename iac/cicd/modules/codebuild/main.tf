@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "etl_build" {
-  name         = "${var.codebuild_test_name}-build"
+  name         = "${var.codebuild_test_name}-${var.owner}-build"
   service_role = var.codebuild_role
 
   artifacts {

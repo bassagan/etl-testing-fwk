@@ -128,12 +128,13 @@ main() {
 
   #Create Fork for CodeSpaces:
   # Check if a remote named 'origin' exists
-    if git remote get-url origin >/dev/null 2>&1; then
-        echo "Remote 'origin' exists. Skipping commit."
-    else
-        # Commit the changes to the forked repository
+    if git remote -v | grep -q "bassagan"; then
+    # Commit the changes to the forked repository
         git add -A
         git commit -m "Setup Fork for $OWNER"
+
+    else
+        echo "Remote 'origin' exists. Skipping commit."
     fi
 
     echo "All scripts have been executed successfully."
