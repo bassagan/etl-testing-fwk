@@ -12,3 +12,4 @@ iac/etl/backend.tf
 .vscode/
 allure-report/
 allure-results/
+tests/e2e/raw-clean/__pycache__/
