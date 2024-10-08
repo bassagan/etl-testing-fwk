@@ -13,3 +13,4 @@ iac/etl/backend.tf
 allure-report/
 allure-results/
 tests/e2e/raw-clean/__pycache__/
+*.pyc
