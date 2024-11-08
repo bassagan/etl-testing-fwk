@@ -78,7 +78,7 @@ In this part of the exercise, you'll learn how to run and debug your test cases 
        - e2e
          - raw-clean
            - test_sns_notifications.py
-             - TestSNSNotifications
+             - TestRawToClean
                - test_lambda_execution
 
 ### 3. Implementing a Test Data Generator Fixture

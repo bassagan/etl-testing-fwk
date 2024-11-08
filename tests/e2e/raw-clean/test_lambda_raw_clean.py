@@ -1,6 +1,7 @@
 import pytest
 import json
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 import boto3
 
@@ -15,6 +16,9 @@ load_dotenv()
 def lambda_client(region_name):
     return boto3.client("lambda", region_name=region_name)
 
+@pytest.fixture
+def s3_client(region_name):
+    return boto3.client("s3", region_name=region_name)
 
 @pytest.fixture
 def raw_clean_lambda_function_name():
@@ -47,21 +51,50 @@ def clean_bucket():
 def lambda_client(region_name):
     return boto3.client("lambda", region_name=region_name)
 
-class TestSNSNotifications:
+class TestRawToClean:
     # Pytest parametrize decorator to run the test with different invocation types
     @pytest.mark.parametrize("invocation_type", ["RequestResponse"])
-    def test_lambda_execution(self, lambda_client, raw_clean_lambda_function_name, invocation_type):
+    def test_lambda_execution(self, lambda_client,
+                              raw_clean_lambda_function_name,
+                              invocation_type,
+                              generate_test_data):
         # Act: Invoke the Lambda function
         response = lambda_client.invoke(
             FunctionName=raw_clean_lambda_function_name,
             InvocationType=invocation_type,
             Payload=json.dumps({})
         )
-
         # Assert: Check if the Lambda execution was successful
-        assert response['StatusCode'] == 200, f"Lambda execution failed with status code {response['StatusCode']}"
+        payload = json.loads(response['Payload'].read())
 
-    # TODO: Exercise 3 - Add Allure decorators to the test class
+        status_code = payload.get('statusCode')
+        body_json = json.loads(payload.get('body'))
+
+        assert status_code == 200, f"Lambda execution failed with status code {response['StatusCode']}"
+        assert body_json['patients_count'] != 0, "No patients were processed"
+        assert body_json['visits_count'] != 0, "No visits were processed"
+
+    @pytest.mark.parametrize("invocation_type", ["RequestResponse"])
+    def test_lambda_execution_no_new_data(self, lambda_client,
+                              raw_clean_lambda_function_name,
+                              invocation_type):
+        # Act: Invoke the Lambda function
+        response = lambda_client.invoke(
+            FunctionName=raw_clean_lambda_function_name,
+            InvocationType=invocation_type,
+            Payload=json.dumps({})
+        )
+        # Assert: Check if the Lambda execution was successful
+        payload = json.loads(response['Payload'].read())
+
+        status_code = payload.get('statusCode')
+        body_json = json.loads(payload.get('body'))
+
+        assert status_code == 200, f"Lambda execution failed with status code {response['StatusCode']}"
+        assert body_json['patients_count'] == 0, "Patients were processed"
+        assert body_json['visits_count'] == 0, "Visits were processed"
+
+    # TODO: Exercise 3 - Add Allure decorators to the test class and use the mock_patient_data fixture
     @pytest.mark.skip(reason="Remove this line on exercise 3")
     # @allure.feature("Lambda Function")
     # @allure.title("New title for the test case")
@@ -69,7 +102,7 @@ class TestSNSNotifications:
     @pytest.mark.parametrize("invocation_type", [
         pytest.param("RequestResponse", id="Synchronous Invocation")
     ])
-    def test_lambda_execution_exercise3(self, lambda_client, raw_clean_lambda_function_name, invocation_type):
+    def test_lambda_execution_invalid_data(self, lambda_client, raw_clean_lambda_function_name,raw_bucket, s3_client, invocation_type):
         """
         Test the execution of the Raw Clean Lambda function.
 
@@ -77,36 +110,35 @@ class TestSNSNotifications:
         :param raw_clean_lambda_function_name: Name of the Lambda function to test
         :param invocation_type: Type of Lambda invocation (RequestResponse for synchronous)
         """
-        # TODO: Exercise 3 - Add Allure step for preparing Lambda invocation parameters
-        # with allure.step("Prepare Lambda invocation parameters"):
-        payload = json.dumps({})
 
         # TODO: Exercise 3 - Add Allure step for invoking Lambda function
         # with allure.step(f"Invoke Lambda function '{raw_clean_lambda_function_name}' with {invocation_type} invocation"):
         response = lambda_client.invoke(
             FunctionName=raw_clean_lambda_function_name,
             InvocationType=invocation_type,
-            Payload=payload
+            Payload=json.dumps({})
         )
 
         # Exercise 3 - Add Allure step for checking Lambda execution status
         # with allure.step("Check Lambda execution status"):
-        assert response['StatusCode'] == 200, f"Lambda execution failed with status code {response['StatusCode']}"
+        # Assert: Check if the Lambda execution was successful
+        payload = json.loads(response['Payload'].read())
+        status_code = response['StatusCode']
+        body_json = json.loads(payload.get('body'))
+
+        assert status_code == 200, f"Lambda execution failed with status code {response['StatusCode']}"
+        assert body_json['patients_count'] == 2, "Patients were processed"
+        assert body_json['visits_count'] == 0, "Visits were processed"
 
         # TODO: Exercise 3 - Add Allure step for saving Lambda execution response
         # with allure.step("Save Lambda execution response"):
-        serializable_response = {
-            'StatusCode': response['StatusCode'],
-            'ExecutedVersion': response.get('ExecutedVersion'),
-            'FunctionError': response.get('FunctionError'),
-            'LogResult': response.get('LogResult'),
-        }
+
         # TODO: Exercise 3 - Attach the serializable_response to the Allure report
-        # allure.attach(
-        #     json.dumps(serializable_response, indent=2),
-        #     name="Lambda Response",
-        #     attachment_type=allure.attachment_type.JSON
-        # )
+        #     allure.attach(
+        #         json.dumps(payload, indent=2),
+        #         name="Lambda Response",
+        #         attachment_type=allure.attachment_type.JSON
+        #     )
 
         # Add more assertions here if needed to verify the response payload
 

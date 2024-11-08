@@ -19,7 +19,7 @@ configure_aws_cli() {
 
         aws configure set aws_access_key_id "$aws_access_key_id"
         aws configure set aws_secret_access_key "$aws_secret_access_key"
-        aws configure set region "eu-west-1"
+        aws configure set region "us-east-1"
         aws configure set output "json"
 
         echo "AWS CLI configured with default region '$DEFAULT_REGION' and output format '$DEFAULT_OUTPUT_FORMAT'."
@@ -57,6 +57,16 @@ setup_virtualenv() {
         pip install --upgrade pip
         pip install -r "${SCRIPT_DIR}/requirements.txt"
     fi
+}
+
+# Function to run terraform init and apply
+run_terraform() {
+    local dir=$1
+    echo "Running terraform init and apply in directory: $dir"
+    cd "$dir" || exit
+    terraform init
+    terraform apply --auto-approve
+    cd - || exit
 }
 
 # Check if all required scripts exist
@@ -107,12 +117,17 @@ run_scripts() {
 # Main script execution
 main() {
     # Check if the correct number of arguments are provided
-    if [ "$#" -ne 1 ]; then
-        echo "Usage: $0 <owner>"
+    if [ "$#" -lt 1 ]; then
+        echo "Usage: $0 <owner> [--skip-terraform]"
         exit 1
     fi
 
     OWNER="$1"
+    SKIP_TERRAFORM=false
+
+    if [ "$#" -eq 2 ] && [ "$2" == "--skip-terraform" ]; then
+        SKIP_TERRAFORM=true
+    fi
 
     # Run AWS CLI configuration if necessary
     configure_aws_cli
@@ -126,13 +141,21 @@ main() {
     # Run all scripts
     run_scripts "$OWNER"
 
-  #Create Fork for CodeSpaces:
-  # Check if a remote named 'origin' exists
+    # Conditionally run terraform init and apply for each directory
+    if [ "$SKIP_TERRAFORM" = false ]; then
+        run_terraform "../iac/backend"
+        run_terraform "../iac/cicd"
+        run_terraform "../iac/etl"
+    else
+        echo "Skipping Terraform commands as per user request."
+    fi
+
+    # Create Fork for CodeSpaces:
+    # Check if a remote named 'origin' exists
     if git remote -v | grep -q "bassagan"; then
-    # Commit the changes to the forked repository
+        # Commit the changes to the forked repository
         git add -A
         git commit -m "Setup Fork for $OWNER"
-
     else
         echo "Remote 'origin' exists. Skipping commit."
     fi
