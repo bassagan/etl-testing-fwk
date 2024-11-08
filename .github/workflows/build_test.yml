@@ -36,7 +36,7 @@ jobs:
         run: chmod +x ./scripts/setup_infrastructure.sh
 
       - name: Run setup_infrastructure.sh
-        run: ./scripts/setup_infrastructure.sh ${{ github.actor }}
+        run: ./scripts/setup_infrastructure.sh ${{ github.actor }} --skip-terraform
 
 
       # Initialize Terraform with Local Backend for Backend Infrastructure
